@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "report_type": "SEMICONDUCTOR_EXPORT_COMPLIANCE",
+  "scan_id": "7f06d4f5-445c-4e4b-a392-a51feeaf9ddf",
+  "chip_id": "CHIP-PROD-TROJAN-002",
+  "generated_at_utc": "2026-07-16T12:41:44.976923+00:00",
+  "regulatory_notice": "Automated decision-support only; not a Commodity Jurisdiction determination, CCATS classification, license, legal opinion, or authorization. Qualified human review is required for controlled or unresolved transactions.",
+  "decision": {
+    "decision": "DENIED",
+    "status": "FAILED",
+    "confidence": 0.755,
+    "risk_score": 1,
+    "deployment_recommendation": "BLOCK",
+    "requires_human_review": true,
+    "reasons": [
+      "Export denial or critical AI risk"
+    ],
+    "export_control": {
+      "jurisdiction": "EAR",
+      "classification": "3A001",
+      "license_status": "REQUIRED",
+      "decision": "LICENSE_REQUIRED",
+      "confidence": 0.65,
+      "requires_human_review": true,
+      "itar": {
+        "control": "itar",
+        "status": "NOT_INDICATED",
+        "score": 0.1,
+        "reasons": [
+          "USML/defense indicators evaluated"
+        ],
+        "details": {
+          "usml_category": null
+        }
+      },
+      "ear": {
+        "control": "ear",
+        "status": "LICENSE_REVIEW",
+        "score": 0.8,
+        "reasons": [
+          "EAR jurisdiction/classification/end-use evaluated"
+        ],
+        "details": {
+          "eccn": "3A001",
+          "destination": "GB"
+        }
+      },
+      "restricted_party": {
+        "control": "restricted_party",
+        "status": "CLEAR",
+        "score": 0.36,
+        "reasons": [
+          "best fuzzy match 36.0%"
+        ],
+        "details": {
+          "matched": {
+            "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+            "aliases": [
+              "DDSE"
+            ],
+            "source_list": "DEMO",
+            "country": "XX",
+            "action": "DENY"
+          }
+        }
+      },
+      "ruleset_version": "2026-07-16"
+    },
+    "supplier_risk": {
+      "supplier_id": "SUP-CN-004",
+      "supplier_name": "SubcontractFab Asia-4",
+      "risk_score": 0.34650000000000003,
+      "risk_level": "LOW",
+      "confidence": 0.625,
+      "factors": {
+        "country_risk": 0.55,
+        "custody_gap_ratio": 0.0,
+        "certificate_risk": 0.0,
+        "sbom_mismatch_ratio": 0.0,
+        "threat_intel_score": 0.68,
+        "counterfeit_history": 0.1,
+        "financial_distress": 0.1,
+        "ai_risk": 0.98
+      },
+      "reasons": [
+        "ai_risk=0.98",
+        "threat_intel_score=0.68",
+        "country_risk=0.55"
+      ],
+      "ruleset_version": "1.0"
+    },
+    "ai": {
+      "classification": "TROJAN",
+      "confidence_score": 0.99,
+      "risk_score": 0.98
+    },
+    "policy_version": "2.0",
+    "integrity_hash": "4325c350b29ebf899fed81efa00fa88c341918d358b975acd08b127ef163a4d5"
+  },
+  "evidence_hashes": {
+    "export_control": "05adf237dca78e2bc85f8ea64a8202b149626e59883803194bd7fa69264c1303",
+    "supplier_risk": "295657796ff8600647672dbc0619f992a2639887ea06591cad028d162537f936",
+    "ai": "e4e7d9e81c9765c7fe1bfc607174560898f05a127d07c211f3fee0f77a10729e"
+  },
+  "event_chain_head": "380cb94e2367506e518e0ed1c4c9f9825ef85e14ea1a3388540ddcb70b776ffb",
+  "report_hash": "9f979fe319ab83b9f6303bc41e4532726d5a4d9ccaffc2ebbb53cbc1e6992fcb",
+  "signature": "30bebecf42d61de31691ec882baf28332a91201e2afed749de0cbea3c950e97d"
+}

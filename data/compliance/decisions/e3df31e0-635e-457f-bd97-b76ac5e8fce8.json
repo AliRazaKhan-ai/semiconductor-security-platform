@@ -1,0 +1,180 @@
+{
+  "scan_id": "e3df31e0-635e-457f-bd97-b76ac5e8fce8",
+  "chip_id": "CHIP-PROD-SUPPLIER-005",
+  "decision": {
+    "decision": "LICENSE_REQUIRED",
+    "status": "HOLD",
+    "confidence": 0.7316666666666666,
+    "risk_score": 0.65,
+    "deployment_recommendation": "DO_NOT_DEPLOY_PENDING_REVIEW",
+    "requires_human_review": true,
+    "reasons": [
+      "License required"
+    ],
+    "export_control": {
+      "jurisdiction": "ITAR",
+      "classification": "XI",
+      "license_status": "REQUIRED",
+      "decision": "LICENSE_REQUIRED",
+      "confidence": 0.65,
+      "requires_human_review": true,
+      "itar": {
+        "control": "itar",
+        "status": "ITAR_CONTROLLED",
+        "score": 1.0,
+        "reasons": [
+          "USML/defense indicators evaluated"
+        ],
+        "details": {
+          "usml_category": "XI"
+        }
+      },
+      "ear": {
+        "control": "ear",
+        "status": "LICENSE_REVIEW",
+        "score": 0.8,
+        "reasons": [
+          "EAR jurisdiction/classification/end-use evaluated"
+        ],
+        "details": {
+          "eccn": "3A090",
+          "destination": "GB"
+        }
+      },
+      "restricted_party": {
+        "control": "restricted_party",
+        "status": "CLEAR",
+        "score": 0.4931506849315068,
+        "reasons": [
+          "best fuzzy match 49.3%"
+        ],
+        "details": {
+          "matched": {
+            "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+            "aliases": [
+              "DDSE"
+            ],
+            "source_list": "DEMO",
+            "country": "XX",
+            "action": "DENY"
+          }
+        }
+      },
+      "ruleset_version": "2026-07-16"
+    },
+    "supplier_risk": {
+      "supplier_id": "SUP-RU-007",
+      "supplier_name": "Frontier Microelectronics Plant-7",
+      "risk_score": 0.368,
+      "risk_level": "MEDIUM",
+      "confidence": 0.625,
+      "factors": {
+        "country_risk": 0.9,
+        "custody_gap_ratio": 0.0,
+        "certificate_risk": 0.0,
+        "sbom_mismatch_ratio": 0.0,
+        "threat_intel_score": 0.88,
+        "counterfeit_history": 0.35,
+        "financial_distress": 0.72,
+        "ai_risk": 0.2
+      },
+      "reasons": [
+        "country_risk=0.90",
+        "threat_intel_score=0.88",
+        "financial_distress=0.72"
+      ],
+      "ruleset_version": "1.0"
+    },
+    "ai": {
+      "classification": "CLEAN",
+      "confidence_score": 0.92,
+      "risk_score": 0.2
+    },
+    "policy_version": "2.0",
+    "integrity_hash": "fde43fb6c29fb53b9105ec9e26ce2a706be7cef745d201ab04185cb84c895ecb"
+  },
+  "export_control": {
+    "jurisdiction": "ITAR",
+    "classification": "XI",
+    "license_status": "REQUIRED",
+    "decision": "LICENSE_REQUIRED",
+    "confidence": 0.65,
+    "requires_human_review": true,
+    "itar": {
+      "control": "itar",
+      "status": "ITAR_CONTROLLED",
+      "score": 1.0,
+      "reasons": [
+        "USML/defense indicators evaluated"
+      ],
+      "details": {
+        "usml_category": "XI"
+      }
+    },
+    "ear": {
+      "control": "ear",
+      "status": "LICENSE_REVIEW",
+      "score": 0.8,
+      "reasons": [
+        "EAR jurisdiction/classification/end-use evaluated"
+      ],
+      "details": {
+        "eccn": "3A090",
+        "destination": "GB"
+      }
+    },
+    "restricted_party": {
+      "control": "restricted_party",
+      "status": "CLEAR",
+      "score": 0.4931506849315068,
+      "reasons": [
+        "best fuzzy match 49.3%"
+      ],
+      "details": {
+        "matched": {
+          "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+          "aliases": [
+            "DDSE"
+          ],
+          "source_list": "DEMO",
+          "country": "XX",
+          "action": "DENY"
+        }
+      }
+    },
+    "ruleset_version": "2026-07-16"
+  },
+  "supplier_risk": {
+    "supplier_id": "SUP-RU-007",
+    "supplier_name": "Frontier Microelectronics Plant-7",
+    "risk_score": 0.368,
+    "risk_level": "MEDIUM",
+    "confidence": 0.625,
+    "factors": {
+      "country_risk": 0.9,
+      "custody_gap_ratio": 0.0,
+      "certificate_risk": 0.0,
+      "sbom_mismatch_ratio": 0.0,
+      "threat_intel_score": 0.88,
+      "counterfeit_history": 0.35,
+      "financial_distress": 0.72,
+      "ai_risk": 0.2
+    },
+    "reasons": [
+      "country_risk=0.90",
+      "threat_intel_score=0.88",
+      "financial_distress=0.72"
+    ],
+    "ruleset_version": "1.0"
+  },
+  "report": {
+    "report_hash": "e472b095821b873b3fd6857726fd50a7ea44520936f7449e67bb083074fa33cb",
+    "government_audit_hash": "b2f961898d3a9d37dc46478af3c097534f7f3e4f926c66d006c49f32f0e5a882",
+    "json_path": "/home/ali-raza/semiconductor_security_platform/data/compliance/reports/json/e3df31e0-635e-457f-bd97-b76ac5e8fce8.json",
+    "pdf_path": "/home/ali-raza/semiconductor_security_platform/data/compliance/reports/pdf/e3df31e0-635e-457f-bd97-b76ac5e8fce8.pdf",
+    "audit_path": "/home/ali-raza/semiconductor_security_platform/data/compliance/government_audit/e3df31e0-635e-457f-bd97-b76ac5e8fce8.json",
+    "signature": "80e4382e46194b8ab39a31d011f1e6e78a402fc55db9a2c87968de35d0cd0033"
+  },
+  "blockchain": null,
+  "blockchain_error": null
+}

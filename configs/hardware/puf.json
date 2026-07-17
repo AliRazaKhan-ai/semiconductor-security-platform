@@ -1,0 +1,67 @@
+{
+  "puf": {
+    "version": "1.0.0",
+    "environment": {
+      "nominal_temperature_c": 25.0,
+      "nominal_voltage_v": 1.0,
+      "minimum_temperature_c": -40.0,
+      "maximum_temperature_c": 125.0,
+      "minimum_voltage_v": 0.85,
+      "maximum_voltage_v": 1.15
+    },
+    "ring_oscillator": {
+      "oscillator_count": 96,
+      "response_bits": 48,
+      "nominal_frequency_hz": 100000000.0,
+      "process_sigma_ppm": 18000.0,
+      "measurement_window_s": 0.001,
+      "voltage_exponent": 1.25,
+      "temperature_coefficient_ppm_per_c": -1050.0,
+      "aging_coefficient_ppm_per_1000h": 35.0,
+      "counter_jitter_cycles": 1.2
+    },
+    "delay_chain": {
+      "stage_count": 64,
+      "response_bits": 48,
+      "nominal_stage_delay_ps": 22.0,
+      "process_sigma_ps": 1.7,
+      "voltage_exponent": 1.35,
+      "temperature_coefficient_ppm_per_c": 1650.0,
+      "aging_coefficient_ppm_per_1000h": 45.0,
+      "arbiter_jitter_ps": 0.35
+    },
+    "noise": {
+      "correlated_noise_ppm": 120.0,
+      "white_noise_ppm": 220.0,
+      "flicker_noise_ppm": 90.0,
+      "delay_noise_ps": 0.015,
+      "signature_dimensions": 8,
+      "signature_run_sigma": 0.025
+    },
+    "enrollment": {
+      "challenge_count": 16,
+      "response_samples": 11,
+      "minimum_bit_reliability": 0.82,
+      "minimum_stable_bit_ratio": 0.70,
+      "corners": [
+        {"temperature_c": 25.0, "voltage_v": 1.0},
+        {"temperature_c": -20.0, "voltage_v": 0.95},
+        {"temperature_c": 85.0, "voltage_v": 1.05},
+        {"temperature_c": 25.0, "voltage_v": 0.90},
+        {"temperature_c": 25.0, "voltage_v": 1.10}
+      ]
+    },
+    "authentication": {
+      "response_samples": 9,
+      "challenge_ttl_seconds": 120,
+      "maximum_masked_hamming_ratio": 0.14,
+      "minimum_response_reliability": 0.78,
+      "maximum_noise_distance": 6.0,
+      "maximum_environment_penalty": 1.0
+    },
+    "storage": {
+      "enrollment_root": "data/puf/enrollments",
+      "challenge_ledger_path": "data/puf/challenge_ledger.jsonl"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Provenance {{ scan.scan_id if scan else '' }} · SemiSecure{% endblock %}
+{% block page_id %}provenance{% endblock %}
+{% block header_title %}Blockchain Provenance Record{% endblock %}
+{% block content %}
+<section class="dashboard-intro"><div><p class="eyebrow mb-1">TAMPER-EVIDENT TRUST RECORD</p><h2 class="section-title mb-1">{{ scan.chip_id if scan else 'Unknown chip' }}</h2><p class="section-subtitle mono mb-0">{{ scan.scan_id if scan else 'No scan selected' }}</p></div><a class="cyber-button secondary" href="{{ url_for('dashboard.dashboard') }}#blockchain">← Back</a></section>
+<section class="dashboard-grid status-grid" data-provenance-scan="{{ scan.scan_id if scan else '' }}">
+<article class="cyber-panel"><header class="panel-header"><div><p class="panel-kicker">HYPERLEDGER FABRIC</p><h3>Permissioned Ledger</h3></div><span class="status-badge neutral" id="provenanceFabricState">CHECKING</span></header><div class="detail-grid expanded"><div><span>Scan ID</span><strong class="mono">{{ scan.scan_id if scan else '—' }}</strong></div><div><span>Chip ID</span><strong>{{ scan.chip_id if scan else '—' }}</strong></div><div><span>Final Event</span><strong>{{ scan.last_event_type if scan else '—' }}</strong></div><div><span>Sequence</span><strong>{{ scan.last_sequence if scan else '—' }}</strong></div><div><span>Fabric Transaction</span><strong class="mono" id="provenanceFabricTx">—</strong></div></div></article>
+<article class="cyber-panel"><header class="panel-header"><div><p class="panel-kicker">ETHEREUM</p><h3>Public Hash Anchor</h3></div><span class="status-badge neutral" id="provenanceEthereumState">CHECKING</span></header><div class="hash-card"><span>Latest event hash</span><code id="provenanceEventHash">{{ scan.last_event_hash if scan else '—' }}</code><small>Only a 32-byte SHA-256 Merkle root is submitted publicly.</small><span>Anchor root</span><code id="provenanceAnchorRoot">—</code><span>Ethereum transaction</span><code id="provenanceEthereumTx">—</code></div></article>
+</section>
+<section class="cyber-panel mt-4"><header class="panel-header"><div><p class="panel-kicker">CHAIN OF CUSTODY</p><h3>Immutable Event Sequence</h3></div><span class="panel-badge" id="provenanceEventCount">Loading</span></header><div class="provenance-timeline" id="provenanceTimeline"><div class="empty-state"><span>⬡</span><p>Loading provenance events</p></div></div></section>
+{% endblock %}

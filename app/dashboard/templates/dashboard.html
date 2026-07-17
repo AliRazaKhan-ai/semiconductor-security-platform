@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Enterprise Dashboard · {{ application.name }}{% endblock %}
+{% block page_id %}dashboard{% endblock %}
+{% block header_title %}Enterprise Security Command Center{% endblock %}
+
+{% block content %}
+<section class="dashboard-intro" aria-labelledby="overviewHeading">
+    <div>
+        <p class="eyebrow mb-1">REAL-TIME, READ-ONLY MONITORING</p>
+        <h2 id="overviewHeading" class="section-title mb-1">Semiconductor Trust Overview</h2>
+        <p class="section-subtitle mb-0">Terminal-originated scans are validated across hardware, AI, compliance, provenance, and deployment controls.</p>
+    </div>
+    <div class="intro-actions">
+        <span class="control-lock"><span aria-hidden="true">▣</span> No dashboard controls</span>
+        <button type="button" class="cyber-button secondary" id="manualRefreshButton"><span aria-hidden="true">↻</span> Refresh view</button>
+    </div>
+</section>
+
+<section class="kpi-grid" aria-label="Key platform indicators">
+    <article class="kpi-card accent-cyan">
+        <div class="kpi-icon">Σ</div><div class="kpi-content"><span>Total Scans</span><strong id="kpiTotalScans">0</strong><small id="kpiTotalCaption">JSON event store</small></div>
+    </article>
+    <article class="kpi-card accent-green">
+        <div class="kpi-icon">✓</div><div class="kpi-content"><span>Approved</span><strong id="kpiApproved">0</strong><small id="kpiApprovedCaption">Verified for deployment</small></div>
+    </article>
+    <article class="kpi-card accent-red">
+        <div class="kpi-icon">×</div><div class="kpi-content"><span>Rejected</span><strong id="kpiRejected">0</strong><small id="kpiRejectedCaption">Security or compliance</small></div>
+    </article>
+    <article class="kpi-card accent-amber">
+        <div class="kpi-icon">◇</div><div class="kpi-content"><span>Quarantined</span><strong id="kpiQuarantined">0</strong><small id="kpiQuarantineCaption">Manual review required</small></div>
+    </article>
+    <article class="kpi-card accent-purple">
+        <div class="kpi-icon">R</div><div class="kpi-content"><span>Average Risk</span><strong id="kpiAverageRisk">0.0</strong><small id="kpiRiskCaption">Latest scan window</small></div>
+    </article>
+    <article class="kpi-card accent-red">
+        <div class="kpi-icon">!</div><div class="kpi-content"><span>High-Risk Active</span><strong id="kpiHighRisk">0</strong><small id="kpiHighRiskCaption">Open critical findings</small></div>
+    </article>
+    <article class="kpi-card accent-blue">
+        <div class="kpi-icon">⬡</div><div class="kpi-content"><span>Fabric Commits</span><strong id="kpiFabricCommits">0</strong><small id="kpiFabricCaption">Confirmed provenance</small></div>
+    </article>
+    <article class="kpi-card accent-green">
+        <div class="kpi-icon">⌁</div><div class="kpi-content"><span>Healthy Services</span><strong id="kpiHealthyServices">0/0</strong><small id="kpiHealthCaption">Backend readiness</small></div>
+    </article>
+</section>
+
+<section class="dashboard-grid charts-grid" aria-label="Risk analytics">
+    <article class="cyber-panel chart-panel chart-wide">
+        <header class="panel-header">
+            <div><p class="panel-kicker">RISK ANALYTICS</p><h3>Risk Trend</h3></div>
+            <span class="panel-badge" id="riskTrendWindow">Latest 20 scans</span>
+        </header>
+        <div class="chart-container"><canvas id="riskTrendChart" aria-label="Risk trend chart"></canvas><div class="chart-empty" id="riskTrendEmpty">Awaiting risk events</div></div>
+    </article>
+    <article class="cyber-panel chart-panel">
+        <header class="panel-header"><div><p class="panel-kicker">CHIP VERDICTS</p><h3>Good vs Bad</h3></div></header>
+        <div class="chart-container compact-chart"><canvas id="goodBadChart" aria-label="Good versus bad chips chart"></canvas><div class="chart-empty" id="goodBadEmpty">Awaiting verdicts</div></div>
+    </article>
+    <article class="cyber-panel chart-panel">
+        <header class="panel-header"><div><p class="panel-kicker">SUPPLY CHAIN</p><h3>Supplier Risk</h3></div></header>
+        <div class="chart-container compact-chart"><canvas id="supplierRiskChart" aria-label="Supplier risk chart"></canvas><div class="chart-empty" id="supplierRiskEmpty">Awaiting supplier scores</div></div>
+    </article>
+</section>
+
+<section id="pipeline" class="cyber-panel pipeline-panel scroll-margin" aria-labelledby="pipelineHeading">
+    <header class="panel-header pipeline-header">
+        <div><p class="panel-kicker">FAIL-CLOSED VALIDATION</p><h3 id="pipelineHeading">Live Security Pipeline</h3></div>
+        <div class="pipeline-summary"><span id="pipelineChip">No active chip</span><span class="status-badge neutral" id="pipelineStatus">WAITING</span></div>
+    </header>
+    <div class="pipeline-track" id="pipelineTrack" role="list" aria-label="Security validation stages"></div>
+    <div class="pipeline-footer">
+        <div><span class="legend-dot waiting"></span>Waiting</div>
+        <div><span class="legend-dot active"></span>Active</div>
+        <div><span class="legend-dot passed"></span>Passed</div>
+        <div><span class="legend-dot failed"></span>Failed / stopped</div>
+        <div class="pipeline-message" id="pipelineMessage">Waiting for a terminal scan.</div>
+    </div>
+</section>
+
+<section id="live-scans" class="cyber-panel scroll-margin" aria-labelledby="liveScansHeading">
+    <header class="panel-header">
+        <div><p class="panel-kicker">EVENT STORE PROJECTION</p><h3 id="liveScansHeading">Live Scan Table</h3></div>
+        <div class="panel-actions"><span class="live-indicator"><span></span>Auto-refresh</span><span class="panel-badge" id="scanTableCount">0 records</span></div>
+    </header>
+    <div class="table-responsive">
+        <table class="table cyber-table align-middle mb-0">
+            <thead><tr><th>Updated</th><th>Chip ID</th><th>Scan ID</th><th>Stage</th><th>Risk</th><th>Status</th><th>Integrity</th><th class="text-end">View</th></tr></thead>
+            <tbody id="liveScanTableBody">
+                <tr><td colspan="8"><div class="empty-state"><span>⌁</span><p>Waiting for terminal-originated scan events</p></div></td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="dashboard-grid status-grid" aria-label="Security control status">
+    <article id="blockchain" class="cyber-panel scroll-margin">
+        <header class="panel-header"><div><p class="panel-kicker">TRUST & PROVENANCE</p><h3>Blockchain Panel</h3></div><span class="status-badge neutral" id="blockchainOverall">NOT INITIALISED</span></header>
+        <div class="status-stack">
+            <div class="status-row"><div class="status-symbol fabric">F</div><div><strong>Hyperledger Fabric</strong><span id="fabricState">Checking backend</span></div><span class="mini-state neutral" id="fabricBadge">WAITING</span></div>
+            <div class="status-row"><div class="status-symbol ethereum">E</div><div><strong>Ethereum Anchor</strong><span id="ethereumState">Checking backend</span></div><span class="mini-state neutral" id="ethereumBadge">WAITING</span></div>
+            <div class="detail-grid"><div><span>Latest Fabric Tx</span><strong id="latestFabricTx">—</strong></div><div><span>Anchor Receipt</span><strong id="latestEthereumTx">—</strong></div><div><span>Event Hash</span><strong id="latestEventHash">—</strong></div><div><span>Ledger Mode</span><strong>Permissioned</strong></div></div>
+        </div>
+    </article>
+
+    <article id="compliance" class="cyber-panel scroll-margin">
+        <header class="panel-header"><div><p class="panel-kicker">GOVERNANCE</p><h3>Compliance Panel</h3></div><span class="status-badge neutral" id="complianceOverall">WAITING</span></header>
+        <div class="meter-block"><div class="meter-label"><span>Latest compliance confidence</span><strong id="complianceScore">—</strong></div><div class="cyber-meter"><span id="complianceMeter" style="width:0%"></span></div></div>
+        <div class="check-list" id="complianceChecklist">
+            <div><span class="check-icon neutral">•</span><span>ITAR screening</span><strong>Pending</strong></div>
+            <div><span class="check-icon neutral">•</span><span>EAR classification</span><strong>Pending</strong></div>
+            <div><span class="check-icon neutral">•</span><span>End-use validation</span><strong>Pending</strong></div>
+            <div><span class="check-icon neutral">•</span><span>Dual-use controls</span><strong>Pending</strong></div>
+        </div>
+    </article>
+
+    <article class="cyber-panel">
+        <header class="panel-header"><div><p class="panel-kicker">PHYSICAL TRUST</p><h3>Hardware Security</h3></div><span class="status-badge neutral" id="hardwareOverall">WAITING</span></header>
+        <div class="security-module-grid" id="hardwareModules">
+            <div class="security-module"><span>PUF</span><strong>Waiting</strong><small>Chip authentication</small></div>
+            <div class="security-module"><span>OT</span><strong>Waiting</strong><small>OpenTitan attestation</small></div>
+            <div class="security-module"><span>CW</span><strong>Waiting</strong><small>Side-channel analysis</small></div>
+            <div class="security-module"><span>EDA</span><strong>Waiting</strong><small>Yosys + Verilator</small></div>
+        </div>
+    </article>
+
+    <article class="cyber-panel">
+        <header class="panel-header"><div><p class="panel-kicker">MODEL OPERATIONS</p><h3>AI Status Panel</h3></div><span class="status-badge neutral" id="aiOverall">WAITING</span></header>
+        <div class="model-list" id="aiModels">
+            <div class="model-row"><div><strong>TensorFlow Classifier</strong><span>Known Trojan patterns</span></div><span class="model-value" id="tensorflowValue">—</span></div>
+            <div class="model-row"><div><strong>PyTorch Anomaly Detector</strong><span>Unknown behavioural deviations</span></div><span class="model-value" id="pytorchValue">—</span></div>
+            <div class="model-row"><div><strong>Scikit-learn Risk Fusion</strong><span>Final explainable risk score</span></div><span class="model-value" id="riskFusionValue">—</span></div>
+            <div class="model-row"><div><strong>Model Integrity</strong><span>Manifest and schema validation</span></div><span class="model-value" id="modelIntegrityValue">Waiting</span></div>
+        </div>
+    </article>
+</section>
+
+<section class="cyber-panel" aria-labelledby="infrastructureHeading">
+    <header class="panel-header"><div><p class="panel-kicker">DEPLOYMENT DESTINATIONS</p><h3 id="infrastructureHeading">Critical Infrastructure Protection</h3></div><span class="panel-badge">Deployment requires final approval</span></header>
+    <div class="infrastructure-grid">
+        <article class="infrastructure-card" data-infrastructure="power-grid"><div class="infrastructure-icon">⚡</div><div><strong>Power Grid</strong><span>SCADA and ICS deployment gate</span></div><span class="mini-state neutral">BLOCKED</span></article>
+        <article class="infrastructure-card" data-infrastructure="telecom"><div class="infrastructure-icon">⌁</div><div><strong>Telecom Network</strong><span>5G and core-network chip validation</span></div><span class="mini-state neutral">BLOCKED</span></article>
+        <article class="infrastructure-card" data-infrastructure="defense"><div class="infrastructure-icon">◈</div><div><strong>Defense Systems</strong><span>Mission-critical hardware assurance</span></div><span class="mini-state neutral">BLOCKED</span></article>
+    </div>
+</section>
+
+<section class="dashboard-grid bottom-grid" aria-label="Notifications and service health">
+    <article class="cyber-panel notification-panel">
+        <header class="panel-header"><div><p class="panel-kicker">EVENT ALERTS</p><h3>Notification Panel</h3></div><button class="text-button" id="clearNotificationsButton" type="button">Clear view</button></header>
+        <div class="notification-list inline" id="notificationPanelList"><div class="empty-state compact"><span>⌁</span><p>No backend events received</p></div></div>
+    </article>
+    <article class="cyber-panel service-health-panel">
+        <header class="panel-header"><div><p class="panel-kicker">PLATFORM OPERATIONS</p><h3>Service Health</h3></div><a class="text-button" href="{{ url_for('dashboard.system_health') }}">Full view →</a></header>
+        <div class="service-health-list" id="serviceHealthList"><div class="empty-state compact"><span>⌘</span><p>Checking backend services</p></div></div>
+    </article>
+</section>
+{% endblock %}

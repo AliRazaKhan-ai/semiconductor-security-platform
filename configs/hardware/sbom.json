@@ -1,0 +1,7 @@
+{
+  "version": "1.0",
+  "format": "CycloneDX",
+  "spec_version": "1.5",
+  "output_root": "data/sbom",
+  "forbidden_licenses": []
+}

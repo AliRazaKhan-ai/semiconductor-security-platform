@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Read-only semiconductor supply-chain security operations dashboard">
+    <meta name="color-scheme" content="dark">
+    <title>{% block title %}{{ application.name if application else 'SemiSecure Platform' }}{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('dashboard.static', filename='img/semisecure-mark.svg') }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='vendor/bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/dashboard.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body
+    data-api-prefix="{{ dashboard_config.api_prefix }}"
+    data-socket-namespace="{{ dashboard_config.socket_namespace }}"
+    data-refresh-interval="{{ dashboard_config.refresh_interval_ms }}"
+    data-page="{% block page_id %}dashboard{% endblock %}"
+>
+    <a class="skip-link" href="#main-content">Skip to dashboard content</a>
+
+    <div class="app-shell">
+        <aside class="cyber-sidebar" id="desktopSidebar" aria-label="Primary navigation">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('dashboard.static', filename='img/semisecure-mark.svg') }}" alt="" width="36" height="36">
+                <div>
+                    <strong>SemiSecure</strong>
+                    <span>Security Operations</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a class="sidebar-link {% if active_page == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard.dashboard') }}">
+                    <span class="nav-glyph">⌁</span><span>Command Overview</span>
+                </a>
+                <a class="sidebar-link" href="{{ url_for('dashboard.dashboard') }}#live-scans">
+                    <span class="nav-glyph">◉</span><span>Live Scans</span>
+                </a>
+                <a class="sidebar-link" href="{{ url_for('dashboard.dashboard') }}#pipeline">
+                    <span class="nav-glyph">⇢</span><span>Security Pipeline</span>
+                </a>
+                <a class="sidebar-link" href="{{ url_for('dashboard.dashboard') }}#blockchain">
+                    <span class="nav-glyph">⬡</span><span>Provenance</span>
+                </a>
+                <a class="sidebar-link" href="{{ url_for('dashboard.dashboard') }}#compliance">
+                    <span class="nav-glyph">✓</span><span>Compliance</span>
+                </a>
+                <a class="sidebar-link {% if active_page == 'system' %}active{% endif %}" href="{{ url_for('dashboard.system_health') }}">
+                    <span class="nav-glyph">⌘</span><span>Service Health</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-control-card">
+                <span class="status-dot status-dot-cyan"></span>
+                <div>
+                    <strong>Terminal Controlled</strong>
+                    <span>Dashboard is read-only</span>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <span>{{ application.version if application else '1.0.0' }}</span>
+                <span>{{ environment|upper if environment else 'PRODUCTION' }}</span>
+            </div>
+        </aside>
+
+        <div class="app-main">
+            <header class="cyber-header">
+                <div class="header-left">
+                    <button class="icon-button d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-label="Open navigation">
+                        <span aria-hidden="true">☰</span>
+                    </button>
+                    <div>
+                        <p class="eyebrow mb-0">AI-DRIVEN SEMICONDUCTOR SECURITY</p>
+                        <h1 class="header-title mb-0">{% block header_title %}Enterprise Operations Dashboard{% endblock %}</h1>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="connection-pill" id="connectionPill" data-state="connecting">
+                        <span class="status-dot"></span>
+                        <span id="connectionText">Connecting</span>
+                    </div>
+                    <div class="header-clock d-none d-md-flex">
+                        <span id="utcClock">--:--:-- UTC</span>
+                    </div>
+                    <button class="icon-button position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#notificationDrawer" aria-label="Open notifications">
+                        <span aria-hidden="true">⚠</span>
+                        <span class="notification-count" id="notificationCount">0</span>
+                    </button>
+                </div>
+            </header>
+
+            <main id="main-content" class="dashboard-main" tabindex="-1">
+                {% block content %}{% endblock %}
+            </main>
+
+            <footer class="dashboard-footer">
+                <span>Read-only operational view. All scan activity originates from the terminal.</span>
+                <span id="lastRefresh">Awaiting backend refresh</span>
+            </footer>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-start cyber-offcanvas" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+        <div class="offcanvas-header">
+            <h2 class="offcanvas-title h5" id="mobileSidebarLabel">SemiSecure Navigation</h2>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="sidebar-nav">
+                <a class="sidebar-link" href="{{ url_for('dashboard.dashboard') }}" data-bs-dismiss="offcanvas"><span class="nav-glyph">⌁</span><span>Command Overview</span></a>
+                <a class="sidebar-link" href="{{ url_for('dashboard.dashboard') }}#live-scans" data-bs-dismiss="offcanvas"><span class="nav-glyph">◉</span><span>Live Scans</span></a>
+                <a class="sidebar-link" href="{{ url_for('dashboard.dashboard') }}#pipeline" data-bs-dismiss="offcanvas"><span class="nav-glyph">⇢</span><span>Security Pipeline</span></a>
+                <a class="sidebar-link" href="{{ url_for('dashboard.dashboard') }}#blockchain" data-bs-dismiss="offcanvas"><span class="nav-glyph">⬡</span><span>Provenance</span></a>
+                <a class="sidebar-link" href="{{ url_for('dashboard.system_health') }}"><span class="nav-glyph">⌘</span><span>Service Health</span></a>
+            </nav>
+            <div class="sidebar-control-card mt-4">
+                <span class="status-dot status-dot-cyan"></span>
+                <div><strong>Terminal Controlled</strong><span>No dashboard write actions</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end cyber-offcanvas notification-drawer" tabindex="-1" id="notificationDrawer" aria-labelledby="notificationDrawerLabel">
+        <div class="offcanvas-header">
+            <div>
+                <p class="eyebrow mb-1">LIVE EVENT STREAM</p>
+                <h2 class="offcanvas-title h5 mb-0" id="notificationDrawerLabel">Security Notifications</h2>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <div class="notification-list" id="notificationDrawerList">
+                <div class="empty-state compact"><span>⌁</span><p>Waiting for backend events</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        window.SEMISECURE_DASHBOARD = Object.freeze({
+            apiPrefix: {{ dashboard_config.api_prefix|tojson }},
+            socketNamespace: {{ dashboard_config.socket_namespace|tojson }},
+            refreshIntervalMs: {{ dashboard_config.refresh_interval_ms|int }},
+            initialScans: {{ initial_scans|default([])|tojson }},
+            application: {{ application|default({})|tojson }},
+            environment: {{ environment|default('production')|tojson }}
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.7.5/dist/socket.io.min.js" crossorigin="anonymous"></script>
+    <script src="{{ url_for('dashboard.static', filename='vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('dashboard.static', filename='js/api_client.js') }}"></script>
+    <script src="{{ url_for('dashboard.static', filename='js/socket_client.js') }}"></script>
+    <script src="{{ url_for('dashboard.static', filename='js/risk_charts.js') }}"></script>
+    <script src="{{ url_for('dashboard.static', filename='js/scan_timeline.js') }}"></script>
+    <script src="{{ url_for('dashboard.static', filename='js/system_health.js') }}"></script>
+    <script src="{{ url_for('dashboard.static', filename='js/provenance.js') }}"></script>
+    <script src="{{ url_for('dashboard.static', filename='js/dashboard.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

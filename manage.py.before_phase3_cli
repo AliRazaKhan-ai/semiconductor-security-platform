@@ -1,0 +1,73 @@
+"""Purpose: Start and administer the Flask-SocketIO backend.
+Directory: project root.
+Dependencies: app.factory, app.extensions, python-dotenv.
+Connection: Creates the application factory instance and runs the real-time HTTP server.
+"""
+
+from __future__ import annotations
+
+import argparse
+import os
+from pathlib import Path
+from typing import Sequence
+
+from dotenv import load_dotenv
+
+from app.factory import create_app
+from app.extensions import socketio
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="semisecure")
+    parser.add_argument("--env", dest="environment", default=None)
+    parser.add_argument("--host", default=None)
+    parser.add_argument("--port", type=int, default=None)
+
+    debug_group = parser.add_mutually_exclusive_group()
+    debug_group.add_argument("--debug", action="store_true")
+    debug_group.add_argument("--no-debug", action="store_true")
+
+    parser.add_argument("--verify-event-store", action="store_true")
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    root = Path(__file__).resolve().parent
+    load_dotenv(root / ".env", override=False)
+    args = build_parser().parse_args(argv)
+
+    if args.environment:
+        os.environ["SEMISURE_ENV"] = args.environment
+
+    app = create_app()
+
+    if args.verify_event_store:
+        report = app.extensions["semisecure.event_store"].verify_all()
+        print(report.to_json())
+        return 0 if report.valid else 1
+
+    host = args.host or app.config["HOST"]
+    port = args.port or int(app.config["PORT"])
+    if not 1 <= port <= 65535:
+        raise ValueError(f"Port must be between 1 and 65535, received {port}")
+
+    if args.debug:
+        debug = True
+    elif args.no_debug:
+        debug = False
+    else:
+        debug = bool(app.config["DEBUG"])
+    socketio.run(
+        app,
+        host=host,
+        port=port,
+        debug=debug,
+        use_reloader=debug,
+        allow_unsafe_werkzeug=debug,
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+

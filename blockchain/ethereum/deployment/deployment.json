@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "network": "anvil-local",
+  "chain_id": 31337,
+  "rpc_url": "http://127.0.0.1:8545",
+  "contract": "HashAnchor",
+  "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "deployment_transaction_hash": "0x72b5ff14c5f137550e98d34a79e952d6953c533a13da2926e8cc23cb7b7dfa0c",
+  "deployed_at_utc": "2026-07-17T11:49:16.448826+00:00"
+}

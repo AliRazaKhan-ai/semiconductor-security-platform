@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">SemiSecure shield mark</title>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00e5ff"/><stop offset="1" stop-color="#7c4dff"/></linearGradient></defs>
+  <path fill="none" stroke="url(#g)" stroke-width="4" d="M32 5 53 13v16c0 14-8 24-21 30C19 53 11 43 11 29V13z"/>
+  <path fill="none" stroke="#68ffb0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="m20 32 8 8 17-19"/>
+  <circle cx="18" cy="19" r="2" fill="#00e5ff"/><circle cx="46" cy="19" r="2" fill="#7c4dff"/>
+</svg>

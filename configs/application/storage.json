@@ -1,0 +1,15 @@
+{
+  "storage": {
+    "data_root": "data",
+    "event_store_root": "data/event_store",
+    "index_root": "data/indexes",
+    "snapshot_root": "data/snapshots",
+    "audit_root": "data/audit",
+    "lock_root": "runtime/locks",
+    "fsync": true,
+    "verify_on_read": true,
+    "maximum_event_bytes": 1048576,
+    "partition_by_date": true
+  }
+}
+

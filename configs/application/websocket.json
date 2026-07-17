@@ -1,0 +1,16 @@
+{
+  "websocket": {
+    "namespace": "/events",
+    "async_mode": "threading",
+    "cors_allowed_origins": [
+      "http://127.0.0.1:5000",
+      "http://localhost:5000"
+    ],
+    "ping_interval": 25,
+    "ping_timeout": 20,
+    "maximum_replay_events": 500,
+    "logger": false,
+    "engineio_logger": false
+  }
+}
+

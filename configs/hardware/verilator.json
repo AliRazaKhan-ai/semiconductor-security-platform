@@ -1,0 +1,5 @@
+{
+  "version": "1.0",
+  "timeout_seconds": 240,
+  "required_pass_marker": "SEMISURE_PASS"
+}

@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=75", "wheel>=0.45"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "semisecure-platform"
+version = "1.0.0"
+description = "AI-driven semiconductor supply-chain security platform backend"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = {text = "Proprietary educational project"}
+authors = [{name = "Ali Raza"}]
+dependencies = [
+  "Flask>=3.1,<4",
+  "Flask-SocketIO>=5.5,<6",
+  "python-dotenv>=1.1,<2",
+  "jsonschema>=4.26,<5",
+  "gunicorn>=23,<24",
+  "simple-websocket>=1.1,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.4,<9",
+  "pytest-cov>=6.2,<7",
+  "ruff>=0.12,<1",
+  "mypy>=1.16,<2",
+  "types-jsonschema>=4.26,<5",
+]
+
+[project.scripts]
+semisecure = "manage:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+exclude = ["data", "runtime", "models", "blockchain"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_configs = true
+exclude = "^(data|runtime|models|blockchain)/"
+

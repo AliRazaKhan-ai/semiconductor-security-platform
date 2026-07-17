@@ -1,0 +1,405 @@
+"""Purpose: Simulate a hybrid Ring-Oscillator and Arbiter Delay-Chain PUF with environmental drift and noise.
+Directory: app/hardware/puf.
+Dependencies: math, secrets, configuration, cryptographic PRNG, schemas, stability algorithms.
+Connection: Terminal simulation creates responses; enrollment and authentication consume identical physical models.
+"""
+
+from __future__ import annotations
+
+import math
+import secrets
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import Final
+
+from app.hardware.puf.config import PUFConfig
+from app.hardware.puf.crypto import DeterministicPRNG, derive_key
+from app.hardware.puf.exceptions import PUFIntegrityError
+from app.hardware.puf.schemas import NoiseSignature, PUFChallenge, PUFEnvironment, PUFResponse
+from app.hardware.puf.stability import majority_vote
+
+_PPM: Final[float] = 1_000_000.0
+
+@dataclass(frozen=True, slots=True)
+class DelayPathCell:
+    base_delay_ps: float
+    voltage_exponent: float
+    temperature_coefficient_ppm_per_c: float
+    aging_coefficient_ppm_per_1000h: float
+
+class ChallengeFactory:
+    """Generate signed, one-time challenge stimuli independent of any device identity."""
+
+    def __init__(self, config: PUFConfig, issuer_secret: bytes) -> None:
+        self.config = config
+        self.issuer_secret = issuer_secret
+
+    def issue(
+        self,
+        sequence: int,
+        *,
+        ttl_seconds: int | None = None,
+        now: datetime | None = None,
+        nonce_hex: str | None = None,
+        challenge_id: str | None = None,
+    ) -> PUFChallenge:
+        nonce = nonce_hex or secrets.token_hex(32)
+        try:
+            nonce_bytes = bytes.fromhex(nonce)
+        except ValueError as exc:
+            raise ValueError("challenge nonce must be hexadecimal") from exc
+        if len(nonce_bytes) < 16:
+            raise ValueError("challenge nonce must contain at least 128 bits")
+
+        rng = DeterministicPRNG(
+            derive_key(self.issuer_secret, "puf-challenge-stimulus"),
+            nonce_bytes + sequence.to_bytes(8, "big", signed=False),
+        )
+        ro_pairs = self._ring_pairs(rng)
+        delay_challenges = self._delay_patterns(rng)
+        return PUFChallenge.create(
+            sequence=sequence,
+            nonce_hex=nonce,
+            ro_pairs=ro_pairs,
+            delay_challenges=delay_challenges,
+            issuer_secret=self.issuer_secret,
+            ttl_seconds=ttl_seconds or self.config.authentication.challenge_ttl_seconds,
+            challenge_id=challenge_id,
+            now=now,
+        )
+
+    def _ring_pairs(self, rng: DeterministicPRNG) -> tuple[tuple[int, int], ...]:
+        population = self.config.ring_oscillator.oscillator_count
+        required = self.config.ring_oscillator.response_bits
+        selected: list[tuple[int, int]] = []
+        seen: set[tuple[int, int]] = set()
+        while len(selected) < required:
+            left = rng.randint(0, population - 1)
+            right = rng.randint(0, population - 2)
+            if right >= left:
+                right += 1
+            pair = (left, right) if left < right else (right, left)
+            if pair not in seen:
+                seen.add(pair)
+                selected.append(pair)
+        return tuple(selected)
+
+    def _delay_patterns(self, rng: DeterministicPRNG) -> tuple[str, ...]:
+        stage_count = self.config.delay_chain.stage_count
+        response_bits = self.config.delay_chain.response_bits
+        patterns: list[str] = []
+        seen: set[str] = set()
+        while len(patterns) < response_bits:
+            pattern = "".join("1" if rng.random() >= 0.5 else "0" for _ in range(stage_count))
+            if pattern not in seen:
+                seen.add(pattern)
+                patterns.append(pattern)
+        return tuple(patterns)
+
+class HybridPUFSimulator:
+    """Device-specific hybrid PUF model combining frequency and propagation-delay races."""
+
+    def __init__(self, device_id: str, device_secret: bytes, config: PUFConfig) -> None:
+        if not device_id or len(device_id) > 128:
+            raise ValueError("device_id must contain between 1 and 128 characters")
+        if len(device_secret) < 32:
+            raise ValueError("device_secret must contain at least 32 bytes")
+        self.device_id = device_id
+        self.device_secret = device_secret
+        self.config = config
+        self._process_key = derive_key(device_secret, "puf-device-process")
+        self._measurement_key = derive_key(device_secret, "puf-device-measurement")
+        self._ring_frequencies_hz = self._build_ring_population()
+        self._ring_temp_coefficients = self._build_ring_temperature_coefficients()
+        self._ring_voltage_exponents = self._build_ring_voltage_exponents()
+        self._ring_noise_offsets = self._build_ring_noise_offsets()
+        self._delay_cells = self._build_delay_chain()
+        self._noise_baseline, self._noise_temp_sensitivity, self._noise_voltage_sensitivity = self._build_noise_model()
+
+    def _process_rng(self, label: str) -> DeterministicPRNG:
+        return DeterministicPRNG(self._process_key, label.encode("utf-8"))
+
+    def _build_ring_population(self) -> tuple[float, ...]:
+        settings = self.config.ring_oscillator
+        rng = self._process_rng("ring-frequency-population")
+        sigma = settings.process_sigma_ppm / _PPM
+        return tuple(
+            settings.nominal_frequency_hz * max(0.2, 1.0 + rng.normal(0.0, sigma))
+            for _ in range(settings.oscillator_count)
+        )
+
+    def _build_ring_temperature_coefficients(self) -> tuple[float, ...]:
+        settings = self.config.ring_oscillator
+        rng = self._process_rng("ring-temperature-coefficients")
+        spread = max(abs(settings.temperature_coefficient_ppm_per_c) * 0.08, 5.0)
+        return tuple(
+            rng.normal(settings.temperature_coefficient_ppm_per_c, spread)
+            for _ in range(settings.oscillator_count)
+        )
+
+    def _build_ring_voltage_exponents(self) -> tuple[float, ...]:
+        settings = self.config.ring_oscillator
+        rng = self._process_rng("ring-voltage-exponents")
+        return tuple(
+            max(0.05, rng.normal(settings.voltage_exponent, settings.voltage_exponent * 0.025))
+            for _ in range(settings.oscillator_count)
+        )
+
+    def _build_ring_noise_offsets(self) -> tuple[float, ...]:
+        rng = self._process_rng("ring-correlated-noise")
+        sigma = self.config.noise.correlated_noise_ppm
+        return tuple(rng.normal(0.0, sigma) for _ in range(self.config.ring_oscillator.oscillator_count))
+
+    def _build_delay_chain(self) -> tuple[tuple[DelayPathCell, DelayPathCell, DelayPathCell, DelayPathCell], ...]:
+        settings = self.config.delay_chain
+        rng = self._process_rng("delay-chain-cells")
+        cells = []
+        for _ in range(settings.stage_count):
+            paths: list[DelayPathCell] = []
+            for _path in range(4):
+                base = max(0.001, rng.normal(settings.nominal_stage_delay_ps, settings.process_sigma_ps))
+                voltage_exponent = max(0.05, rng.normal(settings.voltage_exponent, settings.voltage_exponent * 0.035))
+                temperature_coefficient = rng.normal(
+                    settings.temperature_coefficient_ppm_per_c,
+                    max(abs(settings.temperature_coefficient_ppm_per_c) * 0.08, 5.0),
+                )
+                aging_coefficient = max(
+                    0.0,
+                    rng.normal(
+                        settings.aging_coefficient_ppm_per_1000h,
+                        max(settings.aging_coefficient_ppm_per_1000h * 0.1, 0.5),
+                    ),
+                )
+                paths.append(
+                    DelayPathCell(
+                        base_delay_ps=base,
+                        voltage_exponent=voltage_exponent,
+                        temperature_coefficient_ppm_per_c=temperature_coefficient,
+                        aging_coefficient_ppm_per_1000h=aging_coefficient,
+                    )
+                )
+            cells.append((paths[0], paths[1], paths[2], paths[3]))
+        return tuple(cells)
+
+    def _build_noise_model(self) -> tuple[tuple[float, ...], tuple[float, ...], tuple[float, ...]]:
+        dimensions = self.config.noise.signature_dimensions
+        rng = self._process_rng("noise-signature-model")
+        baseline = tuple(rng.normal(0.0, 1.0) for _ in range(dimensions))
+        temperature = tuple(rng.normal(0.0, 0.16) for _ in range(dimensions))
+        voltage = tuple(rng.normal(0.0, 0.20) for _ in range(dimensions))
+        return baseline, temperature, voltage
+
+    def respond(
+        self,
+        challenge: PUFChallenge,
+        environment: PUFEnvironment | None = None,
+        *,
+        sample_count: int | None = None,
+        response_nonce_hex: str | None = None,
+    ) -> PUFResponse:
+        self._validate_challenge_shape(challenge)
+        conditions = environment or PUFEnvironment(
+            temperature_c=self.config.environment.nominal_temperature_c,
+            voltage_v=self.config.environment.nominal_voltage_v,
+        )
+        count = sample_count or self.config.authentication.response_samples
+        if count < 3 or count > 255:
+            raise ValueError("sample_count must be between 3 and 255")
+        response_nonce = response_nonce_hex or secrets.token_hex(16)
+        try:
+            nonce_bytes = bytes.fromhex(response_nonce)
+        except ValueError as exc:
+            raise ValueError("response nonce must be hexadecimal") from exc
+        if len(nonce_bytes) < 8:
+            raise ValueError("response nonce must contain at least 64 bits")
+
+        sample_bits: list[str] = []
+        sample_margins: list[tuple[float, ...]] = []
+        for sample_index in range(count):
+            rng = DeterministicPRNG(
+                self._measurement_key,
+                bytes.fromhex(challenge.stimulus_digest)
+                + nonce_bytes
+                + sample_index.to_bytes(4, "big"),
+            )
+            common_noise_ppm = rng.normal(0.0, self.config.noise.correlated_noise_ppm)
+            flicker_noise_ppm = rng.normal(0.0, self.config.noise.flicker_noise_ppm) / math.sqrt(sample_index + 1.0)
+            ro_bits, ro_margins = self._ring_response(challenge, conditions, rng, common_noise_ppm, flicker_noise_ppm)
+            delay_bits, delay_margins = self._delay_response(challenge, conditions, rng, common_noise_ppm)
+            sample_bits.append(ro_bits + delay_bits)
+            sample_margins.append(ro_margins + delay_margins)
+
+        combined_bits, reliability = majority_vote(sample_bits)
+        margins = tuple(
+            sum(sample[index] for sample in sample_margins) / len(sample_margins)
+            for index in range(len(combined_bits))
+        )
+        ro_width = self.config.ring_oscillator.response_bits
+        noise_signature = self._noise_signature(challenge, conditions, response_nonce)
+        response = PUFResponse(
+            challenge_id=challenge.challenge_id,
+            challenge_digest=challenge.challenge_digest,
+            stimulus_digest=challenge.stimulus_digest,
+            response_nonce_hex=response_nonce,
+            ro_bits=combined_bits[:ro_width],
+            delay_bits=combined_bits[ro_width:],
+            response_bits=combined_bits,
+            bit_reliability=reliability,
+            bit_margins=margins,
+            overall_reliability=sum(reliability) / len(reliability),
+            sample_count=count,
+            environment=conditions,
+            noise_signature=noise_signature,
+            generated_at_utc=datetime.now(UTC).isoformat(timespec="milliseconds"),
+        )
+        return response.seal()
+
+    def _validate_challenge_shape(self, challenge: PUFChallenge) -> None:
+        ring = self.config.ring_oscillator
+        delay = self.config.delay_chain
+        if len(challenge.ro_pairs) != ring.response_bits:
+            raise PUFIntegrityError("PUF challenge ring-pair count does not match configuration")
+        if len(challenge.delay_challenges) != delay.response_bits:
+            raise PUFIntegrityError("PUF challenge delay-pattern count does not match configuration")
+        for left, right in challenge.ro_pairs:
+            if left == right or left < 0 or right < 0 or left >= ring.oscillator_count or right >= ring.oscillator_count:
+                raise PUFIntegrityError("PUF challenge contains an invalid ring-oscillator pair")
+        for pattern in challenge.delay_challenges:
+            if len(pattern) != delay.stage_count or any(bit not in "01" for bit in pattern):
+                raise PUFIntegrityError("PUF challenge contains an invalid delay-chain pattern")
+
+    def _ring_response(
+        self,
+        challenge: PUFChallenge,
+        environment: PUFEnvironment,
+        rng: DeterministicPRNG,
+        common_noise_ppm: float,
+        flicker_noise_ppm: float,
+    ) -> tuple[str, tuple[float, ...]]:
+        settings = self.config.ring_oscillator
+        bits: list[str] = []
+        margins: list[float] = []
+        for left, right in challenge.ro_pairs:
+            left_frequency = self._ring_frequency(left, environment, rng, common_noise_ppm, flicker_noise_ppm)
+            right_frequency = self._ring_frequency(right, environment, rng, common_noise_ppm, flicker_noise_ppm)
+            left_count = left_frequency * settings.measurement_window_s + rng.normal(0.0, settings.counter_jitter_cycles)
+            right_count = right_frequency * settings.measurement_window_s + rng.normal(0.0, settings.counter_jitter_cycles)
+            difference = left_count - right_count
+            bits.append("1" if difference >= 0 else "0")
+            denominator = max((abs(left_count) + abs(right_count)) / 2.0, 1e-12)
+            margins.append(abs(difference) / denominator)
+        return "".join(bits), tuple(margins)
+
+    def _ring_frequency(
+        self,
+        index: int,
+        environment: PUFEnvironment,
+        rng: DeterministicPRNG,
+        common_noise_ppm: float,
+        flicker_noise_ppm: float,
+    ) -> float:
+        nominal_voltage = self.config.environment.nominal_voltage_v
+        nominal_temperature = self.config.environment.nominal_temperature_c
+        voltage_factor = (environment.voltage_v / nominal_voltage) ** self._ring_voltage_exponents[index]
+        temperature_delta = environment.temperature_c - nominal_temperature
+        temperature_factor = max(
+            0.2,
+            1.0 + self._ring_temp_coefficients[index] * temperature_delta / _PPM,
+        )
+        aging_factor = max(
+            0.5,
+            1.0
+            - self.config.ring_oscillator.aging_coefficient_ppm_per_1000h
+            * (environment.age_hours / 1000.0)
+            / _PPM,
+        )
+        individual_noise = self._ring_noise_offsets[index] + rng.normal(0.0, self.config.noise.white_noise_ppm)
+        noise_factor = max(0.8, 1.0 + (individual_noise + common_noise_ppm + flicker_noise_ppm) / _PPM)
+        return self._ring_frequencies_hz[index] * voltage_factor * temperature_factor * aging_factor * noise_factor
+
+    def _delay_response(
+        self,
+        challenge: PUFChallenge,
+        environment: PUFEnvironment,
+        rng: DeterministicPRNG,
+        common_noise_ppm: float,
+    ) -> tuple[str, tuple[float, ...]]:
+        bits: list[str] = []
+        margins: list[float] = []
+        nominal_total = self.config.delay_chain.nominal_stage_delay_ps * self.config.delay_chain.stage_count
+        for pattern in challenge.delay_challenges:
+            upper = 0.0
+            lower = 0.0
+            for stage_index, switch in enumerate(pattern):
+                straight_upper, cross_lower_to_upper, cross_upper_to_lower, straight_lower = self._delay_cells[stage_index]
+                if switch == "0":
+                    upper = upper + self._environmental_delay(straight_upper, environment, rng, common_noise_ppm)
+                    lower = lower + self._environmental_delay(straight_lower, environment, rng, common_noise_ppm)
+                else:
+                    new_upper = lower + self._environmental_delay(cross_lower_to_upper, environment, rng, common_noise_ppm)
+                    new_lower = upper + self._environmental_delay(cross_upper_to_lower, environment, rng, common_noise_ppm)
+                    upper, lower = new_upper, new_lower
+            difference = upper - lower + rng.normal(0.0, self.config.delay_chain.arbiter_jitter_ps)
+            bits.append("1" if difference <= 0 else "0")
+            margins.append(abs(difference) / max(nominal_total, 1e-12))
+        return "".join(bits), tuple(margins)
+
+    def _environmental_delay(
+        self,
+        cell: DelayPathCell,
+        environment: PUFEnvironment,
+        rng: DeterministicPRNG,
+        common_noise_ppm: float,
+    ) -> float:
+        nominal_voltage = self.config.environment.nominal_voltage_v
+        nominal_temperature = self.config.environment.nominal_temperature_c
+        voltage_factor = (nominal_voltage / environment.voltage_v) ** cell.voltage_exponent
+        temperature_factor = max(
+            0.2,
+            1.0
+            + cell.temperature_coefficient_ppm_per_c
+            * (environment.temperature_c - nominal_temperature)
+            / _PPM,
+        )
+        aging_factor = 1.0 + cell.aging_coefficient_ppm_per_1000h * (environment.age_hours / 1000.0) / _PPM
+        white_noise = rng.normal(0.0, self.config.noise.delay_noise_ps)
+        correlated_factor = 1.0 + common_noise_ppm / _PPM
+        return max(0.0001, cell.base_delay_ps * voltage_factor * temperature_factor * aging_factor * correlated_factor + white_noise)
+
+    def _noise_signature(
+        self,
+        challenge: PUFChallenge,
+        environment: PUFEnvironment,
+        response_nonce_hex: str,
+    ) -> NoiseSignature:
+        nominal_temperature = self.config.environment.nominal_temperature_c
+        nominal_voltage = self.config.environment.nominal_voltage_v
+        temperature_span = max(
+            self.config.environment.maximum_temperature_c - self.config.environment.minimum_temperature_c,
+            1e-9,
+        )
+        voltage_span = max(
+            self.config.environment.maximum_voltage_v - self.config.environment.minimum_voltage_v,
+            1e-9,
+        )
+        temperature_normalised = (environment.temperature_c - nominal_temperature) / temperature_span
+        voltage_normalised = (environment.voltage_v - nominal_voltage) / voltage_span
+        age_normalised = min(environment.age_hours / 100_000.0, 1.0)
+        rng = DeterministicPRNG(
+            self._measurement_key,
+            b"noise-signature"
+            + bytes.fromhex(challenge.stimulus_digest)
+            + bytes.fromhex(response_nonce_hex),
+        )
+        components = []
+        for index, baseline in enumerate(self._noise_baseline):
+            run_noise = rng.normal(0.0, self.config.noise.signature_run_sigma)
+            aging_component = age_normalised * (0.03 + 0.01 * ((index % 3) - 1))
+            components.append(
+                baseline
+                + self._noise_temp_sensitivity[index] * temperature_normalised
+                + self._noise_voltage_sensitivity[index] * voltage_normalised
+                + aging_component
+                + run_noise
+            )
+        return NoiseSignature.create(tuple(components))

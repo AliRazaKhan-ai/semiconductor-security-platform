@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "simulation_type": "production_terminal_chip_scan",
+  "chip_id": "CHIP-PROD-GOOD-001",
+  "scenario": "GOOD_CHIP",
+
+  "manufacturing": {
+    "current_stage": "FINAL_TEST_AND_RELEASE",
+    "design_house": "SecureSilicon Design GmbH",
+    "fabrication_facility": "TrustedFab Europe-1",
+    "packaging_facility": "SecurePack DE",
+    "test_facility": "Accredited Test Lab EU",
+    "country_of_origin": "DE",
+    "lot_id": "LOT-DE-2026-0716-A",
+    "wafer_id": "WAFER-DE-88102",
+    "serial_number": "SN-GOOD-000001",
+    "chain_of_custody_complete": true
+  },
+
+  "failure_reason": null,
+
+  "expected_results": {
+    "pipeline_result": "PASS_ALL_STAGES",
+
+    "dashboard_result": {
+      "overall_status": "VERIFIED",
+      "alert_color": "GREEN",
+      "risk_level": "LOW",
+      "classification": "CLEAN"
+    },
+
+    "blockchain_result": {
+      "fabric": "COMMIT_FULL_PROVENANCE_VALID",
+      "ethereum": "ANCHOR_SHA256_ROOT_CONFIRMED"
+    },
+
+    "deployment_decision": "APPROVED_FOR_CRITICAL_INFRASTRUCTURE"
+  }
+}

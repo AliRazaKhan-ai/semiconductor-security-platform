@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "report_type": "SEMICONDUCTOR_EXPORT_COMPLIANCE",
+  "scan_id": "b26b46f3-76f8-472d-88b0-e697324d7de4",
+  "chip_id": "CHIP-PROD-SUPPLIER-005",
+  "generated_at_utc": "2026-07-16T12:25:22.562727+00:00",
+  "regulatory_notice": "Automated decision-support only; not a Commodity Jurisdiction determination, CCATS classification, license, legal opinion, or authorization. Qualified human review is required for controlled or unresolved transactions.",
+  "decision": {
+    "decision": "LICENSE_REQUIRED",
+    "status": "HOLD",
+    "confidence": 0.7316666666666666,
+    "risk_score": 0.65,
+    "deployment_recommendation": "DO_NOT_DEPLOY_PENDING_REVIEW",
+    "requires_human_review": true,
+    "reasons": [
+      "License required"
+    ],
+    "export_control": {
+      "jurisdiction": "ITAR",
+      "classification": "XI",
+      "license_status": "REQUIRED",
+      "decision": "LICENSE_REQUIRED",
+      "confidence": 0.65,
+      "requires_human_review": true,
+      "itar": {
+        "control": "itar",
+        "status": "ITAR_CONTROLLED",
+        "score": 1.0,
+        "reasons": [
+          "USML/defense indicators evaluated"
+        ],
+        "details": {
+          "usml_category": "XI"
+        }
+      },
+      "ear": {
+        "control": "ear",
+        "status": "LICENSE_REVIEW",
+        "score": 0.8,
+        "reasons": [
+          "EAR jurisdiction/classification/end-use evaluated"
+        ],
+        "details": {
+          "eccn": "3A090",
+          "destination": "GB"
+        }
+      },
+      "restricted_party": {
+        "control": "restricted_party",
+        "status": "CLEAR",
+        "score": 0.4931506849315068,
+        "reasons": [
+          "best fuzzy match 49.3%"
+        ],
+        "details": {
+          "matched": {
+            "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+            "aliases": [
+              "DDSE"
+            ],
+            "source_list": "DEMO",
+            "country": "XX",
+            "action": "DENY"
+          }
+        }
+      },
+      "ruleset_version": "2026-07-16"
+    },
+    "supplier_risk": {
+      "supplier_id": "SUP-RU-007",
+      "supplier_name": "Frontier Microelectronics Plant-7",
+      "risk_score": 0.368,
+      "risk_level": "MEDIUM",
+      "confidence": 0.625,
+      "factors": {
+        "country_risk": 0.9,
+        "custody_gap_ratio": 0.0,
+        "certificate_risk": 0.0,
+        "sbom_mismatch_ratio": 0.0,
+        "threat_intel_score": 0.88,
+        "counterfeit_history": 0.35,
+        "financial_distress": 0.72,
+        "ai_risk": 0.2
+      },
+      "reasons": [
+        "country_risk=0.90",
+        "threat_intel_score=0.88",
+        "financial_distress=0.72"
+      ],
+      "ruleset_version": "1.0"
+    },
+    "ai": {
+      "classification": "CLEAN",
+      "confidence_score": 0.92,
+      "risk_score": 0.2
+    },
+    "policy_version": "2.0",
+    "integrity_hash": "fde43fb6c29fb53b9105ec9e26ce2a706be7cef745d201ab04185cb84c895ecb"
+  },
+  "evidence_hashes": {
+    "export_control": "1d4ee9bfccfe7b634e2d1b3b7cc9cae6d167822882ae0ccb560b218ba74a737b",
+    "supplier_risk": "28cf135cf239fd9404b85bf5e3e7fdf50a170b11e8bfa88b45437ac8f2d46fbb",
+    "ai": "e1038bbaa9d869dc38b6d92e6fc68396e0c7390f22f0873e2a0ee1189f353875"
+  },
+  "event_chain_head": "eb736f8d22ada65b23ed72066df73276a25825a1f590aa9850f4b287701d21fd",
+  "report_hash": "8a4664149861a93fe3554b17c6695426d659a95039dad2333596592a4d10fe43",
+  "signature": "77dfe9cd933a9d611a3940bc168e4c690822cf3e57c890b621009838ee3b3df6"
+}

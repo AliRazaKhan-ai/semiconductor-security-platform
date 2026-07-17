@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "chip_id": "CHIP-PROD-TROJAN-002",
+  "scenario": "HARDWARE_TROJAN",
+  "source": {
+    "component": "terminal",
+    "operator": "ali-raza"
+  },
+  "manufacturing": {
+    "current_stage": "FABRICATION",
+    "design_house": "SecureSilicon Design GmbH",
+    "fabrication_facility": "SubcontractFab Asia-4",
+    "packaging_facility": "SecurePack DE",
+    "test_facility": "Accredited Test Lab EU",
+    "country_of_origin": "CN",
+    "lot_id": "LOT-CN-2026-0716-T",
+    "wafer_id": "WAFER-CN-99214",
+    "serial_number": "SN-TROJAN-000002",
+    "chain_of_custody_complete": true
+  },
+  "failure_reason": {
+    "stage": "AI_SECURITY_ANALYSIS",
+    "type": "HARDWARE_TROJAN_DETECTED",
+    "description": "Rare-net activation, unexpected combinational logic, abnormal power signature and simulation divergence indicate a fabrication-stage hardware Trojan."
+  },
+  "hardware_security": {
+    "puf": {
+      "intra_device_hamming_distance": 0.046875,
+      "stability_score": 0.953125,
+      "authentication_expected": true
+    },
+    "opentitan": {
+      "secure_boot": true,
+      "lifecycle_state": "PROD",
+      "otp_integrity": true,
+      "rom_digest_valid": true,
+      "debug_locked": true
+    },
+    "chipwhisperer": {
+      "power_rms": 2.84,
+      "power_peak_to_peak": 4.92,
+      "power_spectral_entropy": 0.91,
+      "em_rms": 2.51,
+      "em_peak_to_peak": 4.11,
+      "em_spectral_entropy": 0.89,
+      "timing_jitter": 1.31
+    },
+    "yosys": {
+      "gate_count": 132900,
+      "unused_logic_ratio": 0.19,
+      "rare_net_ratio": 0.24,
+      "netlist_delta_ratio": 0.18
+    },
+    "verilator": {
+      "simulation_passed": false,
+      "test_vectors": 50000,
+      "failed_vectors": 6840,
+      "simulation_failure_ratio": 0.1368
+    }
+  },
+  "supply_chain": {
+    "digital_twin_match": true,
+    "sbom_match": true,
+    "custody_gap_ratio": 0.0,
+    "certificate_risk": 0.08,
+    "sbom_mismatch_ratio": 0.0
+  },
+  "supplier": {
+    "supplier_id": "SUP-CN-004",
+    "name": "SubcontractFab Asia-4",
+    "country": "CN",
+    "country_risk": 0.55,
+    "threat_intel_score": 0.68,
+    "counterfeit_history": 0.1,
+    "financial_distress": 0.1
+  },
+  "compliance": {
+    "subject_to_ear": true,
+    "eccn": "3A001",
+    "destination_country": "GB",
+    "end_use": "telecommunications infrastructure",
+    "end_user_type": "commercial operator",
+    "license_required_expected": true,
+    "end_user_name": "Example Telecom Operator",
+    "defense_related": false,
+    "specially_designed_for_military": false
+  },
+  "expected_results": {
+    "pipeline_result": "STOP_AT_AI_RISK_ENGINE",
+    "dashboard_result": {
+      "overall_status": "COMPROMISED",
+      "alert_color": "RED",
+      "risk_level": "CRITICAL",
+      "classification": "TROJAN",
+      "deployment_badge": "BLOCKED"
+    },
+    "blockchain_result": {
+      "fabric": "NOT_COMMITTED_BECAUSE_PIPELINE_STOPPED",
+      "ethereum": "NOT_ANCHORED",
+      "local_audit": "FAILURE_EVENT_RETAINED_IN_JSON_EVENT_STORE"
+    },
+    "deployment_decision": "DENIED_AND_QUARANTINED"
+  }
+}

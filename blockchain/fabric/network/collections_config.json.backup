@@ -1,0 +1,14 @@
+[
+  {
+    "name": "collectionSensitiveEvidence",
+    "policy": "OR('ManufacturerMSP.member','TestLabMSP.member','RegulatorMSP.member')",
+    "requiredPeerCount": 1,
+    "maxPeerCount": 3,
+    "blockToLive": 0,
+    "memberOnlyRead": true,
+    "memberOnlyWrite": true,
+    "endorsementPolicy": {
+      "signaturePolicy": "AND('ManufacturerMSP.member','TestLabMSP.member')"
+    }
+  }
+]

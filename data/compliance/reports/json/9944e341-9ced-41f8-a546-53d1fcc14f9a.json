@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0",
+  "report_type": "SEMICONDUCTOR_EXPORT_COMPLIANCE",
+  "scan_id": "9944e341-9ced-41f8-a546-53d1fcc14f9a",
+  "chip_id": "CHIP-PROD-TAMPER-004",
+  "generated_at_utc": "2026-07-16T12:41:47.136703+00:00",
+  "regulatory_notice": "Automated decision-support only; not a Commodity Jurisdiction determination, CCATS classification, license, legal opinion, or authorization. Qualified human review is required for controlled or unresolved transactions.",
+  "decision": {
+    "decision": "DENIED",
+    "status": "FAILED",
+    "confidence": 0.7483333333333334,
+    "risk_score": 1,
+    "deployment_recommendation": "BLOCK",
+    "requires_human_review": true,
+    "reasons": [
+      "Export denial or critical AI risk"
+    ],
+    "export_control": {
+      "jurisdiction": "EAR",
+      "classification": "5A992",
+      "license_status": "REQUIRED",
+      "decision": "LICENSE_REQUIRED",
+      "confidence": 0.65,
+      "requires_human_review": true,
+      "itar": {
+        "control": "itar",
+        "status": "NOT_INDICATED",
+        "score": 0.1,
+        "reasons": [
+          "USML/defense indicators evaluated"
+        ],
+        "details": {
+          "usml_category": null
+        }
+      },
+      "ear": {
+        "control": "ear",
+        "status": "LICENSE_REVIEW",
+        "score": 0.8,
+        "reasons": [
+          "EAR jurisdiction/classification/end-use evaluated"
+        ],
+        "details": {
+          "eccn": "5A992",
+          "destination": "GB"
+        }
+      },
+      "restricted_party": {
+        "control": "restricted_party",
+        "status": "CLEAR",
+        "score": 0.3728813559322034,
+        "reasons": [
+          "best fuzzy match 37.3%"
+        ],
+        "details": {
+          "matched": {
+            "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+            "aliases": [
+              "DDSE"
+            ],
+            "source_list": "DEMO",
+            "country": "XX",
+            "action": "DENY"
+          }
+        }
+      },
+      "ruleset_version": "2026-07-16"
+    },
+    "supplier_risk": {
+      "supplier_id": "DIST-UNKNOWN-004",
+      "supplier_name": "Unknown Logistics Relay",
+      "risk_score": 0.4205,
+      "risk_level": "MEDIUM",
+      "confidence": 0.625,
+      "factors": {
+        "country_risk": 0.7,
+        "custody_gap_ratio": 0.0,
+        "certificate_risk": 0.0,
+        "sbom_mismatch_ratio": 0.0,
+        "threat_intel_score": 0.76,
+        "counterfeit_history": 0.5,
+        "financial_distress": 0.3,
+        "ai_risk": 0.91
+      },
+      "reasons": [
+        "ai_risk=0.91",
+        "threat_intel_score=0.76",
+        "country_risk=0.70",
+        "counterfeit_history=0.50"
+      ],
+      "ruleset_version": "1.0"
+    },
+    "ai": {
+      "classification": "TAMPERED",
+      "confidence_score": 0.97,
+      "risk_score": 0.91
+    },
+    "policy_version": "2.0",
+    "integrity_hash": "05514d400d727dfc499a7ef1a1c886c18abf940d85c2cb9eccc7fd3ee8217cb5"
+  },
+  "evidence_hashes": {
+    "export_control": "e5713df7b6f879bfdee091aa0d0d12ff4fde8313a379bdb20dd7dc87d4c03fe4",
+    "supplier_risk": "da2f7eb64a3c304704a5c34ee1cb5d4640bf98abab2a18bd09b4d52a3e6210cc",
+    "ai": "f0ac6098884d8a3ef5a606697ba0d554ade4cfbb0b5b74c991f1f82b1038d624"
+  },
+  "event_chain_head": "a3a1c6e37d00fde53b2b1b54be95285b7ed0aa32acc5398a749639fdf7bff091",
+  "report_hash": "e10c45890741ee8a869f6caba76bac502c4c340c1503b9b9ecd66d44f4aee611",
+  "signature": "92b86c9a0f6194e495a1cdf1ff977cb56f36475113f9c7ec777097a5a87d38ff"
+}

@@ -1,0 +1,24 @@
+{
+  "application": {
+    "name": "SemiSecure Platform",
+    "version": "1.0.0",
+    "host": "127.0.0.1",
+    "port": 5000,
+    "debug": false,
+    "testing": false,
+    "max_content_length": 2097152,
+    "json_sort_keys": false,
+    "request_timeout_seconds": 120
+  },
+  "api": {
+    "prefix": "/api/v1",
+    "scan_submission_enabled": true,
+    "default_page_size": 50,
+    "maximum_page_size": 500
+  },
+  "integrations": {
+    "hyperledger_fabric": {"enabled": false},
+    "ethereum_anchor": {"enabled": false}
+  }
+}
+

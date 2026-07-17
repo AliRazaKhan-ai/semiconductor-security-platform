@@ -1,0 +1,171 @@
+{
+  "scan_id": "3f9f85aa-552b-48ea-95f1-a0dcb17f356e",
+  "chip_id": "CHIP-COMPLIANCE-NOCHAIN-001",
+  "decision": {
+    "decision": "LICENSE_REQUIRED",
+    "status": "HOLD",
+    "confidence": 0.815,
+    "risk_score": 0.65,
+    "deployment_recommendation": "DO_NOT_DEPLOY_PENDING_REVIEW",
+    "requires_human_review": true,
+    "reasons": [
+      "License required"
+    ],
+    "export_control": {
+      "jurisdiction": "EAR",
+      "classification": "5A992",
+      "license_status": "REQUIRED",
+      "decision": "LICENSE_REQUIRED",
+      "confidence": 0.65,
+      "requires_human_review": true,
+      "itar": {
+        "control": "itar",
+        "status": "NOT_INDICATED",
+        "score": 0.1,
+        "reasons": [
+          "USML/defense indicators evaluated"
+        ],
+        "details": {
+          "usml_category": null
+        }
+      },
+      "ear": {
+        "control": "ear",
+        "status": "LICENSE_REVIEW",
+        "score": 0.8,
+        "reasons": [
+          "EAR jurisdiction/classification/end-use evaluated"
+        ],
+        "details": {
+          "eccn": "5A992",
+          "destination": "GB"
+        }
+      },
+      "restricted_party": {
+        "control": "restricted_party",
+        "status": "CLEAR",
+        "score": 0.36,
+        "reasons": [
+          "best fuzzy match 36.0%"
+        ],
+        "details": {
+          "matched": {
+            "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+            "aliases": [
+              "DDSE"
+            ],
+            "source_list": "DEMO",
+            "country": "XX",
+            "action": "DENY"
+          }
+        }
+      },
+      "ruleset_version": "2026-07-16"
+    },
+    "supplier_risk": {
+      "supplier_id": "SUPPLIER-001",
+      "supplier_name": "Trusted Semiconductor Manufacturing Ltd",
+      "risk_score": 0.054,
+      "risk_level": "LOW",
+      "confidence": 0.875,
+      "factors": {
+        "country_risk": 0.1,
+        "custody_gap_ratio": 0.05,
+        "certificate_risk": 0.02,
+        "sbom_mismatch_ratio": 0.01,
+        "threat_intel_score": 0.05,
+        "counterfeit_history": 0.0,
+        "financial_distress": 0.05,
+        "ai_risk": 0.12
+      },
+      "reasons": [],
+      "ruleset_version": "1.0"
+    },
+    "ai": {
+      "risk_score": 0.12,
+      "confidence_score": 0.92,
+      "classification": "CLEAN"
+    },
+    "policy_version": "2.0",
+    "integrity_hash": "5f15b32297a173bfde06bdd41fef1a1c482b8980cf1f74d1a6d6f2a17fce35bc"
+  },
+  "export_control": {
+    "jurisdiction": "EAR",
+    "classification": "5A992",
+    "license_status": "REQUIRED",
+    "decision": "LICENSE_REQUIRED",
+    "confidence": 0.65,
+    "requires_human_review": true,
+    "itar": {
+      "control": "itar",
+      "status": "NOT_INDICATED",
+      "score": 0.1,
+      "reasons": [
+        "USML/defense indicators evaluated"
+      ],
+      "details": {
+        "usml_category": null
+      }
+    },
+    "ear": {
+      "control": "ear",
+      "status": "LICENSE_REVIEW",
+      "score": 0.8,
+      "reasons": [
+        "EAR jurisdiction/classification/end-use evaluated"
+      ],
+      "details": {
+        "eccn": "5A992",
+        "destination": "GB"
+      }
+    },
+    "restricted_party": {
+      "control": "restricted_party",
+      "status": "CLEAR",
+      "score": 0.36,
+      "reasons": [
+        "best fuzzy match 36.0%"
+      ],
+      "details": {
+        "matched": {
+          "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+          "aliases": [
+            "DDSE"
+          ],
+          "source_list": "DEMO",
+          "country": "XX",
+          "action": "DENY"
+        }
+      }
+    },
+    "ruleset_version": "2026-07-16"
+  },
+  "supplier_risk": {
+    "supplier_id": "SUPPLIER-001",
+    "supplier_name": "Trusted Semiconductor Manufacturing Ltd",
+    "risk_score": 0.054,
+    "risk_level": "LOW",
+    "confidence": 0.875,
+    "factors": {
+      "country_risk": 0.1,
+      "custody_gap_ratio": 0.05,
+      "certificate_risk": 0.02,
+      "sbom_mismatch_ratio": 0.01,
+      "threat_intel_score": 0.05,
+      "counterfeit_history": 0.0,
+      "financial_distress": 0.05,
+      "ai_risk": 0.12
+    },
+    "reasons": [],
+    "ruleset_version": "1.0"
+  },
+  "report": {
+    "report_hash": "9819bc62f3fc65eae985af08fbdab0388ee0990a08343ae485e3f25f1df9cbd9",
+    "government_audit_hash": "71e64a95179de3445ecd063b6f161ae07e1ff7e726c0b3efc7364632d9b46164",
+    "json_path": "/home/ali-raza/semiconductor_security_platform/data/compliance/reports/json/3f9f85aa-552b-48ea-95f1-a0dcb17f356e.json",
+    "pdf_path": "/home/ali-raza/semiconductor_security_platform/data/compliance/reports/pdf/3f9f85aa-552b-48ea-95f1-a0dcb17f356e.pdf",
+    "audit_path": "/home/ali-raza/semiconductor_security_platform/data/compliance/government_audit/3f9f85aa-552b-48ea-95f1-a0dcb17f356e.json",
+    "signature": "abb5172737d2693d7444b95bc8f9629104669b6f14aaa6da40f6acb6efaae90b"
+  },
+  "blockchain": null
+}

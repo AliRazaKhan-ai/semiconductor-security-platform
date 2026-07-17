@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "package_type": "GOVERNMENT_AUDIT_PACKAGE",
+  "scan_id": "3177b58b-95f8-498c-8812-e8b3c01717f8",
+  "chip_id": "CHIP-PROD-TAMPER-004",
+  "generated_at_utc": "2026-07-16T10:54:52.376611+00:00",
+  "report_hash": "fecbec9ef6f23dd0a39b2b2b21613c0b72ff38d5198e7c34cefa865ed1e7b609",
+  "event_chain_head": "94bb02a55b073c4bda5f17e47c60ea0475f0118c4a01cb68f150e586807535fd",
+  "evidence_hashes": {
+    "export_control": "2d16e5581eed8a8eb0632782ef6c2879253dda641c47134ad821993d99f083d7",
+    "supplier_risk": "da2f7eb64a3c304704a5c34ee1cb5d4640bf98abab2a18bd09b4d52a3e6210cc",
+    "ai": "f0ac6098884d8a3ef5a606697ba0d554ade4cfbb0b5b74c991f1f82b1038d624"
+  },
+  "decision_summary": {
+    "decision": "DENIED",
+    "status": "FAILED",
+    "risk_score": 1,
+    "confidence": 0.7483333333333334
+  },
+  "audit_hash": "792119fa6daa017b1cc650b5f352a229276fe687b797f643dc539373099477e8",
+  "signature": "e2983061fa55d8b11f88ee7bb0e3e16883d00ea1a9785b4079acc3090c805c4a"
+}

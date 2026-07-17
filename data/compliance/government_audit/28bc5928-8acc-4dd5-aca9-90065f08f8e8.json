@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "package_type": "GOVERNMENT_AUDIT_PACKAGE",
+  "scan_id": "28bc5928-8acc-4dd5-aca9-90065f08f8e8",
+  "chip_id": "CHIP-COMPLIANCE-001",
+  "generated_at_utc": "2026-07-16T06:47:19.422267+00:00",
+  "report_hash": "755e3fe25f8c4bdedd1da54875051abc97072100ce393d84916903c2d07b5420",
+  "event_chain_head": "da1d929c00d3d4f009285113488f70a0d30e26b2fe44c945a1d7aa33b569413f",
+  "evidence_hashes": {
+    "export_control": "f974fa9098c96eb0dc62c2b81d5ed9d7a96e9b0041f5f99696c8d16c4da7ce44",
+    "supplier_risk": "3b6aaeda4a31e2b8744016dddcece7ce2c42c2e3c0f4dc9d67821db5d6241ed3",
+    "ai": "15f4a3bdc8a026f1b6becb5df7a4e5d3e148669f768eae1e0466520218113c65"
+  },
+  "decision_summary": {
+    "decision": "LICENSE_REQUIRED",
+    "status": "HOLD",
+    "risk_score": 0.65,
+    "confidence": 0.815
+  },
+  "audit_hash": "609d943e81dd3220c51fcbc0cfedd99935feb2fe1953095b6f82c624ec03135d",
+  "signature": "0af57c18067c86597db4ab1421583a90c52632ba6b1b4714995c3a8653eb6838"
+}

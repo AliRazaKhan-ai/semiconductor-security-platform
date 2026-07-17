@@ -1,0 +1,51 @@
+SemiSecure Enterprise Dashboard — Generated Files
+=================================================
+
+Application integration
+- app/dashboard/__init__.py
+- app/dashboard/views.py
+- app/dashboard/read_models/__init__.py
+- app/dashboard/read_models/builder.py
+- app/dashboard/read_models/reader.py
+- app/dashboard/read_models/schemas.py
+
+Flask templates
+- app/dashboard/templates/base.html
+- app/dashboard/templates/dashboard.html
+- app/dashboard/templates/scan_detail.html
+- app/dashboard/templates/chip_history.html
+- app/dashboard/templates/provenance.html
+- app/dashboard/templates/system_health.html
+
+Cyber theme and responsive layout
+- app/dashboard/static/css/base.css
+- app/dashboard/static/css/components.css
+- app/dashboard/static/css/dashboard.css
+- app/dashboard/static/img/semisecure-mark.svg
+
+Browser application
+- app/dashboard/static/js/api_client.js
+- app/dashboard/static/js/socket_client.js
+- app/dashboard/static/js/risk_charts.js
+- app/dashboard/static/js/scan_timeline.js
+- app/dashboard/static/js/system_health.js
+- app/dashboard/static/js/provenance.js
+- app/dashboard/static/js/dashboard.js
+
+Self-hosted UI dependency
+- app/dashboard/static/vendor/bootstrap/bootstrap.min.css
+- app/dashboard/static/vendor/bootstrap/bootstrap.bundle.min.js
+
+Configuration and documentation
+- configs/application/dashboard.json
+- configs/application/security.json (CSP updated for pinned Chart.js and Socket.IO client sources)
+- docs/dashboard/ENTERPRISE_DASHBOARD.md
+
+Tests
+- tests/unit/dashboard/test_read_models.py
+- tests/static/test_enterprise_dashboard_contract.py
+
+Generated delivery files
+- scripts/generate_enterprise_dashboard.sh
+- DASHBOARD_GENERATED_FILES.txt
+- DASHBOARD_VALIDATION_REPORT.txt

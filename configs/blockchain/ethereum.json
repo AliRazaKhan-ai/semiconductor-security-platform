@@ -1,0 +1,6 @@
+{
+  "contract": "HashAnchor",
+  "payload_policy": "bytes32 Merkle root only",
+  "prohibited_fields": ["scan_id", "chip_id", "supplier", "evidence", "decision", "metadata"],
+  "transaction_value_wei": 0
+}

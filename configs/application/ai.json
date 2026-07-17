@@ -1,0 +1,26 @@
+{
+  "ai": {
+    "schema_version": "1.0",
+    "sequence_length": 256,
+    "tensorflow": {
+      "model_path": "models/tensorflow/trojan_cnn.keras",
+      "labels": [
+        "CLEAN",
+        "TROJAN",
+        "TAMPERED"
+      ],
+      "min_confidence": 0.6
+    },
+    "pytorch": {
+      "model_path": "models/pytorch/anomaly_autoencoder.pt",
+      "latent_dim": 8,
+      "threshold": 0.02,
+      "scale": 0.01
+    },
+    "risk_engine": {
+      "model_path": "models/sklearn/risk_engine.joblib"
+    },
+    "normalizer_path": "models/manifests/feature_normalizer.json",
+    "fail_closed": true
+  }
+}

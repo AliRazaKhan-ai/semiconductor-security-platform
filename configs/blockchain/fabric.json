@@ -1,0 +1,7 @@
+{
+  "channel": "semiconductor-channel",
+  "chaincode": "semiconductor-provenance",
+  "private_collections": ["collectionSensitiveEvidence"],
+  "endorsement_policy": "AND('ManufacturerMSP.peer','TestLabMSP.peer')",
+  "commit_confirmation": "peer --waitForEvent"
+}

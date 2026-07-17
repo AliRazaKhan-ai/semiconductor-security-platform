@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "simulation_type": "production_terminal_chip_scan",
+  "chip_id": "CHIP-PROD-GOOD-001",
+  "scenario": "GOOD_CHIP",
+  "manufacturing": {
+    "current_stage": "FINAL_TEST_AND_RELEASE",
+    "design_house": "SecureSilicon Design GmbH",
+    "fabrication_facility": "TrustedFab Europe-1",
+    "packaging_facility": "SecurePack DE",
+    "test_facility": "Accredited Test Lab EU",
+    "country_of_origin": "DE",
+    "lot_id": "LOT-DE-2026-0716-A",
+    "wafer_id": "WAFER-DE-88102",
+    "serial_number": "SN-GOOD-000001",
+    "chain_of_custody_complete": true
+  },
+  "failure_reason": null,
+  "expected_results": {
+    "pipeline_result": "PASS_ALL_STAGES",
+    "dashboard_result": {
+      "overall_status": "VERIFIED",
+      "alert_color": "GREEN",
+      "risk_level": "LOW",
+      "classification": "CLEAN"
+    },
+    "blockchain_result": {
+      "fabric": "COMMIT_FULL_PROVENANCE_VALID",
+      "ethereum": "ANCHOR_SHA256_ROOT_CONFIRMED"
+    },
+    "deployment_decision": "APPROVED_FOR_CRITICAL_INFRASTRUCTURE"
+  },
+  "source": {
+    "component": "terminal",
+    "operator": "ali-raza",
+    "environment": "development"
+  },
+  "hardware_security": {
+    "puf": {
+      "authentication_expected": true,
+      "intra_device_hamming_distance": 0.03125,
+      "stability_score": 0.96875
+    },
+    "opentitan": {
+      "secure_boot": true,
+      "lifecycle_state": "PROD",
+      "otp_integrity": true,
+      "rom_digest_valid": true,
+      "debug_locked": true
+    },
+    "chipwhisperer": {
+      "power_rms": 0.392,
+      "power_peak_to_peak": 0.332,
+      "power_spectral_entropy": 0.31,
+      "em_rms": 0.37,
+      "em_peak_to_peak": 0.29,
+      "em_spectral_entropy": 0.28,
+      "timing_jitter": 0.02
+    },
+    "yosys": {
+      "gate_count": 125000,
+      "unused_logic_ratio": 0.01,
+      "rare_net_ratio": 0.01,
+      "netlist_delta_ratio": 0.0
+    },
+    "verilator": {
+      "simulation_passed": true,
+      "test_vectors": 50000,
+      "failed_vectors": 0,
+      "simulation_failure_ratio": 0.0
+    }
+  },
+  "supply_chain": {
+    "digital_twin_match": true,
+    "sbom_match": true,
+    "custody_gap_ratio": 0.0,
+    "certificate_risk": 0.02,
+    "sbom_mismatch_ratio": 0.0
+  },
+  "supplier": {
+    "supplier_id": "SUP-DE-001",
+    "name": "TrustedFab Europe-1",
+    "country": "DE",
+    "country_risk": 0.1,
+    "custody_gap_ratio": 0.0,
+    "certificate_risk": 0.02,
+    "sbom_mismatch_ratio": 0.0,
+    "threat_intel_score": 0.02,
+    "counterfeit_history": 0.0,
+    "financial_distress": 0.05
+  },
+  "compliance": {
+    "subject_to_ear": true,
+    "eccn": "EAR99",
+    "destination_country": "DE",
+    "end_use": "regulated critical-infrastructure validation",
+    "end_user_type": "regulated infrastructure operator",
+    "end_user_name": "German Critical Infrastructure Test Authority",
+    "technical_data_transfer": false,
+    "defense_related": false,
+    "specially_designed_for_military": false,
+    "tags": [
+      "commercial",
+      "civilian",
+      "critical-infrastructure"
+    ]
+  }
+}

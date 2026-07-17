@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "package_type": "GOVERNMENT_AUDIT_PACKAGE",
+  "scan_id": "3b9f03a9-f20c-4880-995c-c1cc0eb82e50",
+  "chip_id": "CHIP-PROD-GOOD-001",
+  "generated_at_utc": "2026-07-16T13:21:33.538076+00:00",
+  "report_hash": "f26bfc37f2f65d8fe8cae3b2c2da910472bb883de0df49556081023388295a5d",
+  "event_chain_head": "ad9eaa927071c32bd18d2e2b1c22bce886eaea21d387f6f81416f1c2a8ce2050",
+  "evidence_hashes": {
+    "export_control": "12439c07ccb384c7648f0ab7cab4d342affb798bc57b50d79131101bf283c012",
+    "supplier_risk": "82ec3470bf61345d8d8feeb4093a8166fa2472c828e4babe4b9562a6c430a7ca",
+    "ai": "222216463922f64dc83a0f178b7f49e081da5cba8b8d97664c887e2eb0e1f1c9"
+  },
+  "decision_summary": {
+    "decision": "APPROVED",
+    "status": "PASSED",
+    "risk_score": 0.08,
+    "confidence": 0.9700000000000001
+  },
+  "audit_hash": "4f1fe8015f857c3a974526f24964e952d0c4f7463f270b3a21243a40796fef16",
+  "signature": "5bf913115be0936f683570113775916488657a6b03e9c63f35acce014453747c"
+}

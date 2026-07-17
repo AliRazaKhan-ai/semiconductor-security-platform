@@ -1,0 +1,43 @@
+{
+  "logging": {
+    "level": "INFO",
+    "format": "json",
+    "console": true,
+    "file": true,
+    "file_path": "runtime/logs/semisecure.jsonl",
+    "max_bytes": 10485760,
+    "backup_count": 10,
+    "redacted_fields": [
+      "authorization",
+      "cookie",
+      "set-cookie",
+      "password",
+      "secret",
+      "private_key",
+      "puf_response",
+      "raw_trace"
+    ]
+  },
+  "loggers": {
+    "web3": {
+      "level": "WARNING",
+      "propagate": false
+    },
+    "urllib3": {
+      "level": "WARNING",
+      "propagate": false
+    },
+    "rlp": {
+      "level": "WARNING",
+      "propagate": false
+    },
+    "eth_utils": {
+      "level": "WARNING",
+      "propagate": false
+    },
+    "eth_account": {
+      "level": "WARNING",
+      "propagate": false
+    }
+  }
+}

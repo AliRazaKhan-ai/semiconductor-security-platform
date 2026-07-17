@@ -1,0 +1,7 @@
+{
+  "hash_algorithm": "SHA-256",
+  "tree": "binary Merkle tree with duplicate-last padding",
+  "leaf_source": "Fabric provenance record hash",
+  "ethereum_payload": "single bytes32 root",
+  "fabric_back_reference": true
+}

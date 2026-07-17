@@ -1,0 +1,22 @@
+{
+  "application": {
+    "debug": false,
+    "testing": true,
+    "host": "127.0.0.1",
+    "port": 5001
+  },
+  "logging": {
+    "level": "WARNING",
+    "file": false
+  },
+  "storage": {
+    "fsync": false,
+    "verify_on_read": true
+  },
+  "security": {
+    "rate_limit": {
+      "enabled": false
+    }
+  }
+}
+

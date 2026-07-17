@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "allowed_lifecycle_states": [
+    "DEV",
+    "PROD",
+    "PROD_END"
+  ],
+  "trusted_firmware_digests": [
+    "0000000000000000000000000000000000000000000000000000000000000000"
+  ],
+  "minimum_counter": 0
+}

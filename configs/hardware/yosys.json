@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "maximum_cells": 1000000,
+  "maximum_wire_bits": 10000000,
+  "maximum_memory_bits": 100000000,
+  "forbidden_cell_types": [
+    "$dlatch"
+  ],
+  "required_cell_types": []
+}

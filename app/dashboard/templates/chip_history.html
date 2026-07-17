@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Chip {{ chip_id }} History · SemiSecure{% endblock %}
+{% block page_id %}chip-history{% endblock %}
+{% block header_title %}Chip Lifecycle History{% endblock %}
+{% block content %}
+<section class="dashboard-intro"><div><p class="eyebrow mb-1">DIGITAL TWIN LIFECYCLE</p><h2 class="section-title mb-1">{{ chip_id }}</h2><p class="section-subtitle mb-0">All scan projections linked to this physical chip identity.</p></div><a class="cyber-button secondary" href="{{ url_for('dashboard.dashboard') }}">← Back</a></section>
+<section class="cyber-panel">
+<header class="panel-header"><div><p class="panel-kicker">EVENT STORE INDEX</p><h3>Scan History</h3></div><span class="panel-badge">{{ events|length }} records</span></header>
+<div class="table-responsive"><table class="table cyber-table align-middle mb-0"><thead><tr><th>Updated</th><th>Scan ID</th><th>Stage</th><th>Status</th><th>Sequence</th><th class="text-end">Evidence</th></tr></thead><tbody>
+{% for item in events %}<tr><td class="timestamp-value">{{ item.updated_at }}</td><td class="mono">{{ item.scan_id }}</td><td>{{ item.current_stage|default('—') }}</td><td><span class="status-badge {{ item.status|lower }}">{{ item.status }}</span></td><td>{{ item.last_sequence|default('—') }}</td><td class="text-end"><a class="table-link" href="{{ url_for('dashboard.scan_detail', scan_id=item.scan_id) }}">Open →</a></td></tr>{% else %}<tr><td colspan="6"><div class="empty-state"><span>⌁</span><p>No scan history is available for this chip.</p></div></td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

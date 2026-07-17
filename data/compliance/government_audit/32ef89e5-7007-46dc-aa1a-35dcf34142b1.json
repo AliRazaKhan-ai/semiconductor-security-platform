@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "package_type": "GOVERNMENT_AUDIT_PACKAGE",
+  "scan_id": "32ef89e5-7007-46dc-aa1a-35dcf34142b1",
+  "chip_id": "CHIP-PROD-TROJAN-002",
+  "generated_at_utc": "2026-07-16T10:53:52.796986+00:00",
+  "report_hash": "503258cb09273e93f68d04bc56e9b866e2c2e8f30dca3f92a35ece7522506790",
+  "event_chain_head": "3466f825b690c78a6c624600ac95be1284bcdac59effc8a3db376ed96dcca2c8",
+  "evidence_hashes": {
+    "export_control": "06566aabbdfd4459367b2951cb195a15f7e817aafca938d4c1512c059012b222",
+    "supplier_risk": "295657796ff8600647672dbc0619f992a2639887ea06591cad028d162537f936",
+    "ai": "e4e7d9e81c9765c7fe1bfc607174560898f05a127d07c211f3fee0f77a10729e"
+  },
+  "decision_summary": {
+    "decision": "DENIED",
+    "status": "FAILED",
+    "risk_score": 1,
+    "confidence": 0.755
+  },
+  "audit_hash": "0f26ce49d2ad358364e449985a2e830441e6aa573b93dd194fe072f1a69dfecc",
+  "signature": "be74c1acaa627f773c721b1593b395e395e8c7cd294edd9689e60f0a6f28a348"
+}

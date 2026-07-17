@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "repository": "data/digital_twins",
+  "required_match_fields": [
+    "chip_id",
+    "puf_identity_hash",
+    "rtl_digest",
+    "netlist_digest",
+    "firmware_digest",
+    "sbom_digest"
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "report_type": "SEMICONDUCTOR_EXPORT_COMPLIANCE",
+  "scan_id": "50509970-4666-4440-833b-32e49f523a0e",
+  "chip_id": "CHIP-PROD-PUF-003",
+  "generated_at_utc": "2026-07-16T12:25:20.557472+00:00",
+  "regulatory_notice": "Automated decision-support only; not a Commodity Jurisdiction determination, CCATS classification, license, legal opinion, or authorization. Qualified human review is required for controlled or unresolved transactions.",
+  "decision": {
+    "decision": "APPROVED",
+    "status": "PASSED",
+    "confidence": 0.8383333333333333,
+    "risk_score": 0.72,
+    "deployment_recommendation": "DEPLOY",
+    "requires_human_review": false,
+    "reasons": [
+      "All mandatory gates passed"
+    ],
+    "export_control": {
+      "jurisdiction": "EAR",
+      "classification": "EAR99",
+      "license_status": "NLR_CANDIDATE",
+      "decision": "APPROVED",
+      "confidence": 0.95,
+      "requires_human_review": false,
+      "itar": {
+        "control": "itar",
+        "status": "NOT_INDICATED",
+        "score": 0.1,
+        "reasons": [
+          "USML/defense indicators evaluated"
+        ],
+        "details": {
+          "usml_category": null
+        }
+      },
+      "ear": {
+        "control": "ear",
+        "status": "ECCN_REVIEWED",
+        "score": 0.45,
+        "reasons": [
+          "EAR jurisdiction/classification/end-use evaluated"
+        ],
+        "details": {
+          "eccn": "EAR99",
+          "destination": "DE"
+        }
+      },
+      "restricted_party": {
+        "control": "restricted_party",
+        "status": "CLEAR",
+        "score": 0.3793103448275862,
+        "reasons": [
+          "best fuzzy match 37.9%"
+        ],
+        "details": {
+          "matched": {
+            "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+            "aliases": [
+              "DDSE"
+            ],
+            "source_list": "DEMO",
+            "country": "XX",
+            "action": "DENY"
+          }
+        }
+      },
+      "ruleset_version": "2026-07-16"
+    },
+    "supplier_risk": {
+      "supplier_id": "SUP-DE-PKG-002",
+      "supplier_name": "PackageLab East-2",
+      "risk_score": 0.133,
+      "risk_level": "LOW",
+      "confidence": 0.625,
+      "factors": {
+        "country_risk": 0.1,
+        "custody_gap_ratio": 0.0,
+        "certificate_risk": 0.0,
+        "sbom_mismatch_ratio": 0.0,
+        "threat_intel_score": 0.05,
+        "counterfeit_history": 0.0,
+        "financial_distress": 0.05,
+        "ai_risk": 0.72
+      },
+      "reasons": [
+        "ai_risk=0.72"
+      ],
+      "ruleset_version": "1.0"
+    },
+    "ai": {
+      "classification": "IDENTITY_UNRELIABLE",
+      "confidence_score": 0.94,
+      "risk_score": 0.72
+    },
+    "policy_version": "2.0",
+    "integrity_hash": "5caacd4113957fd572d9bed45eab7989e631afb914289e8767e4005ab38f11c3"
+  },
+  "evidence_hashes": {
+    "export_control": "3d973cd4c61544af3ddb0c70ad2980eead5eb365ae72bbf314f3e1366b3882af",
+    "supplier_risk": "bfd5b3495be5c2ef41bc51585760de847a98e2abf6c9ee67ce9891bcb377f8a7",
+    "ai": "4c02a9d2894ea452db17f610c56f94191d71143c227b721f31cc3e298b77c4aa"
+  },
+  "event_chain_head": "82a9612592d370de1eda66d3803072f3d0bfe8d1dbfc66da9eec8ca5c002c394",
+  "report_hash": "655fc79f16eecb60bb379f5a49320dfa2fd80138397bd04a3b600bc465d5c6e7",
+  "signature": "f4fee28242d74708ce608293ab92567722853ab48fa2f78f210db01069658173"
+}

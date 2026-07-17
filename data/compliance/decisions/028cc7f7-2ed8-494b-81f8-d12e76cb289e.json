@@ -1,0 +1,195 @@
+{
+  "scan_id": "028cc7f7-2ed8-494b-81f8-d12e76cb289e",
+  "chip_id": "CHIP-PROD-GOOD-001",
+  "decision": {
+    "decision": "APPROVED",
+    "status": "PASSED",
+    "confidence": 0.9700000000000001,
+    "risk_score": 0.08,
+    "deployment_recommendation": "DEPLOY",
+    "requires_human_review": false,
+    "reasons": [
+      "All mandatory gates passed"
+    ],
+    "export_control": {
+      "jurisdiction": "EAR",
+      "classification": "EAR99",
+      "license_status": "NLR_CANDIDATE",
+      "decision": "APPROVED",
+      "confidence": 0.95,
+      "requires_human_review": false,
+      "itar": {
+        "control": "itar",
+        "status": "NOT_INDICATED",
+        "score": 0.1,
+        "reasons": [
+          "USML/defense indicators evaluated"
+        ],
+        "details": {
+          "usml_category": null
+        }
+      },
+      "ear": {
+        "control": "ear",
+        "status": "ECCN_REVIEWED",
+        "score": 0.45,
+        "reasons": [
+          "EAR jurisdiction/classification/end-use evaluated"
+        ],
+        "details": {
+          "eccn": "EAR99",
+          "destination": "DE"
+        }
+      },
+      "restricted_party": {
+        "control": "restricted_party",
+        "status": "CLEAR",
+        "score": 0.4415584415584416,
+        "reasons": [
+          "best fuzzy match 44.2%"
+        ],
+        "details": {
+          "matched": {
+            "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+            "aliases": [
+              "DDSE"
+            ],
+            "source_list": "DEMO",
+            "country": "XX",
+            "action": "DENY"
+          }
+        }
+      },
+      "ruleset_version": "2026-07-16"
+    },
+    "supplier_risk": {
+      "supplier_id": "SUP-DE-001",
+      "supplier_name": "TrustedFab Europe-1",
+      "risk_score": 0.0345,
+      "risk_level": "LOW",
+      "confidence": 1,
+      "factors": {
+        "country_risk": 0.1,
+        "custody_gap_ratio": 0.0,
+        "certificate_risk": 0.02,
+        "sbom_mismatch_ratio": 0.0,
+        "threat_intel_score": 0.02,
+        "counterfeit_history": 0.0,
+        "financial_distress": 0.05,
+        "ai_risk": 0.08
+      },
+      "reasons": [],
+      "ruleset_version": "1.0"
+    },
+    "ai": {
+      "classification": "CLEAN",
+      "confidence_score": 0.96,
+      "risk_score": 0.08
+    },
+    "policy_version": "2.0",
+    "integrity_hash": "2e286fbccd289651438806db4caef30575a1c529ff71d8a914486c576884dd9c"
+  },
+  "export_control": {
+    "jurisdiction": "EAR",
+    "classification": "EAR99",
+    "license_status": "NLR_CANDIDATE",
+    "decision": "APPROVED",
+    "confidence": 0.95,
+    "requires_human_review": false,
+    "itar": {
+      "control": "itar",
+      "status": "NOT_INDICATED",
+      "score": 0.1,
+      "reasons": [
+        "USML/defense indicators evaluated"
+      ],
+      "details": {
+        "usml_category": null
+      }
+    },
+    "ear": {
+      "control": "ear",
+      "status": "ECCN_REVIEWED",
+      "score": 0.45,
+      "reasons": [
+        "EAR jurisdiction/classification/end-use evaluated"
+      ],
+      "details": {
+        "eccn": "EAR99",
+        "destination": "DE"
+      }
+    },
+    "restricted_party": {
+      "control": "restricted_party",
+      "status": "CLEAR",
+      "score": 0.4415584415584416,
+      "reasons": [
+        "best fuzzy match 44.2%"
+      ],
+      "details": {
+        "matched": {
+          "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+          "aliases": [
+            "DDSE"
+          ],
+          "source_list": "DEMO",
+          "country": "XX",
+          "action": "DENY"
+        }
+      }
+    },
+    "ruleset_version": "2026-07-16"
+  },
+  "supplier_risk": {
+    "supplier_id": "SUP-DE-001",
+    "supplier_name": "TrustedFab Europe-1",
+    "risk_score": 0.0345,
+    "risk_level": "LOW",
+    "confidence": 1,
+    "factors": {
+      "country_risk": 0.1,
+      "custody_gap_ratio": 0.0,
+      "certificate_risk": 0.02,
+      "sbom_mismatch_ratio": 0.0,
+      "threat_intel_score": 0.02,
+      "counterfeit_history": 0.0,
+      "financial_distress": 0.05,
+      "ai_risk": 0.08
+    },
+    "reasons": [],
+    "ruleset_version": "1.0"
+  },
+  "report": {
+    "report_hash": "134f35885648f62b05ea68972ae80c93bbadbb21d90f5e2f819b383fc852b4df",
+    "government_audit_hash": "dd4a3b04f6e8e90b67424f3290368bf4b751a3537b44f1d9e70f7fec90bdc948",
+    "json_path": "/home/ali-raza/semiconductor_security_platform/data/compliance/reports/json/028cc7f7-2ed8-494b-81f8-d12e76cb289e.json",
+    "pdf_path": "/home/ali-raza/semiconductor_security_platform/data/compliance/reports/pdf/028cc7f7-2ed8-494b-81f8-d12e76cb289e.pdf",
+    "audit_path": "/home/ali-raza/semiconductor_security_platform/data/compliance/government_audit/028cc7f7-2ed8-494b-81f8-d12e76cb289e.json",
+    "signature": "f226dab8688274c86d282768e03cc0e8650e0949757d38420f6a79c2a838271b"
+  },
+  "blockchain": {
+    "fabric": {
+      "scan_id": "028cc7f7-2ed8-494b-81f8-d12e76cb289e",
+      "chip_id": "CHIP-PROD-GOOD-001",
+      "record_hash": "bc196bd4e9b1abc275dafdd13a41013a843ab2e67e70e76bc4c6928ba1ae23a2",
+      "transaction_id": "b64e59edecf55456ee47fcb3c83029abaddef2275716c38b8740a1fe76d0737b",
+      "committed": true,
+      "channel": "semiconductor-channel",
+      "chaincode": "semiconductor-provenance",
+      "submitted_at_utc": "2026-07-16T12:26:42.376135+00:00",
+      "block_number": null,
+      "validation_code": "VALID"
+    },
+    "ethereum": {
+      "root_hash": "bc196bd4e9b1abc275dafdd13a41013a843ab2e67e70e76bc4c6928ba1ae23a2",
+      "transaction_hash": "b0a09974d9330d591c9e8c37cf7db31d672fd40f6bdb12ec81f894a142313f15",
+      "block_number": 13981,
+      "chain_id": 31337,
+      "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "confirmations": 1,
+      "confirmed": true,
+      "anchored_at_utc": "2026-07-16T12:26:43.532242+00:00"
+    }
+  },
+  "blockchain_error": null
+}

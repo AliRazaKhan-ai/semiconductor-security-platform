@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Scan {{ scan.scan_id if scan else 'Not Found' }} · SemiSecure{% endblock %}
+{% block page_id %}scan-detail{% endblock %}
+{% block header_title %}Scan Evidence Detail{% endblock %}
+{% block content %}
+<section class="dashboard-intro">
+    <div><p class="eyebrow mb-1">IMMUTABLE SCAN PROJECTION</p><h2 class="section-title mb-1">{{ scan.chip_id if scan else 'Unknown chip' }}</h2><p class="section-subtitle mb-0 mono">{{ scan.scan_id if scan else 'Scan not found' }}</p></div>
+    <a class="cyber-button secondary" href="{{ url_for('dashboard.dashboard') }}">← Back to dashboard</a>
+</section>
+{% if scan %}
+<section class="kpi-grid compact-kpi-grid">
+    <article class="kpi-card accent-cyan"><div class="kpi-content"><span>Status</span><strong class="small-kpi">{{ scan.status }}</strong><small>Current decision state</small></div></article>
+    <article class="kpi-card accent-purple"><div class="kpi-content"><span>Current Stage</span><strong class="small-kpi">{{ scan.current_stage }}</strong><small>Last completed transition</small></div></article>
+    <article class="kpi-card accent-blue"><div class="kpi-content"><span>Sequence</span><strong>{{ scan.last_sequence }}</strong><small>{{ scan.event_count }} durable events</small></div></article>
+    <article class="kpi-card accent-green"><div class="kpi-content"><span>Updated</span><strong class="small-kpi timestamp-value">{{ scan.updated_at }}</strong><small>UTC event timestamp</small></div></article>
+</section>
+<section class="cyber-panel pipeline-panel" id="scanDetailPipeline" data-scan-id="{{ scan.scan_id }}">
+    <header class="panel-header"><div><p class="panel-kicker">VALIDATION CHAIN</p><h3>Pipeline Timeline</h3></div><span class="status-badge neutral" id="pipelineStatus">{{ scan.status }}</span></header>
+    <div class="pipeline-track" id="pipelineTrack"></div><div class="pipeline-footer"><div class="pipeline-message" id="pipelineMessage">Loading immutable event sequence.</div></div>
+</section>
+<section class="cyber-panel mt-4">
+    <header class="panel-header"><div><p class="panel-kicker">LATEST SNAPSHOT</p><h3>Evidence Summary</h3></div><span class="panel-badge">Hash-chained JSON</span></header>
+    <div class="detail-grid expanded"><div><span>Correlation ID</span><strong class="mono">{{ scan.correlation_id }}</strong></div><div><span>Last Event</span><strong>{{ scan.last_event_type }}</strong></div><div><span>Event Hash</span><strong class="mono break-all">{{ scan.last_event_hash }}</strong></div><div><span>Schema</span><strong>{{ scan.schema_version }}</strong></div></div>
+    <pre class="json-viewer" id="scanPayload">{{ scan.latest_payload|tojson(indent=2) }}</pre>
+</section>
+{% else %}<section class="cyber-panel"><div class="empty-state"><span>×</span><p>The requested scan was not found.</p></div></section>{% endif %}
+{% endblock %}
