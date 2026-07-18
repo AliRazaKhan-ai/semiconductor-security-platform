@@ -51,3 +51,6 @@ blockchain/fabric/channels/*.block
 # Ethereum build outputs
 blockchain/ethereum/artifacts/
 blockchain/ethereum/receipts/
+
+# Exported audit packages
+reports/exported_audits/
