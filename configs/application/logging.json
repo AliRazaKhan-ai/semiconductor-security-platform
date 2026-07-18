@@ -39,5 +39,7 @@
       "level": "WARNING",
       "propagate": false
     }
-  }
+  },
+  "max_bytes": 5242880,
+  "backup_count": 3
 }

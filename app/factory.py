@@ -23,6 +23,7 @@ from app.compliance.integration import build_compliance_service
 from app.api.routes.compliance import bp as compliance_api_bp
 from app.dashboard import bp as dashboard_bp
 from app.extensions import socketio
+from app.integration import IntegratedPipelineService
 from app.hardware.integration import HardwareSecurityPipeline
 from app.observability.logging import configure_logging
 from app.security.headers import register_security_headers
@@ -197,4 +198,12 @@ def create_app(
             "authentication_enabled": False,
         },
     )
+
+    app.extensions["semisecure.integrated_pipeline"] = (
+        IntegratedPipelineService(
+            app=app,
+            project_root=loaded.project_root,
+        )
+    )
+
     return app

@@ -1,38 +1,53 @@
-venv/
+# Secrets and environments
 .env
+venv/
+.venv/
+
+# Python caches
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 
+# Runtime files
 runtime/*
 !runtime/.gitkeep
+*.log
 
-data/event_store/*
-!data/event_store/.gitkeep
-data/indexes/*
-!data/indexes/.gitkeep
-data/snapshots/*
-!data/snapshots/.gitkeep
-data/audit/*
-!data/audit/.gitkeep
-data/pipeline_runs/*
-!data/pipeline_runs/.gitkeep
-data/quarantine/*
-!data/quarantine/.gitkeep
+# Generated compliance outputs
+data/compliance/decisions/
+data/compliance/reports/
+data/compliance/government_audit/
+data/compliance/manual_review/
+data/compliance/signatures/
+
+# Generated blockchain data
+data/blockchain/ethereum_receipts/
 data/blockchain/anvil-state.json
 
-backups/
-reports/exported_audits/
+# Generated pipeline runs
+data/integrated_runs/
+data/pipeline_runs/
+data/quarantine/
 
+# Generated event-store data
+data/event_store/
+data/indexes/
+data/snapshots/
+data/audit/
+
+# Local backups
+backups/
+*.before_*
+*.before-*
+*.bak
+*~
+
+# Fabric-generated material
 blockchain/fabric/organizations/
 blockchain/fabric/channels/*.block
-blockchain/ethereum/artifacts/*
-blockchain/ethereum/receipts/*
 
-*.pem
-*.key
-*.crt
-*.p12
-*.pfx
+# Ethereum build outputs
+blockchain/ethereum/artifacts/
+blockchain/ethereum/receipts/

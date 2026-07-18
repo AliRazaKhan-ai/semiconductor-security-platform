@@ -39,8 +39,8 @@ def configure_logging(config: dict[str, Any], project_root: Path) -> None:
         file_path.parent.mkdir(parents=True, exist_ok=True)
         rotating = logging.handlers.RotatingFileHandler(
             file_path,
-            maxBytes=int(config.get("max_bytes", 10_485_760)),
-            backupCount=int(config.get("backup_count", 10)),
+            maxBytes=int(config.get("max_bytes", 5_242_880)),
+            backupCount=int(config.get("backup_count", 3)),
             encoding="utf-8",
         )
         rotating.setFormatter(formatter)
