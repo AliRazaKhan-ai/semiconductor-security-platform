@@ -54,3 +54,7 @@ blockchain/ethereum/receipts/
 
 # Exported audit packages
 reports/exported_audits/
+
+# Local Ethereum deployment outputs
+blockchain/ethereum/deployment/deployment.json
+blockchain/ethereum/deployment/deployment.raw.json
