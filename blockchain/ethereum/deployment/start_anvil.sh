@@ -42,6 +42,14 @@ if rpc_ready; then
     exit 0
 fi
 
+ANVIL_TEMP_DIR="$HOME/.foundry/anvil/tmp"
+
+echo "Cleaning stale Anvil temporary state files..."
+
+rm -rf "$ANVIL_TEMP_DIR"
+mkdir -p "$ANVIL_TEMP_DIR"
+chmod 700 "$ANVIL_TEMP_DIR"
+
 if ! validate_state; then
     TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
     CORRUPT_BACKUP="$BACKUP_ROOT/anvil-state-corrupt-$TIMESTAMP.json"
@@ -61,7 +69,7 @@ ANVIL_ARGS=(
     --mnemonic "test test test test test test test test test test test junk"
     --block-time 1
     --state "$STATE_FILE"
-    --state-interval 1
+    --state-interval 300
 )
 
 nohup anvil \

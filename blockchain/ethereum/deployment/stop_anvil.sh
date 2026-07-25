@@ -31,6 +31,13 @@ for attempt in $(seq 1 20); do
             echo "WARNING: state file was not created."
         fi
 
+        ANVIL_TEMP_DIR="$HOME/.foundry/anvil/tmp"
+
+        echo "Cleaning Anvil temporary state files..."
+        rm -rf "$ANVIL_TEMP_DIR"
+        mkdir -p "$ANVIL_TEMP_DIR"
+        chmod 700 "$ANVIL_TEMP_DIR"
+
         exit 0
     fi
 
