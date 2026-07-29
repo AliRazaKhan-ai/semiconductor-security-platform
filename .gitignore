@@ -132,3 +132,10 @@ PROJECT_SUMMARY.md
 docs/EXAMINER_EXPLANATION_GUIDE.md
 docs/FREQUENTLY_ASKED_VIVA_QUESTIONS.md
 docs/PROJECT_SUMMARY.md
+
+# Ethereum generated cache
+blockchain/ethereum/cache/
+blockchain/ethereum/artifacts/
+
+# Compiled Hyperledger Fabric chaincode binary
+blockchain/fabric/chaincode/semiconductor_provenance/semiconductor-provenance
