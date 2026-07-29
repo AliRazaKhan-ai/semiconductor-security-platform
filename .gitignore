@@ -70,3 +70,65 @@ reports/exported_audits/
 # Local Ethereum deployment outputs
 blockchain/ethereum/deployment/deployment.json
 blockchain/ethereum/deployment/deployment.raw.json
+
+# Local Python environment
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# Secrets
+.env
+.env.production
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Runtime files
+runtime/*
+!runtime/.gitkeep
+*.log
+*.pid
+*.lock
+
+# Generated platform data
+data/event_store/
+data/indexes/
+data/snapshots/
+data/audit/
+data/archive/
+data/quarantine/
+data/manual_review/
+data/nonce_store/
+data/pipeline_runs/
+data/evidence/
+data/blockchain/
+data/compliance/decisions/
+data/compliance/government_audit/
+
+# Backups and temporary packages
+backups/
+reports/
+project_review/
+dashboard_error_1_fix/
+notification_fix/
+*.zip
+*.tar
+*.tar.gz
+
+# Local inventory files
+project_inventory.txt
+project_inventory.txt.gz
+
+# Private examination documents
+EXAMINER_EXPLANATION_GUIDE.md
+FREQUENTLY_ASKED_VIVA_QUESTIONS.md
+PROJECT_SUMMARY.md
+docs/EXAMINER_EXPLANATION_GUIDE.md
+docs/FREQUENTLY_ASKED_VIVA_QUESTIONS.md
+docs/PROJECT_SUMMARY.md
