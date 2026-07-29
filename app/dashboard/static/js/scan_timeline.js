@@ -24,7 +24,7 @@
         SIDE_CHANNEL: "CHIPWHISPERER", FEATURE: "FEATURE_EXTRACTION", TENSOR_FLOW: "TENSORFLOW",
         PY_TORCH: "PYTORCH", RISK_ENGINE: "RISK", COMPLIANCE_ENGINE: "COMPLIANCE",
         HYPERLEDGER: "FABRIC", HYPERLEDGER_FABRIC: "FABRIC", ETHEREUM_ANCHOR: "ETHEREUM",
-        DEPLOYMENT_DECISION: "DEPLOYMENT",
+        DEPLOYMENT_DECISION: "DEPLOYMENT", HARDWARE_TROJAN_ANALYSIS: "TENSORFLOW", PRE_COMPLIANCE_SECURITY_GATES: "FEATURE_EXTRACTION", SUPPLIER_RISK_AND_COMPLIANCE: "COMPLIANCE", BLOCKCHAIN: "FABRIC",
     });
 
     function canonicalStage(value) {
@@ -60,6 +60,15 @@
         update(scan, events = []) {
             STAGES.forEach(([key]) => this.stageStates.set(key, "waiting"));
             const ordered = [...events].sort((a, b) => Number(a.sequence || 0) - Number(b.sequence || 0));
+            const runStages = Array.isArray(scan?.stages) ? scan.stages : [];
+            runStages.forEach((stageRecord) => {
+                const stage = canonicalStage(stageRecord?.stage);
+                if (!this.stageStates.has(stage)) return;
+                const stageStatus = String(stageRecord?.status || "").toUpperCase();
+                if (["FAILED", "REJECTED", "QUARANTINED"].includes(stageStatus) || stageRecord?.stop_pipeline === true) this.stageStates.set(stage, "failed");
+                else if (["PASSED", "COMPLETED", "APPROVED"].includes(stageStatus)) this.stageStates.set(stage, "passed");
+                else if (["MANUAL_REVIEW", "HOLD", "PROCESSING", "ACTIVE"].includes(stageStatus)) this.stageStates.set(stage, "active");
+            });
             ordered.forEach((event) => {
                 const stage = canonicalStage(event.pipeline_stage);
                 if (this.stageStates.has(stage)) this.stageStates.set(stage, eventState(event));
@@ -69,6 +78,7 @@
             const status = String(scan?.status || scan?.latest_payload?.status || "WAITING").toUpperCase();
             if (this.stageStates.has(currentStage)) {
                 if (["REJECTED", "FAILED", "QUARANTINED"].includes(status)) this.stageStates.set(currentStage, "failed");
+                else if (status === "MANUAL_REVIEW") this.stageStates.set(currentStage, "active");
                 else if (!["APPROVED"].includes(status) && this.stageStates.get(currentStage) === "waiting") this.stageStates.set(currentStage, "active");
             }
             const currentIndex = STAGES.findIndex(([key]) => key === currentStage);
@@ -109,7 +119,8 @@
 
         _message(status, stage, lastEvent) {
             if (["REJECTED", "FAILED"].includes(status)) return `Pipeline stopped at ${stage || "an unknown stage"}. The chip is blocked.`;
-            if (status === "QUARANTINED") return `The chip was quarantined at ${stage || "the current stage"} for manual review.`;
+            if (status === "QUARANTINED") return `The chip was quarantined at ${stage || "the current stage"} because a mandatory security control failed.`;
+            if (status === "MANUAL_REVIEW") return `Deployment is on hold at ${stage || "the current stage"} pending licence or human approval.`;
             if (status === "APPROVED") return "All mandatory controls passed. Deployment approval is recorded.";
             if (lastEvent?.event_type) return `${lastEvent.event_type} received from the backend event stream.`;
             return `Validation is active at ${stage || "ingestion"}.`;

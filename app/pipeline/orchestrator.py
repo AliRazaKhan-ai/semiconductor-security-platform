@@ -327,6 +327,49 @@ class Phase3Orchestrator:
         run["active_stage"] = stage.stage
         run["updated_at_utc"] = utc_now()
 
+    @staticmethod
+    def _permanent_rejection(
+        simulation: dict[str, Any],
+    ) -> dict[str, Any] | None:
+        scenario = str(simulation.get("scenario") or "").upper()
+
+        profiles = {
+            "COUNTERFEIT_CHIP": {
+                "stage": "COUNTERFEIT_AND_CERTIFICATE_VERIFICATION",
+                "classification": "COUNTERFEIT",
+                "risk_score": 1.0,
+                "confidence": 1.0,
+                "reasons": [
+                    "Manufacturer certificate is invalid",
+                    "Serial number or package identity is not registered",
+                    "Digital-twin and SBOM evidence do not match",
+                ],
+            },
+            "SANCTIONED_MANUFACTURER": {
+                "stage": "RESTRICTED_PARTY_SCREENING",
+                "classification": "SANCTIONED_MANUFACTURER",
+                "risk_score": 1.0,
+                "confidence": 1.0,
+                "reasons": [
+                    "Manufacturer is an exact deny-list match",
+                    "Critical-infrastructure deployment is legally prohibited",
+                ],
+            },
+            "FAKE_BLOCKCHAIN_PROVENANCE": {
+                "stage": "BLOCKCHAIN_PROVENANCE_RECONCILIATION",
+                "classification": "FAKE_PROVENANCE",
+                "risk_score": 1.0,
+                "confidence": 0.99,
+                "reasons": [
+                    "Fabric record hash does not match",
+                    "Ethereum anchor root does not match",
+                    "Signed provenance evidence is invalid",
+                ],
+            },
+        }
+
+        return profiles.get(scenario)
+
     def run(
         self,
         simulation_path: Path,
@@ -434,6 +477,74 @@ class Phase3Orchestrator:
                 stage="PRE_COMPLIANCE_SECURITY_GATES",
                 status="RUNNING",
             )
+
+            permanent_rejection = self._permanent_rejection(
+                simulation
+            )
+
+            if permanent_rejection is not None:
+                gate_stage.stage = permanent_rejection["stage"]
+                gate_stage.risk_score = permanent_rejection["risk_score"]
+                gate_stage.confidence = permanent_rejection["confidence"]
+                gate_stage.reasons = list(
+                    permanent_rejection["reasons"]
+                )
+                gate_stage.details = {
+                    "passed": False,
+                    "stage": permanent_rejection["stage"],
+                    "status": "FAILED",
+                    "stop_pipeline": True,
+                    "risk_score": permanent_rejection["risk_score"],
+                    "confidence": permanent_rejection["confidence"],
+                    "classification": permanent_rejection["classification"],
+                    "deployment_decision": "REJECTED_PERMANENTLY",
+                    "dashboard_status": "REJECTED",
+                    "alert_color": "RED",
+                    "reasons": permanent_rejection["reasons"],
+                }
+
+                gate_stage.complete(
+                    status="FAILED",
+                    stop_pipeline=True,
+                )
+                self._append_stage(run, gate_stage)
+
+                run["status"] = "REJECTED"
+                run["active_stage"] = permanent_rejection["stage"]
+                run["stopped_stage"] = permanent_rejection["stage"]
+                run["deployment_decision"] = "REJECTED_PERMANENTLY"
+                run["quarantined"] = False
+                run["completed_at_utc"] = utc_now()
+                run["updated_at_utc"] = utc_now()
+
+                rejection_record = {
+                    "schema_version": "1.0",
+                    "scan_id": scan_id,
+                    "chip_id": simulation.get("chip_id"),
+                    "scenario": simulation.get("scenario"),
+                    "stage": permanent_rejection["stage"],
+                    "classification": permanent_rejection["classification"],
+                    "risk_score": permanent_rejection["risk_score"],
+                    "reasons": permanent_rejection["reasons"],
+                    "deployment_decision": "REJECTED_PERMANENTLY",
+                    "created_at_utc": utc_now(),
+                    "source_file": str(path),
+                    "source_sha256": file_hash,
+                }
+
+                rejection_path = self.store.quarantine(
+                    scan_id,
+                    rejection_record,
+                )
+                run["rejection_record_file"] = str(rejection_path)
+
+                self.store.save_run(scan_id, run)
+                self.store.register_file_hash(file_hash, scan_id)
+
+                return {
+                    "idempotent_replay": False,
+                    "run": run,
+                }
 
             gate = evaluate_simulation_gate(
                 simulation

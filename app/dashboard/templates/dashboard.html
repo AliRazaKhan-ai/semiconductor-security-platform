@@ -6,12 +6,12 @@
 {% block content %}
 <section class="dashboard-intro" aria-labelledby="overviewHeading">
     <div>
-        <p class="eyebrow mb-1">REAL-TIME, READ-ONLY MONITORING</p>
+        <p class="eyebrow mb-1">REAL-TIME SECURITY MONITORING</p>
         <h2 id="overviewHeading" class="section-title mb-1">Semiconductor Trust Overview</h2>
         <p class="section-subtitle mb-0">Terminal-originated scans are validated across hardware, AI, compliance, provenance, and deployment controls.</p>
     </div>
     <div class="intro-actions">
-        <span class="control-lock"><span aria-hidden="true">▣</span> No dashboard controls</span>
+        <span class="control-lock"><span aria-hidden="true">⌁</span> Terminal scan monitoring</span>
         <button type="button" class="cyber-button secondary" id="manualRefreshButton"><span aria-hidden="true">↻</span> Refresh view</button>
     </div>
 </section>
@@ -27,7 +27,10 @@
         <div class="kpi-icon">×</div><div class="kpi-content"><span>Rejected</span><strong id="kpiRejected">0</strong><small id="kpiRejectedCaption">Security or compliance</small></div>
     </article>
     <article class="kpi-card accent-amber">
-        <div class="kpi-icon">◇</div><div class="kpi-content"><span>Quarantined</span><strong id="kpiQuarantined">0</strong><small id="kpiQuarantineCaption">Manual review required</small></div>
+        <div class="kpi-icon">◇</div><div class="kpi-content"><span>Quarantined</span><strong id="kpiQuarantined">0</strong><small id="kpiQuarantineCaption">Security isolation required</small></div>
+    </article>
+    <article class="kpi-card accent-amber">
+        <div class="kpi-icon">!</div><div class="kpi-content"><span>Manual Review</span><strong id="kpiManualReview">0</strong><small>Licence or human decision required</small></div>
     </article>
     <article class="kpi-card accent-purple">
         <div class="kpi-icon">R</div><div class="kpi-content"><span>Average Risk</span><strong id="kpiAverageRisk">0.0</strong><small id="kpiRiskCaption">Latest scan window</small></div>
@@ -134,7 +137,7 @@
 </section>
 
 <section class="cyber-panel" aria-labelledby="infrastructureHeading">
-    <header class="panel-header"><div><p class="panel-kicker">DEPLOYMENT DESTINATIONS</p><h3 id="infrastructureHeading">Critical Infrastructure Protection</h3></div><span class="panel-badge">Deployment requires final approval</span></header>
+    <header class="panel-header"><div><p class="panel-kicker">DEPLOYMENT DESTINATIONS</p><h3 id="infrastructureHeading">Critical Infrastructure Protection</h3></div><span class="panel-badge">Latest deployment decision</span></header>
     <div class="infrastructure-grid">
         <article class="infrastructure-card" data-infrastructure="power-grid"><div class="infrastructure-icon">⚡</div><div><strong>Power Grid</strong><span>SCADA and ICS deployment gate</span></div><span class="mini-state neutral">BLOCKED</span></article>
         <article class="infrastructure-card" data-infrastructure="telecom"><div class="infrastructure-icon">⌁</div><div><strong>Telecom Network</strong><span>5G and core-network chip validation</span></div><span class="mini-state neutral">BLOCKED</span></article>

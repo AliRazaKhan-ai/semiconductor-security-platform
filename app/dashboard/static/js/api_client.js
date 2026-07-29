@@ -76,6 +76,13 @@
             return this.request(`${this.apiPrefix}/scans/${encodeURIComponent(scanId)}/events?after_sequence=${encodeURIComponent(afterSequence)}&limit=${encodeURIComponent(limit)}`);
         }
         chipHistory(chipId) { return this.request(`${this.apiPrefix}/chips/${encodeURIComponent(chipId)}/history`); }
+
+        integrationRun(scanId) {
+            return this.request(
+                `${this.apiPrefix}/integration/runs/${encodeURIComponent(scanId)}`
+            );
+        }
+
         systemStatus() { return this.request(`${this.apiPrefix}/system/status`); }
         blockchainStatus() { return this.request(`${this.apiPrefix}/blockchain/status`); }
         blockchainProvenance(scanId) { return this.request(`${this.apiPrefix}/blockchain/provenance/${encodeURIComponent(scanId)}`); }

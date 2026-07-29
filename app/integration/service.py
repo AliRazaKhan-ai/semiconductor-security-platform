@@ -370,27 +370,86 @@ class IntegratedPipelineService:
             "run": run,
         }
 
+    def _candidate_run_files(self) -> list[Path]:
+        """Return run files from both current and Phase 3 stores."""
+        roots = (
+            self.run_root,
+            self.project_root / "data" / "pipeline_runs",
+        )
+
+        candidates: dict[Path, float] = {}
+
+        for root in roots:
+            if not root.exists():
+                continue
+
+            patterns = (
+                "*.json",
+                "*/run.json",
+                "**/run.json",
+            )
+
+            for pattern in patterns:
+                for path in root.glob(pattern):
+                    if not path.is_file():
+                        continue
+
+                    try:
+                        candidates[path.resolve()] = (
+                            path.stat().st_mtime
+                        )
+                    except OSError:
+                        continue
+
+        return [
+            path
+            for path, _ in sorted(
+                candidates.items(),
+                key=lambda item: item[1],
+                reverse=True,
+            )
+        ]
+
+    @staticmethod
+    def _load_run_file(
+        path: Path,
+    ) -> dict[str, Any] | None:
+        try:
+            value = json.loads(
+                path.read_text(
+                    encoding="utf-8",
+                )
+            )
+        except Exception:
+            return None
+
+        if not isinstance(value, dict):
+            return None
+
+        if (
+            isinstance(value.get("run"), dict)
+            and not value.get("scan_id")
+        ):
+            value = value["run"]
+
+        return value if isinstance(value, dict) else None
+
     def get_run(
         self,
         identifier: str,
     ) -> dict[str, Any]:
-        """Load a run by run ID or scan ID."""
-        for path in self.run_root.glob(
-            "*/run.json"
-        ):
-            try:
-                run = json.loads(
-                    path.read_text(
-                        encoding="utf-8"
-                    )
-                )
-            except Exception:
+        """Load a run by run ID or scan ID from either run store."""
+        identifier = str(identifier).strip()
+
+        for path in self._candidate_run_files():
+            run = self._load_run_file(path)
+
+            if not run:
                 continue
 
             if (
-                run.get("run_id") == identifier
-                or run.get("scan_id")
-                == identifier
+                str(run.get("run_id") or "") == identifier
+                or str(run.get("scan_id") or "") == identifier
             ):
                 return run
 
@@ -403,27 +462,30 @@ class IntegratedPipelineService:
         *,
         limit: int = 100,
     ) -> list[dict[str, Any]]:
-        """Return recent integrated pipeline runs."""
+        """Return recent unique runs from both supported stores."""
         runs: list[dict[str, Any]] = []
+        identifiers: set[str] = set()
 
-        paths = sorted(
-            self.run_root.glob("*/run.json"),
-            key=lambda item: item.stat().st_mtime,
-            reverse=True,
-        )
+        for path in self._candidate_run_files():
+            run = self._load_run_file(path)
 
-        for path in paths[:limit]:
-            try:
-                value = json.loads(
-                    path.read_text(
-                        encoding="utf-8"
-                    )
-                )
-            except Exception:
+            if not run:
                 continue
 
-            if isinstance(value, dict):
-                runs.append(value)
+            identifier = str(
+                run.get("scan_id")
+                or run.get("run_id")
+                or path
+            )
+
+            if identifier in identifiers:
+                continue
+
+            identifiers.add(identifier)
+            runs.append(run)
+
+            if len(runs) >= limit:
+                break
 
         return runs
 

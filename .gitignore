@@ -1,3 +1,15 @@
+# Local review / repair packages
+notification_fix/
+project_review/
+dashboard_error_1_fix/
+
+*.zip
+
+.env.production
+
+cleanup_semisecure_project.sh
+restore_permanent_rejection_routing.sh
+reset_semisecure_dashboard_to_git_head.sh
 # Secrets and environments
 .env
 venv/

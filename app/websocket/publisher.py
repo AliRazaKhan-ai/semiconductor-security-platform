@@ -19,8 +19,20 @@ class SocketPublisher:
 
     def publish_record(self, record: EventRecord) -> None:
         payload = SocketEvent.from_record(record).to_dict()
-        self.socketio.emit("platform.event", payload, namespace=self.namespace, to="all")
-        self.socketio.emit("platform.event", payload, namespace=self.namespace, to=f"scan:{record.scan_id}")
+        # Omitting ``to`` broadcasts to every connected client in the
+        # namespace. Broadcasting through a named room depends on every client joining
+        # a room named "all" and can silently lose events during reconnects.
+        self.socketio.emit(
+            "platform.event",
+            payload,
+            namespace=self.namespace,
+        )
+        self.socketio.emit(
+            "platform.event",
+            payload,
+            namespace=self.namespace,
+            to=f"scan:{record.scan_id}",
+        )
         if record.event_type.startswith("system."):
             self.socketio.emit("platform.event", payload, namespace=self.namespace, to="system")
 

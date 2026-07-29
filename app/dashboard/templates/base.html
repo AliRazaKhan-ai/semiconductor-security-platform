@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="description" content="Read-only semiconductor supply-chain security operations dashboard">
+    <meta name="description" content="Semiconductor supply-chain security operations dashboard">
     <meta name="color-scheme" content="dark">
     <title>{% block title %}{{ application.name if application else 'SemiSecure Platform' }}{% endblock %}</title>
     <link rel="icon" href="{{ url_for('dashboard.static', filename='img/semisecure-mark.svg') }}" type="image/svg+xml">
@@ -56,7 +56,7 @@
                 <span class="status-dot status-dot-cyan"></span>
                 <div>
                     <strong>Terminal Controlled</strong>
-                    <span>Dashboard is read-only</span>
+                    <span>Terminal-originated scan monitoring</span>
                 </div>
             </div>
 
@@ -97,7 +97,7 @@
             </main>
 
             <footer class="dashboard-footer">
-                <span>Read-only operational view. All scan activity originates from the terminal.</span>
+                <span>Operational view of terminal-originated semiconductor scans.</span>
                 <span id="lastRefresh">Awaiting backend refresh</span>
             </footer>
         </div>
@@ -118,7 +118,7 @@
             </nav>
             <div class="sidebar-control-card mt-4">
                 <span class="status-dot status-dot-cyan"></span>
-                <div><strong>Terminal Controlled</strong><span>No dashboard write actions</span></div>
+                <div><strong>Terminal Controlled</strong><span>Terminal-originated scan monitoring</span></div>
             </div>
         </div>
     </div>
@@ -126,7 +126,7 @@
     <div class="offcanvas offcanvas-end cyber-offcanvas notification-drawer" tabindex="-1" id="notificationDrawer" aria-labelledby="notificationDrawerLabel">
         <div class="offcanvas-header">
             <div>
-                <p class="eyebrow mb-1">LIVE EVENT STREAM</p>
+                <p class="eyebrow mb-1">PLATFORM EVENT STREAM</p>
                 <h2 class="offcanvas-title h5 mb-0" id="notificationDrawerLabel">Security Notifications</h2>
             </div>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>

@@ -29,7 +29,7 @@ def test_required_dashboard_panels_exist() -> None:
         "serviceHealthList",
     }
     assert not [item for item in required_ids if soup.find(id=item) is None]
-    assert len(soup.select(".kpi-card")) == 8
+    assert len(soup.select(".kpi-card")) == 9
     assert len(soup.select("[data-infrastructure]")) == 3
 
 
@@ -39,7 +39,7 @@ def test_dashboard_has_no_login_or_chip_selector() -> None:
     assert "name=\"chip_selector\"" not in combined
     assert "chip selection" not in combined
     assert "terminal controlled" in combined
-    assert "read-only" in combined
+    assert "read-only" not in combined
 
 
 def test_dashboard_javascript_uses_only_get_fetches() -> None:

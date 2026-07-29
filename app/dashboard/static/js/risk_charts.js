@@ -61,7 +61,17 @@
         return null;
     }
 
-    function statusOf(scan) { return String(scan?.status || scan?.latest_payload?.status || "UNKNOWN").toUpperCase(); }
+    function statusOf(scan) {
+        const rawStatus = String(scan?.status || scan?.latest_payload?.status || "").toUpperCase();
+        const decision = String(scan?.deployment_decision || "").toUpperCase();
+        if (rawStatus === "MANUAL_REVIEW" || rawStatus === "LICENSE_REQUIRED" || decision === "LICENSE_REQUIRED" || decision.includes("PENDING_REVIEW") || decision.includes("PENDING_LICENSE") || decision.includes("HUMAN_REVIEW")) return "MANUAL_REVIEW";
+        if (scan?.quarantined === true) return "QUARANTINED";
+        if (decision === "DEPLOY" || decision.includes("APPROVED")) return "APPROVED";
+        if (decision.includes("QUARANTIN")) return "QUARANTINED";
+        if (decision.includes("DENIED") || decision.includes("REJECT") || decision.includes("DO_NOT_DEPLOY") || decision.includes("BLOCK")) return "REJECTED";
+        if (rawStatus === "STOPPED" || rawStatus === "FAILED") return scan?.quarantined ? "QUARANTINED" : "REJECTED";
+        return rawStatus || "UNKNOWN";
+    }
     function shortIdentifier(value, length = 10) { const text = String(value || "—"); return text.length > length ? `${text.slice(0, length)}…` : text; }
 
     class CanvasFallback {
@@ -87,7 +97,7 @@
         }
         drawDonut(ctx, width, height, values) {
             const total = values.reduce((sum, value) => sum + value, 0) || 1;
-            const colors = [COLORS.green, COLORS.red, COLORS.amber];
+            const colors = [COLORS.green, COLORS.red, COLORS.amber, COLORS.purple];
             let start = -Math.PI / 2;
             values.forEach((value, index) => {
                 const angle = (value / total) * Math.PI * 2;
@@ -95,7 +105,13 @@
             });
         }
         drawBarsOrLine(ctx, width, height, values, line) {
-            const pad = 28; const max = Math.max(100, ...values); const span = width - pad * 2;
+            const pad = 28;
+            const rawMaximum = Math.max(5, ...values);
+            const max = Math.min(
+                100,
+                Math.ceil((rawMaximum * 1.20) / 5) * 5
+            );
+            const span = width - pad * 2;
             ctx.strokeStyle = COLORS.grid; ctx.fillStyle = COLORS.cyan;
             if (line) {
                 ctx.beginPath();
@@ -132,10 +148,37 @@
         }
 
         updateRiskTrend(scans) {
-            const points = [...scans].reverse().map((scan) => ({ label: shortIdentifier(scan.chip_id || scan.scan_id, 9), value: extractRisk(scan) })).filter((item) => item.value !== null);
-            this._toggleEmpty("riskTrendEmpty", points.length === 0);
+            const points = [...scans]
+                .reverse()
+                .map((scan) => ({
+                    label: shortIdentifier(
+                        scan.chip_id || scan.scan_id,
+                        9
+                    ),
+                    value: extractRisk(scan),
+                }))
+                .filter((item) => item.value !== null);
+
+            this._toggleEmpty(
+                "riskTrendEmpty",
+                points.length === 0
+            );
+
             if (!points.length) return;
-            this._apply(this.instances.risk, points.map((item) => item.label), [points.map((item) => item.value)]);
+
+            const values = points.map((item) => item.value);
+
+            this._setDynamicMaximum(
+                this.instances.risk,
+                values,
+                2
+            );
+
+            this._apply(
+                this.instances.risk,
+                points.map((item) => item.label),
+                [values]
+            );
         }
 
         updateGoodBad(scans) {
@@ -144,18 +187,50 @@
                 statuses.filter((status) => status === "APPROVED").length,
                 statuses.filter((status) => ["REJECTED", "FAILED"].includes(status)).length,
                 statuses.filter((status) => status === "QUARANTINED").length,
+                statuses.filter((status) => status === "MANUAL_REVIEW").length,
             ];
             const hasData = values.some((value) => value > 0);
             this._toggleEmpty("goodBadEmpty", !hasData);
             if (!hasData) return;
-            this._apply(this.instances.goodBad, ["Approved", "Rejected", "Quarantined"], [values]);
+            this._apply(this.instances.goodBad, ["Approved", "Rejected", "Quarantined", "Manual Review"], [values]);
         }
 
         updateSupplierRisk(scans) {
-            const scores = scans.map((scan) => ({ label: shortIdentifier(scan.supplier_id || scan.latest_payload?.supplier_id || scan.chip_id, 9), value: extractSupplierRisk(scan) })).filter((item) => item.value !== null).slice(0, 10).reverse();
-            this._toggleEmpty("supplierRiskEmpty", scores.length === 0);
+            const scores = scans
+                .map((scan) => ({
+                    label: shortIdentifier(
+                        scan.supplier?.supplier_id
+                        || scan.supplier_id
+                        || scan.latest_payload?.supplier_id
+                        || scan.chip_id,
+                        9
+                    ),
+                    value: extractSupplierRisk(scan),
+                }))
+                .filter((item) => item.value !== null)
+                .slice(0, 10)
+                .reverse();
+
+            this._toggleEmpty(
+                "supplierRiskEmpty",
+                scores.length === 0
+            );
+
             if (!scores.length) return;
-            this._apply(this.instances.supplier, scores.map((item) => item.label), [scores.map((item) => item.value)]);
+
+            const values = scores.map((item) => item.value);
+
+            this._setDynamicMaximum(
+                this.instances.supplier,
+                values,
+                5
+            );
+
+            this._apply(
+                this.instances.supplier,
+                scores.map((item) => item.label),
+                [values]
+            );
         }
 
         _createRiskTrend(canvas) {
@@ -167,7 +242,7 @@
         _createGoodBad(canvas) {
             if (!canvas) return null;
             if (!this.useChartJs) return new CanvasFallback(canvas, "doughnut");
-            return new window.Chart(canvas, { type: "doughnut", data: { labels: [], datasets: [{ data: [], backgroundColor: [COLORS.green, COLORS.red, COLORS.amber], borderColor: "rgba(5,9,19,.8)", borderWidth: 4, hoverOffset: 5 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: "68%", plugins: { legend: { position: "bottom", labels: { boxWidth: 9, boxHeight: 9, padding: 14, usePointStyle: true } }, tooltip: { backgroundColor: "#07111f", borderColor: COLORS.grid, borderWidth: 1 } } } });
+            return new window.Chart(canvas, { type: "doughnut", data: { labels: [], datasets: [{ data: [], backgroundColor: [COLORS.green, COLORS.red, COLORS.amber, COLORS.purple], borderColor: "rgba(5,9,19,.8)", borderWidth: 4, hoverOffset: 5 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: "68%", plugins: { legend: { position: "bottom", labels: { boxWidth: 9, boxHeight: 9, padding: 14, usePointStyle: true } }, tooltip: { backgroundColor: "#07111f", borderColor: COLORS.grid, borderWidth: 1 } } } });
         }
 
         _createSupplierRisk(canvas) {
@@ -178,6 +253,29 @@
 
         _baseOptions({ yMax = null, legend = true } = {}) {
             return { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: "index" }, scales: { x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 8 } }, y: { beginAtZero: true, suggestedMax: yMax, max: yMax, grid: { color: COLORS.grid }, ticks: { precision: 0 } } }, plugins: { legend: { display: legend, labels: { boxWidth: 9, usePointStyle: true } }, tooltip: { backgroundColor: "#07111f", borderColor: COLORS.grid, borderWidth: 1, padding: 10, displayColors: false } } };
+        }
+
+        _setDynamicMaximum(instance, values, minimumMaximum) {
+            if (
+                !instance
+                || instance instanceof CanvasFallback
+                || !instance.options?.scales?.y
+            ) {
+                return;
+            }
+
+            const maximum = Math.max(
+                minimumMaximum,
+                ...values.map((value) => Number(value || 0))
+            );
+
+            const padded = Math.min(
+                100,
+                Math.ceil(maximum * 1.20 / 5) * 5
+            );
+
+            instance.options.scales.y.max = padded;
+            instance.options.scales.y.suggestedMax = padded;
         }
 
         _apply(instance, labels, datasets) {

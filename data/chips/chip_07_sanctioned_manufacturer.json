@@ -1,0 +1,85 @@
+{
+  "chip_id": "CHIP-PROD-SANCTIONED-007",
+  "scenario": "SANCTIONED_MANUFACTURER",
+  "simulation_type": "production_terminal_chip_scan",
+  "source": {
+    "component": "terminal",
+    "operator": "ali-raza",
+    "environment": "development"
+  },
+  "manufacturing": {
+    "country_of_origin": "XX",
+    "design_house": "Restricted Advanced Systems Bureau",
+    "fabrication_facility": "Denied Semiconductor Entity Plant-3",
+    "packaging_facility": "Restricted Package Complex",
+    "test_facility": "State Electronics Test Centre",
+    "distributor": "Denied Export Trading Corporation",
+    "lot_id": "LOT-XX-2026-007",
+    "wafer_id": "WAFER-XX-77007",
+    "serial_number": "SN-SANCTIONED-000007",
+    "current_stage": "EXPORT_CONTROL_SCREENING",
+    "chain_of_custody_complete": true
+  },
+  "supplier": {
+    "supplier_id": "SUP-DENIED-007",
+    "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+    "country": "XX",
+    "country_risk": 1.0,
+    "certificate_risk": 0.15,
+    "custody_gap_ratio": 0.0,
+    "sbom_mismatch_ratio": 0.0,
+    "threat_intel_score": 1.0,
+    "counterfeit_history": 0.25,
+    "financial_distress": 0.45
+  },
+  "supply_chain": {
+    "certificate_risk": 0.15,
+    "custody_gap_ratio": 0.0,
+    "digital_twin_match": true,
+    "sbom_match": true,
+    "sbom_mismatch_ratio": 0.0,
+    "restricted_party_match": true,
+    "restricted_party_action": "DENY"
+  },
+  "hardware_security": {
+    "puf": {
+      "authentication_expected": true,
+      "intra_device_hamming_distance": 0.04,
+      "stability_score": 0.96
+    },
+    "opentitan": {
+      "secure_boot": true,
+      "debug_locked": true,
+      "otp_integrity": true,
+      "rom_digest_valid": true,
+      "lifecycle_state": "PROD"
+    }
+  },
+  "compliance": {
+    "subject_to_ear": true,
+    "eccn": "3A090",
+    "destination_country": "GB",
+    "end_use": "defense communications accelerator",
+    "end_user_type": "defense contractor",
+    "end_user_name": "Example Defense Communications Contractor",
+    "defense_related": true,
+    "specially_designed_for_military": true,
+    "technical_data_transfer": true,
+    "usml_category": "XI"
+  },
+  "failure_reason": {
+    "type": "RESTRICTED_PARTY_AND_SANCTIONED_MANUFACTURER",
+    "stage": "RESTRICTED_PARTY_SCREENING",
+    "description": "The manufacturer is an exact deny-list match and cannot supply controlled critical-infrastructure hardware."
+  },
+  "expected_results": {
+    "pipeline_result": "PERMANENT_REJECTION",
+    "deployment_decision": "REJECTED_PERMANENTLY",
+    "dashboard_result": {
+      "overall_status": "REJECTED",
+      "classification": "SANCTIONED_MANUFACTURER",
+      "risk_level": "CRITICAL",
+      "alert_color": "RED"
+    }
+  }
+}

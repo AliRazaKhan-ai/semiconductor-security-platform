@@ -20,9 +20,10 @@
 
             this._notifyConnection("connecting", "Connecting to event stream");
             this.socket = window.io(this.namespace, {
-                transports: ["websocket", "polling"],
+                transports: ["polling", "websocket"],
+                upgrade: true,
                 reconnection: true,
-                reconnectionAttempts: Infinity,
+                reconnectionAttempts: 8,
                 reconnectionDelay: 1000,
                 reconnectionDelayMax: 8000,
                 timeout: 10000,

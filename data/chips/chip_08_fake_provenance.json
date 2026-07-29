@@ -1,0 +1,85 @@
+{
+  "chip_id": "CHIP-PROD-FAKE-PROVENANCE-008",
+  "scenario": "FAKE_BLOCKCHAIN_PROVENANCE",
+  "simulation_type": "production_terminal_chip_scan",
+  "source": {
+    "component": "terminal",
+    "operator": "ali-raza",
+    "environment": "development"
+  },
+  "manufacturing": {
+    "country_of_origin": "MY",
+    "design_house": "SecureSilicon Design GmbH",
+    "fabrication_facility": "TrustedFab Europe-1",
+    "packaging_facility": "Unverified Repackaging Hub",
+    "test_facility": "Independent Electronics Lab",
+    "distributor": "Transit Relay Logistics",
+    "lot_id": "LOT-MY-2026-008",
+    "wafer_id": "WAFER-DE-88208",
+    "serial_number": "SN-PROVENANCE-000008",
+    "current_stage": "BLOCKCHAIN_PROVENANCE_RECONCILIATION",
+    "chain_of_custody_complete": false
+  },
+  "supplier": {
+    "supplier_id": "DIST-RELAY-008",
+    "name": "Transit Relay Logistics",
+    "country": "MY",
+    "country_risk": 0.45,
+    "certificate_risk": 0.65,
+    "custody_gap_ratio": 0.55,
+    "sbom_mismatch_ratio": 0.2,
+    "threat_intel_score": 0.7,
+    "counterfeit_history": 0.45,
+    "financial_distress": 0.3
+  },
+  "supply_chain": {
+    "certificate_risk": 0.65,
+    "custody_gap_ratio": 0.55,
+    "digital_twin_match": false,
+    "sbom_match": false,
+    "sbom_mismatch_ratio": 0.2,
+    "fabric_record_hash_match": false,
+    "ethereum_root_hash_match": false,
+    "provenance_signature_valid": false
+  },
+  "hardware_security": {
+    "puf": {
+      "authentication_expected": true,
+      "intra_device_hamming_distance": 0.05,
+      "stability_score": 0.95
+    },
+    "opentitan": {
+      "secure_boot": true,
+      "debug_locked": true,
+      "otp_integrity": true,
+      "rom_digest_valid": true,
+      "lifecycle_state": "PROD"
+    }
+  },
+  "compliance": {
+    "subject_to_ear": true,
+    "eccn": "5A992",
+    "destination_country": "AE",
+    "end_use": "telecommunications core-network validation",
+    "end_user_type": "regulated telecommunications operator",
+    "end_user_name": "Example Core Network Operator",
+    "defense_related": false,
+    "specially_designed_for_military": false,
+    "technical_data_transfer": false
+  },
+  "failure_reason": {
+    "type": "BLOCKCHAIN_AND_PROVENANCE_HASH_MISMATCH",
+    "stage": "BLOCKCHAIN_PROVENANCE_RECONCILIATION",
+    "description": "Fabric record hash, Ethereum anchor root, signed provenance package and received chip identity are inconsistent."
+  },
+  "expected_results": {
+    "pipeline_result": "PERMANENT_REJECTION",
+    "deployment_decision": "REJECTED_PERMANENTLY",
+    "dashboard_result": {
+      "overall_status": "REJECTED",
+      "classification": "FAKE_PROVENANCE",
+      "risk_level": "CRITICAL",
+      "alert_color": "RED"
+    }
+  }
+}

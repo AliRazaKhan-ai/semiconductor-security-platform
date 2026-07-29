@@ -9,18 +9,55 @@
 </section>
 {% if scan %}
 <section class="kpi-grid compact-kpi-grid">
-    <article class="kpi-card accent-cyan"><div class="kpi-content"><span>Status</span><strong class="small-kpi">{{ scan.status }}</strong><small>Current decision state</small></div></article>
-    <article class="kpi-card accent-purple"><div class="kpi-content"><span>Current Stage</span><strong class="small-kpi">{{ scan.current_stage }}</strong><small>Last completed transition</small></div></article>
-    <article class="kpi-card accent-blue"><div class="kpi-content"><span>Sequence</span><strong>{{ scan.last_sequence }}</strong><small>{{ scan.event_count }} durable events</small></div></article>
-    <article class="kpi-card accent-green"><div class="kpi-content"><span>Updated</span><strong class="small-kpi timestamp-value">{{ scan.updated_at }}</strong><small>UTC event timestamp</small></div></article>
+    <article class="kpi-card accent-cyan"><div class="kpi-content"><span>Status</span><strong class="small-kpi" id="scanDetailStatus">{{ scan.status }}</strong><small>Final operational decision state</small></div></article>
+    <article class="kpi-card accent-purple"><div class="kpi-content"><span>Current Stage</span><strong class="small-kpi" id="scanDetailStage">{{ scan.current_stage }}</strong><small>Last completed or stopped stage</small></div></article>
+    <article class="kpi-card accent-blue"><div class="kpi-content"><span>Risk</span><strong id="scanDetailRisk">—</strong><small>Final normalised security risk</small></div></article>
+    <article class="kpi-card accent-green"><div class="kpi-content"><span>Updated</span><strong class="small-kpi timestamp-value" id="scanDetailUpdated">{{ scan.updated_at }}</strong><small>Latest integrated-run timestamp</small></div></article>
 </section>
 <section class="cyber-panel pipeline-panel" id="scanDetailPipeline" data-scan-id="{{ scan.scan_id }}">
     <header class="panel-header"><div><p class="panel-kicker">VALIDATION CHAIN</p><h3>Pipeline Timeline</h3></div><span class="status-badge neutral" id="pipelineStatus">{{ scan.status }}</span></header>
-    <div class="pipeline-track" id="pipelineTrack"></div><div class="pipeline-footer"><div class="pipeline-message" id="pipelineMessage">Loading immutable event sequence.</div></div>
+    <div class="pipeline-track" id="pipelineTrack"></div><div class="pipeline-footer"><div class="pipeline-message" id="pipelineMessage">Loading integrated pipeline sequence.</div></div>
+</section>
+<section class="cyber-panel mt-4">
+    <header class="panel-header"><div><p class="panel-kicker">MANUFACTURING & PROVENANCE</p><h3>Chip Origin and Production History</h3></div><span class="status-badge neutral" id="custodyStatus">CHECKING</span></header>
+    <div class="detail-grid expanded">
+        <div><span>Country of Origin</span><strong id="manufacturingCountry">—</strong></div>
+        <div><span>Design House</span><strong id="manufacturingDesignHouse">—</strong></div>
+        <div><span>Fabrication Facility</span><strong id="manufacturingFabrication">—</strong></div>
+        <div><span>Packaging Facility</span><strong id="manufacturingPackaging">—</strong></div>
+        <div><span>Test Facility</span><strong id="manufacturingTest">—</strong></div>
+        <div><span>Distributor / Logistics</span><strong id="manufacturingDistributor">—</strong></div>
+        <div><span>Lot ID</span><strong class="mono" id="manufacturingLot">—</strong></div>
+        <div><span>Wafer ID</span><strong class="mono" id="manufacturingWafer">—</strong></div>
+        <div><span>Serial Number</span><strong class="mono" id="manufacturingSerial">—</strong></div>
+        <div><span>Manufacturing Stage</span><strong id="manufacturingStage">—</strong></div>
+        <div><span>Supplier</span><strong id="supplierName">—</strong></div>
+        <div><span>Supplier ID</span><strong class="mono" id="supplierId">—</strong></div>
+        <div><span>Supplier Country</span><strong id="supplierCountry">—</strong></div>
+        <div><span>Chain of Custody</span><strong id="chainOfCustody">—</strong></div>
+        <div><span>Digital Twin</span><strong id="digitalTwinStatus">—</strong></div>
+        <div><span>SBOM Verification</span><strong id="sbomStatus">—</strong></div>
+    </div>
+</section>
+<section class="cyber-panel mt-4">
+    <header class="panel-header"><div><p class="panel-kicker">DECISION EVIDENCE</p><h3>Security and Deployment Summary</h3></div><span class="panel-badge" id="deploymentDecision">—</span></header>
+    <div class="detail-grid expanded">
+        <div><span>Scenario</span><strong id="scanScenario">—</strong></div>
+        <div><span>Stopped Stage</span><strong id="scanStoppedStage">—</strong></div>
+        <div><span>AI Classification</span><strong id="scanAIClassification">—</strong></div>
+        <div><span>Compliance Confidence</span><strong id="scanComplianceConfidence">—</strong></div>
+        <div><span>Fabric Validation</span><strong id="scanFabricValidation">—</strong></div>
+        <div><span>Ethereum Confirmation</span><strong id="scanEthereumConfirmation">—</strong></div>
+    </div>
 </section>
 <section class="cyber-panel mt-4">
     <header class="panel-header"><div><p class="panel-kicker">LATEST SNAPSHOT</p><h3>Evidence Summary</h3></div><span class="panel-badge">Hash-chained JSON</span></header>
-    <div class="detail-grid expanded"><div><span>Correlation ID</span><strong class="mono">{{ scan.correlation_id }}</strong></div><div><span>Last Event</span><strong>{{ scan.last_event_type }}</strong></div><div><span>Event Hash</span><strong class="mono break-all">{{ scan.last_event_hash }}</strong></div><div><span>Schema</span><strong>{{ scan.schema_version }}</strong></div></div>
+    <div class="detail-grid expanded">
+        <div><span>Correlation ID</span><strong class="mono" id="scanCorrelationId">{{ scan.correlation_id }}</strong></div>
+        <div><span>Last Event</span><strong id="scanLastEvent">{{ scan.last_event_type }}</strong></div>
+        <div><span>Event Hash</span><strong class="mono break-all" id="scanEventHash">{{ scan.last_event_hash }}</strong></div>
+        <div><span>Schema</span><strong>{{ scan.schema_version }}</strong></div>
+    </div>
     <pre class="json-viewer" id="scanPayload">{{ scan.latest_payload|tojson(indent=2) }}</pre>
 </section>
 {% else %}<section class="cyber-panel"><div class="empty-state"><span>×</span><p>The requested scan was not found.</p></div></section>{% endif %}
