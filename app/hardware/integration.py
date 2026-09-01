@@ -28,12 +28,56 @@ class HardwareSecurityPipeline:
     def _record(self,scan_id,chip_id,correlation_id,event_type,stage,payload):
         record=self.events.append(scan_id=scan_id,chip_id=chip_id,event_type=event_type,pipeline_stage=stage,correlation_id=correlation_id,source_component=f'hardware.{stage}',component_version='1.0.0',payload=payload,evidence_hashes={k:v for k,v in payload.items() if k.endswith('_digest') and isinstance(v,str)})
         if self.publisher:self.publisher.publish_record(record)
+    def _yosys_stage(self, manifest: dict[str, Any]) -> dict[str, Any]:
+        """Synthesise the candidate RTL, differencing against a reference when one is declared.
+
+        The structural delta is reported as evidence, not as a gate. A legitimate design
+        revision also diverges from its predecessor, so divergence is weighted by the model
+        and surfaced to a reviewer rather than triggering automatic rejection. The stage's
+        pass/fail remains governed by the absolute policy checks in rules.evaluate().
+        """
+        rtl = Path(manifest["rtl_file"])
+        top = str(manifest["top_module"])
+        reference = manifest.get("reference_rtl_file")
+
+        if not reference:
+            payload = self.yosys.analyse(rtl, top).to_dict()
+            payload["structural_analysis"] = {
+                "available": False,
+                "reason": "NO_REFERENCE_RTL_IN_MANIFEST",
+                "netlist_delta_ratio": None,
+            }
+            return payload
+
+        result, report = self.yosys.analyse_against_reference(
+            rtl, Path(reference), top
+        )
+
+        reference_cells = int(report["reference_metrics"]["cells"])
+        candidate_cells = int(report["candidate_metrics"]["cells"])
+        denominator = max(1, reference_cells, candidate_cells)
+        bounded_ratio = min(
+            1.0,
+            float(report["delta"]["absolute_cell_delta"]) / float(denominator),
+        )
+
+        report["netlist_delta_ratio_reference_normalised"] = report["netlist_delta_ratio"]
+        report["netlist_delta_ratio"] = bounded_ratio
+        report["normalisation"] = "max(reference_cells, candidate_cells)"
+        report["available"] = True
+
+        payload = result.to_dict()
+        payload["structural_analysis"] = report
+        payload["netlist_delta_ratio"] = bounded_ratio
+        payload["structural_reasons"] = report["structural_reasons"]
+        return payload
+
     def run(self,*,scan_id:str,chip_id:str,correlation_id:str,manifest:dict[str,Any])->HardwarePipelineResult:
         results={}
         handlers={
           'opentitan':lambda:self.opentitan.verify_file(Path(manifest['opentitan_evidence'])).to_dict(),
           'chipwhisperer':lambda:self.chipwhisperer.analyse_files(Path(manifest['side_channel_trace']),Path(manifest['side_channel_reference'])).to_dict(),
-          'yosys':lambda:self.yosys.analyse(Path(manifest['rtl_file']),str(manifest['top_module'])).to_dict(),
+          'yosys':lambda:self._yosys_stage(manifest),
           'verilator':lambda:self.verilator.simulate(Path(manifest['rtl_file']),Path(manifest['testbench_file']),str(manifest['top_module'])).to_dict(),
           'sbom':lambda:self.sbom.generate(chip_id=chip_id,artifacts=[Path(p) for p in manifest['sbom_artifacts']],output=self.root/'data/sbom'/f'{scan_id}.cdx.json',metadata=manifest.get('sbom_metadata')).to_dict(),
         }
