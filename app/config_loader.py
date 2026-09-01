@@ -13,7 +13,12 @@ from typing import Any
 
 from app.constants import DEFAULT_ENVIRONMENT
 from app.exceptions import ConfigurationError
-from app.storage.config_store import deep_merge, load_directory, load_json_file, validate_platform_config
+from app.storage.config_store import (
+    deep_merge,
+    load_directory,
+    load_json_file,
+    validate_platform_config,
+)
 from app.types import JSONObject
 
 

@@ -5,11 +5,11 @@ from __future__ import annotations
 from pathlib import Path
 
 from app.hardware.puf.config import load_puf_config
-from tests.puf_test_config import compact_puf_config
 from app.hardware.puf.crypto import derive_key
 from app.hardware.puf.schemas import PUFEnvironment
 from app.hardware.puf.simulator import ChallengeFactory, HybridPUFSimulator
 from app.hardware.puf.stability import masked_hamming_distance
+from tests.puf_test_config import compact_puf_config
 
 
 def _config():

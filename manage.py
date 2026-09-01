@@ -19,12 +19,11 @@ from typing import Any, Sequence
 
 from dotenv import load_dotenv
 
+from app.extensions import socketio
 from app.factory import create_app
 from app.integration import IntegratedPipelineService
-from app.extensions import socketio
-from app.pipeline.simulation_gate import evaluate_simulation_gate
 from app.pipeline.orchestrator import Phase3Orchestrator
-
+from app.pipeline.simulation_gate import evaluate_simulation_gate
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 

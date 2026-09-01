@@ -1,10 +1,14 @@
 """Persisted robust feature normalization with schema enforcement."""
 from __future__ import annotations
-from dataclasses import dataclass
+
 import json
+from dataclasses import dataclass
 from pathlib import Path
+
 import numpy as np
+
 from app.ai.common import AIFeatureError
+
 
 @dataclass(frozen=True, slots=True)
 class RobustNormalizer:

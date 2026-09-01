@@ -12,7 +12,6 @@ from app.hardware.puf.crypto import derive_key
 from app.hardware.puf.schemas import PUFEnvironment
 from app.hardware.puf.simulator import ChallengeFactory, HybridPUFSimulator
 from app.hardware.puf.stability import masked_hamming_distance
-
 from tests.hardware_simulation.test_puf_simulator import _config
 
 

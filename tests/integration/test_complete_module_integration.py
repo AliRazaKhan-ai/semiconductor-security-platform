@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import json
-
 from pathlib import Path
 
 import pytest
 
 from app import create_app
 from app.integration import IntegratedPipelineService
-
 
 
 def _real_hardware_manifest_available(path: Path) -> bool:
@@ -34,6 +32,8 @@ def _real_hardware_manifest_available(path: Path) -> bool:
         "opentitan_evidence",
         "side_channel_trace",
         "side_channel_reference",
+        "ai_em_trace",
+        "ai_timing_trace",
         "rtl_file",
         "testbench_file",
     )

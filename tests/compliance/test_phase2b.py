@@ -1,7 +1,9 @@
 from pathlib import Path
+
 from app.compliance.export_control import ExportControlEngine
-from app.compliance.supplier_risk import SupplierRiskEngine
 from app.compliance.policy_engine import PolicyEngine
+from app.compliance.supplier_risk import SupplierRiskEngine
+
 
 def config():
  return {"ruleset_version":"t","restricted_parties":{"path":"csl.json","deny_threshold":96,"review_threshold":82},"itar":{"military_indicators":["military"],"space_indicators":[]},"ear":{"restricted_destinations":[],"controlled_eccns":[],"prohibited_end_use_terms":[],"military_end_user_terms":[]},"supplier_risk":{"version":"t","weights":{"country_risk":1,"custody_gap_ratio":0,"certificate_risk":0,"sbom_mismatch_ratio":0,"threat_intel_score":0,"counterfeit_history":0,"financial_distress":0,"ai_risk":0},"country_risk":{"XX":1}},"policy":{"version":"t","thresholds":{"deny_ai_risk":.8,"hold_supplier_risk":.6,"minimum_ai_confidence":.6}}}

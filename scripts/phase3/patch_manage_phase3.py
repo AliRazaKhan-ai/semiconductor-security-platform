@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-
 path = Path("manage.py")
 text = path.read_text(encoding="utf-8")
 

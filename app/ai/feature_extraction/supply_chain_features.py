@@ -1,7 +1,10 @@
 """Extract policy-bounded supplier, provenance, PUF, and root-of-trust features."""
 from __future__ import annotations
+
 from typing import Any
-from app.ai.common import finite_float, clamp
+
+from app.ai.common import clamp, finite_float
+
 
 def extract_supply_chain(evidence: dict[str,Any]) -> dict[str,float]:
     s=dict(evidence.get("supply_chain",{})); p=dict(evidence.get("puf",{})); o=dict(evidence.get("opentitan",{}))

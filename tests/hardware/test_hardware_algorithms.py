@@ -1,18 +1,23 @@
 from __future__ import annotations
-import hashlib,hmac,json
-from datetime import UTC,datetime
+
+import hashlib
+import hmac
+import json
+from datetime import UTC, datetime
 from pathlib import Path
-from app.hardware.common import canonical_json
-from app.hardware.opentitan.attestation import OpenTitanAttestationVerifier
-from app.hardware.opentitan.schemas import OpenTitanEvidence
+
 from app.hardware.chipwhisperer.analysis import analyse_trace
+from app.hardware.common import canonical_json
 from app.hardware.digital_twin.schemas import DigitalTwin
 from app.hardware.digital_twin.validator import validate_twin
+from app.hardware.opentitan.attestation import OpenTitanAttestationVerifier
+from app.hardware.opentitan.schemas import OpenTitanEvidence
 from app.hardware.sbom.generator import SBOMGenerator
+
 
 def test_opentitan_attestation():
     key=b'k'*32; fw='1'*64
-    e=OpenTitanEvidence('d','PROD','ROM_EXT','2'*64,fw,'3'*64,7,'n','',(),datetime.now(UTC).isoformat())
+    e=OpenTitanEvidence('d','PROD','ROM_EXT','2'*64,fw,'3'*64,7,'ab'*16,'',(),datetime.now(UTC).isoformat())
     d=e.to_dict();d.pop('signature');sig=hmac.new(key,canonical_json(d),hashlib.sha256).hexdigest();e=OpenTitanEvidence(**{**e.to_dict(),'signature':sig})
     assert OpenTitanAttestationVerifier(trusted_firmware_digests={fw},verification_key=key,allowed_lifecycle_states={'PROD'}).verify(e).passed
 

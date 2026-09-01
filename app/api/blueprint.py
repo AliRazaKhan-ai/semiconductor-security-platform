@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from app.constants import API_PREFIX
 from app.api.routes import VERSIONED_BLUEPRINTS
+from app.constants import API_PREFIX
 
 bp = Blueprint("api", __name__, url_prefix=API_PREFIX)
 for child in VERSIONED_BLUEPRINTS:

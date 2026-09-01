@@ -6,7 +6,6 @@ from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from typing import Any
 
-
 VALID_STAGE_STATUSES = {
     "PENDING",
     "RUNNING",

@@ -1,7 +1,11 @@
 """Compute per-feature reconstruction errors using inference-only PyTorch execution."""
 from __future__ import annotations
+
 import numpy as np
+
 from app.ai.common import AIModelError
+
+
 def reconstruction_error(model,features:np.ndarray)->tuple[float,np.ndarray]:
     try: import torch
     except ImportError as exc: raise AIModelError("PyTorch is not installed") from exc

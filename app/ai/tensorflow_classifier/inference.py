@@ -1,7 +1,10 @@
 """Run bounded CNN inference and reject malformed model outputs."""
 from __future__ import annotations
+
 import numpy as np
+
 from app.ai.common import AIModelError
+
 
 def predict(model, sequence: np.ndarray) -> np.ndarray:
     x=np.asarray(sequence,dtype=np.float32)

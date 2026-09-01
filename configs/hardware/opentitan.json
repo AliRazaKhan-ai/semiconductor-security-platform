@@ -1,12 +1,14 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "allowed_lifecycle_states": [
     "DEV",
     "PROD",
     "PROD_END"
   ],
-  "trusted_firmware_digests": [
-    "0000000000000000000000000000000000000000000000000000000000000000"
-  ],
-  "minimum_counter": 0
+  "trusted_firmware_digests": [],
+  "minimum_counter": 0,
+  "minimum_nonce_bytes": 16,
+  "maximum_attestation_age_seconds": 300,
+  "maximum_future_skew_seconds": 30,
+  "replay_state_path": "data/hardware/opentitan-replay.json"
 }

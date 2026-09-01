@@ -1,6 +1,9 @@
 from pathlib import Path
-from flask import Blueprint,current_app,g,request,send_file
+
+from flask import Blueprint, current_app, g, request, send_file
+
 from app.api.response import success
+
 bp=Blueprint("compliance_api",__name__,url_prefix="/api/v1/compliance")
 def svc():
  s=current_app.extensions.get("semisecure.compliance_service")

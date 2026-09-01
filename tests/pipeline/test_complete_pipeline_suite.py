@@ -14,7 +14,6 @@ import pytest
 
 from app.pipeline.simulation_gate import evaluate_simulation_gate
 
-
 ROOT = Path(__file__).resolve().parents[2]
 CHIP_ROOT = ROOT / "data" / "chips"
 

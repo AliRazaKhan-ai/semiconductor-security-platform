@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from flask import Blueprint, current_app, jsonify
+
 bp=Blueprint('hardware_status',__name__,url_prefix='/hardware')
 @bp.get('/status')
 def status():

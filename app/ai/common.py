@@ -1,9 +1,11 @@
 """Shared immutable AI contracts, hashing, and numeric validation."""
 from __future__ import annotations
+
+import json
 from dataclasses import asdict, dataclass, field
 from hashlib import sha256
-import json
 from typing import Any, Iterable
+
 
 class AIError(RuntimeError):
     code = "ai_error"

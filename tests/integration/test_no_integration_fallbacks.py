@@ -31,6 +31,7 @@ def test_hardware_uses_explicit_strict_adapter() -> None:
     assert "semisecure.hardware_pipeline" in hardware_section
     assert "_invoke_service(" not in hardware_section
     assert "optional=True" not in hardware_section
+    assert "evaluate_simulation_gate" not in hardware_section
 
 
 def test_ai_uses_explicit_strict_adapter() -> None:

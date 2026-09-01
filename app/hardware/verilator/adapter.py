@@ -1,10 +1,14 @@
 from __future__ import annotations
+
 import hashlib
 from pathlib import Path
+
 from app.hardware.common import sha256_file
 from app.hardware.verilator.result_parser import parse_output
 from app.hardware.verilator.runner import VerilatorRunner
 from app.hardware.verilator.schemas import VerilatorResult
+
+
 class VerilatorAdapter:
     def __init__(self,runner:VerilatorRunner|None=None)->None:self.runner=runner or VerilatorRunner()
     def simulate(self,rtl:Path,testbench:Path,top:str)->VerilatorResult:

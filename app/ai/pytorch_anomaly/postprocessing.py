@@ -1,8 +1,13 @@
 """Map reconstruction error to anomaly probability and confidence."""
 from __future__ import annotations
+
 import math
+
 import numpy as np
+
 from app.ai.common import clamp
+
+
 def postprocess(error:float,per_feature:np.ndarray,threshold:float,scale:float,feature_names:tuple[str,...])->dict:
     z=(error-threshold)/max(scale,1e-9); probability=1/(1+math.exp(-max(-40,min(40,z))))
     distance=abs(error-threshold)/max(scale,1e-9); confidence=clamp(1-math.exp(-distance))

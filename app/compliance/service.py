@@ -1,11 +1,15 @@
 from __future__ import annotations
-from pathlib import Path
+
 import json
+from pathlib import Path
+
 from app.compliance.common import canonical_hash
 from app.compliance.export_control import ExportControlEngine
-from app.compliance.supplier_risk import SupplierRiskEngine
 from app.compliance.policy_engine import PolicyEngine
 from app.compliance.reporting import ComplianceReportGenerator
+from app.compliance.supplier_risk import SupplierRiskEngine
+
+
 class ComplianceService:
  def __init__(self,root:Path,config:dict,event_store,publisher=None,blockchain_service=None):
   self.root=root;self.c=config;self.events=event_store;self.publisher=publisher;self.blockchain=blockchain_service;self.export=ExportControlEngine(config,root);self.supplier=SupplierRiskEngine(config["supplier_risk"]);self.policy=PolicyEngine(config["policy"]);self.reporter=ComplianceReportGenerator(root/config["reporting"]["root"],config["reporting"])

@@ -1,8 +1,12 @@
 """End-to-end production AI pipeline facade."""
 from __future__ import annotations
+
 from typing import Any
+
 from app.ai.feature_extraction import FeatureExtractionService
 from app.ai.feature_extraction.normalization import RobustNormalizer
+
+
 class AIPipelineService:
  def __init__(self,feature_service:FeatureExtractionService,normalizer:RobustNormalizer,cnn,anomaly,risk): self.features=feature_service; self.normalizer=normalizer; self.cnn=cnn; self.anomaly=anomaly; self.risk=risk
  def analyze(self,evidence:dict[str,Any],controls:dict[str,Any]):

@@ -8,9 +8,10 @@ import json
 import os
 import tempfile
 import time
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 from uuid import uuid4
 
 from flask import Flask
@@ -240,6 +241,7 @@ class IntegratedPipelineService:
             "AI_ANALYSIS",
             lambda: self._run_ai(
                 simulation,
+                puf,
                 hardware,
             ),
             mandatory=True,
@@ -565,6 +567,9 @@ class IntegratedPipelineService:
                     gate.deployment_decision
                 ),
                 "details": gate.to_dict(),
+                "verification_source": (
+                    "SIMULATION_FIXTURE_GATE"
+                ),
             }
 
         puf = (
@@ -591,6 +596,9 @@ class IntegratedPipelineService:
                 "CONTINUE"
             ),
             "details": puf,
+            "verification_source": (
+                "SIMULATED_PUF_FIXTURE"
+            ),
         }
 
     def _run_hardware(
@@ -600,20 +608,6 @@ class IntegratedPipelineService:
         correlation_id: str,
     ) -> dict[str, Any]:
         """Execute the registered hardware service using its exact contract."""
-        gate = evaluate_simulation_gate(simulation)
-
-        if not gate.passed:
-            return {
-                "passed": False,
-                "classification": gate.classification,
-                "failed_stage": gate.stage,
-                "risk_score": gate.risk_score,
-                "confidence": gate.confidence,
-                "reasons": list(gate.reasons),
-                "deployment_decision": gate.deployment_decision,
-                "details": gate.to_dict(),
-            }
-
         service = self.app.extensions.get(
             "semisecure.hardware_pipeline"
         )
@@ -633,6 +627,7 @@ class IntegratedPipelineService:
     def _run_ai(
         self,
         simulation: dict[str, Any],
+        puf: dict[str, Any],
         hardware: dict[str, Any],
     ) -> dict[str, Any]:
         """Execute the registered AI service using its exact contract."""
@@ -644,6 +639,7 @@ class IntegratedPipelineService:
             return run_ai_pipeline(
                 service=service,
                 simulation=simulation,
+                puf_result=puf,
                 hardware_result=hardware,
             )
         except AdapterError as exc:

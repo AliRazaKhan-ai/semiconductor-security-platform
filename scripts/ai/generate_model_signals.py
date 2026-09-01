@@ -25,8 +25,11 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from dataset import load_dataset
-from app.ai.pytorch_anomaly.loader import build_autoencoder
+from dataset import load_dataset, load_split  # noqa: E402
+
+from app.ai.feature_extraction.normalization import RobustNormalizer  # noqa: E402
+from app.ai.feature_extraction.schemas import FEATURE_NAMES  # noqa: E402
+from app.ai.pytorch_anomaly.loader import build_autoencoder  # noqa: E402
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -38,6 +41,18 @@ def parse_arguments() -> argparse.Namespace:
         type=Path,
         required=True,
         help="NPZ dataset containing features, sequences and labels.",
+    )
+    parser.add_argument(
+        "--split",
+        type=Path,
+        required=True,
+        help="Canonical dataset split JSON.",
+    )
+    parser.add_argument(
+        "--normalizer",
+        type=Path,
+        required=True,
+        help="Persisted production feature normalizer.",
     )
     parser.add_argument(
         "--tensorflow-model",
@@ -288,6 +303,29 @@ def main() -> None:
         raise ValueError("--batch-size must be at least 1.")
 
     features, sequences, labels = load_dataset(arguments.dataset)
+    split = load_split(
+        arguments.split,
+        arguments.dataset,
+        labels,
+    )
+
+    normalizer = RobustNormalizer.load(
+        arguments.normalizer
+    )
+
+    if (
+        tuple(normalizer.feature_names)
+        != FEATURE_NAMES
+    ):
+        raise ValueError(
+            "normalizer feature schema does not match training schema"
+        )
+
+    normalized_features = (
+        normalizer.transform(
+            features
+        )
+    )
 
     cnn_score, cnn_confidence = calculate_cnn_signals(
         sequences=sequences,
@@ -296,7 +334,7 @@ def main() -> None:
     )
 
     anomaly_score, anomaly_confidence = calculate_anomaly_signals(
-        features=features,
+        features=normalized_features,
         model_path=arguments.pytorch_model,
         batch_size=arguments.batch_size,
     )
@@ -317,6 +355,16 @@ def main() -> None:
         cnn_confidence=cnn_confidence,
         anomaly_score=anomaly_score,
         anomaly_confidence=anomaly_confidence,
+        sample_indices=np.arange(
+            len(labels),
+            dtype=np.int64,
+        ),
+        dataset_sha256=np.asarray(
+            split.dataset_sha256
+        ),
+        split_digest=np.asarray(
+            split.split_digest
+        ),
     )
 
     print(f"Generated: {arguments.output}")

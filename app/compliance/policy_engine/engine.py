@@ -1,4 +1,6 @@
 from app.compliance.common import canonical_hash
+
+
 class PolicyEngine:
  def __init__(self,c:dict):self.c=c
  def decide(self,e:dict,s:dict,ai:dict)->dict:

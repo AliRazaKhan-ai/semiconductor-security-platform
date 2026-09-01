@@ -1,6 +1,8 @@
 from __future__ import annotations
+
 import math
 from statistics import mean
+
 
 def validate_trace(values:list[float], minimum_samples:int=128)->list[float]:
     if len(values)<minimum_samples: raise ValueError(f'trace requires at least {minimum_samples} samples')

@@ -1,6 +1,12 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "anomaly_threshold": 0.35,
   "minimum_samples": 128,
-  "maximum_alignment_shift": 32
+  "maximum_alignment_shift": 32,
+  "allowed_source_types": [
+    "OFFLINE_TRACE",
+    "SIMULATED_TRACE",
+    "IMPORTED_TRACE"
+  ],
+  "physical_capture_verification": "NOT_IMPLEMENTED"
 }

@@ -13,7 +13,6 @@ import pytest
 from bs4 import BeautifulSoup
 from flask.testing import FlaskClient
 
-
 ROOT = Path(__file__).resolve().parents[2]
 
 

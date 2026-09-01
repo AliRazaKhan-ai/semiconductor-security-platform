@@ -14,7 +14,6 @@ from flask import (
 from app.integration import IntegratedPipelineService
 from app.integration.service import IntegrationError
 
-
 bp = Blueprint(
     "integration",
     __name__,

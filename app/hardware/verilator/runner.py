@@ -1,8 +1,12 @@
 from __future__ import annotations
+
 import tempfile
 from pathlib import Path
+
 from app.hardware.common import CommandRunner, HardwareIntegrationError, require_file
 from app.hardware.verilator.testbench import validate_testbench
+
+
 class VerilatorRunner:
     def __init__(self,runner:CommandRunner|None=None)->None:self.runner=runner or CommandRunner(timeout_seconds=240)
     def execute(self,rtl:Path,testbench:Path,top:str)->tuple[str,str]:

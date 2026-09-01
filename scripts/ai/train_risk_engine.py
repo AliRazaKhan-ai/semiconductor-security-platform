@@ -1,19 +1,206 @@
 #!/usr/bin/env python3
-"""Train and calibrate the Scikit-learn risk classifier."""
+"""Train and evaluate the risk classifier using the canonical AI split."""
+
 from __future__ import annotations
-import argparse,json
+
+import argparse
+import json
+import sys
 from pathlib import Path
-import joblib,numpy as np
+
+import joblib
+import numpy as np
+
+sys.path.insert(
+    0,
+    str(
+        Path(__file__).resolve().parents[2]
+    ),
+)
+from dataset import (
+    load_dataset,
+    load_model_signals,
+    load_split,
+)
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report,roc_auc_score
-from sklearn.model_selection import train_test_split
-from dataset import load_dataset
-def main():
- p=argparse.ArgumentParser(); p.add_argument('--dataset',type=Path,required=True); p.add_argument('--model-signals',type=Path,required=True); p.add_argument('--output',type=Path,required=True); p.add_argument('--seed',type=int,default=42); a=p.parse_args()
- x,_,y=load_dataset(a.dataset); sig=np.load(a.model_signals,allow_pickle=False); signals=np.column_stack([sig['cnn_score'],sig['cnn_confidence'],sig['anomaly_score'],sig['anomaly_confidence']]).astype(np.float32)
- if len(signals)!=len(x): raise ValueError('model signals and dataset length differ')
- z=np.column_stack([x,signals]); xtr,xte,ytr,yte=train_test_split(z,(y>0).astype(int),test_size=.2,stratify=(y>0),random_state=a.seed)
- base=RandomForestClassifier(n_estimators=500,max_depth=14,min_samples_leaf=3,class_weight='balanced_subsample',n_jobs=-1,random_state=a.seed); model=CalibratedClassifierCV(base,method='sigmoid',cv=5); model.fit(xtr,ytr); pred=model.predict(xte); prob=model.predict_proba(xte)[:,1]
- a.output.parent.mkdir(parents=True,exist_ok=True); joblib.dump(model,a.output); a.output.with_suffix('.metrics.json').write_text(json.dumps({"roc_auc":roc_auc_score(yte,prob),"classification_report":classification_report(yte,pred,output_dict=True)},indent=2))
-if __name__=='__main__': main()
+from sklearn.metrics import (
+    classification_report,
+    roc_auc_score,
+)
+
+from app.ai.feature_extraction.normalization import RobustNormalizer  # noqa: E402
+from app.ai.feature_extraction.schemas import FEATURE_NAMES  # noqa: E402
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--dataset",
+        type=Path,
+        required=True,
+    )
+    parser.add_argument(
+        "--split",
+        type=Path,
+        required=True,
+    )
+    parser.add_argument(
+        "--normalizer",
+        type=Path,
+        required=True,
+    )
+    parser.add_argument(
+        "--model-signals",
+        type=Path,
+        required=True,
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+    )
+
+    arguments = parser.parse_args()
+
+    features, _, labels = load_dataset(
+        arguments.dataset
+    )
+
+    split = load_split(
+        arguments.split,
+        arguments.dataset,
+        labels,
+    )
+
+    signals = load_model_signals(
+        arguments.model_signals,
+        split,
+    )
+
+    normalizer = RobustNormalizer.load(
+        arguments.normalizer
+    )
+
+    if (
+        tuple(normalizer.feature_names)
+        != FEATURE_NAMES
+    ):
+        raise ValueError(
+            "normalizer feature schema does not match training schema"
+        )
+
+    normalized_features = (
+        normalizer.transform(
+            features
+        )
+    )
+
+    combined = np.column_stack(
+        [
+            normalized_features,
+            signals,
+        ]
+    )
+
+    target = (
+        labels > 0
+    ).astype(
+        np.int64
+    )
+
+    train_indices = np.asarray(
+        split.train_indices,
+        dtype=np.int64,
+    )
+
+    test_indices = np.asarray(
+        split.test_indices,
+        dtype=np.int64,
+    )
+
+    base = RandomForestClassifier(
+        n_estimators=500,
+        max_depth=14,
+        min_samples_leaf=3,
+        class_weight="balanced_subsample",
+        n_jobs=-1,
+        random_state=arguments.seed,
+    )
+
+    model = CalibratedClassifierCV(
+        base,
+        method="sigmoid",
+        cv=5,
+    )
+
+    model.fit(
+        combined[train_indices],
+        target[train_indices],
+    )
+
+    predictions = model.predict(
+        combined[test_indices]
+    )
+
+    probabilities = (
+        model.predict_proba(
+            combined[test_indices]
+        )[:, 1]
+    )
+
+    arguments.output.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    joblib.dump(
+        model,
+        arguments.output,
+    )
+
+    metrics = {
+        "evaluation_split": "TEST",
+        "dataset_sha256": split.dataset_sha256,
+        "split_digest": split.split_digest,
+        "train_samples": len(
+            split.train_indices
+        ),
+        "validation_samples": len(
+            split.validation_indices
+        ),
+        "test_samples": len(
+            split.test_indices
+        ),
+        "roc_auc": roc_auc_score(
+            target[test_indices],
+            probabilities,
+        ),
+        "classification_report": (
+            classification_report(
+                target[test_indices],
+                predictions,
+                output_dict=True,
+                zero_division=0,
+            )
+        ),
+    }
+
+    arguments.output.with_suffix(
+        ".metrics.json"
+    ).write_text(
+        json.dumps(
+            metrics,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+
+if __name__ == "__main__":
+    main()

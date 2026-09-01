@@ -6,5 +6,30 @@
   "forbidden_cell_types": [
     "$dlatch"
   ],
-  "required_cell_types": []
+  "required_cell_types": [],
+  "structural_baseline": {
+    "enabled": true,
+    "maximum_absolute_cell_delta": 4,
+    "maximum_absolute_wire_bit_delta": 24,
+    "maximum_absolute_public_wire_delta": 2,
+    "maximum_additional_sequential_cells": 1,
+    "maximum_additional_control_cells": 3,
+    "sequential_cell_types": [
+      "$adff",
+      "$adffe",
+      "$dff",
+      "$dffe",
+      "$dlatch"
+    ],
+    "control_cell_types": [
+      "$eq",
+      "$ne",
+      "$logic_and",
+      "$logic_or",
+      "$mux",
+      "$pmux",
+      "$reduce_and",
+      "$reduce_or"
+    ]
+  }
 }

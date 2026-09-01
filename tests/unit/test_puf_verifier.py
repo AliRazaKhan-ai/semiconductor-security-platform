@@ -9,9 +9,9 @@ import pytest
 
 from app.hardware.puf.adapter import PUFAdapter
 from app.hardware.puf.config import load_puf_config
-from tests.puf_test_config import compact_puf_config
 from app.hardware.puf.exceptions import PUFIntegrityError, PUFReplayError
 from app.hardware.puf.schemas import PUFEnvironment
+from tests.puf_test_config import compact_puf_config
 
 
 def _adapter(tmp_path: Path) -> PUFAdapter:

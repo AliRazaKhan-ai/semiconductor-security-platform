@@ -10,7 +10,6 @@ from app.api.response import success
 from app.exceptions import ValidationError
 from app.extensions import event_store
 
-
 bp = Blueprint("scan_queries", __name__)
 
 

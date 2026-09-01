@@ -1,8 +1,13 @@
 from __future__ import annotations
+
+import json
+import re
 from pathlib import Path
-import json,re
+
 from rapidfuzz import fuzz
+
 from app.compliance.common import Finding
+
 
 def norm(v:str)->str:return " ".join(re.sub(r"[^A-Z0-9 ]+"," ",v.upper()).split())
 

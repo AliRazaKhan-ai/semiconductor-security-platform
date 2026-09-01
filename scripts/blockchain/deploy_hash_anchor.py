@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Compile and deploy HashAnchor using solcx and web3."""
 from __future__ import annotations
-import argparse, json, os
+
+import argparse
+import json
+import os
 from pathlib import Path
+
 from solcx import compile_standard, install_solc
 from web3 import Web3
 

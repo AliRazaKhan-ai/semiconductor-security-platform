@@ -1,15 +1,17 @@
 from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
-from app.hardware.common import HardwareIntegrationError
-from app.hardware.opentitan import OpenTitanAdapter
+
 from app.hardware.chipwhisperer import ChipWhispererAdapter
-from app.hardware.yosys import YosysAdapter
-from app.hardware.verilator import VerilatorAdapter
+from app.hardware.common import HardwareIntegrationError
 from app.hardware.digital_twin import DigitalTwinService
+from app.hardware.opentitan import OpenTitanAdapter
 from app.hardware.sbom import SBOMGenerator, validate_sbom
+from app.hardware.verilator import VerilatorAdapter
+from app.hardware.yosys import YosysAdapter
 from app.storage.event_store import EventStore
 
 logger=logging.getLogger(__name__)

@@ -1,8 +1,14 @@
 from __future__ import annotations
-from dataclasses import asdict,dataclass,field
+
+import hmac
+import json
+import math
+import os
+from dataclasses import asdict, dataclass, field
 from hashlib import sha256
-import hmac,json,math,os
 from typing import Any
+
+
 class ComplianceError(RuntimeError): pass
 def canonical_json(v:Any)->str:return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False)
 def canonical_hash(v:Any)->str:return sha256(canonical_json(v).encode()).hexdigest()

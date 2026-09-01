@@ -1,8 +1,11 @@
 """Lazy TensorFlow model loader with artifact digest verification."""
 from __future__ import annotations
+
 from hashlib import sha256
 from pathlib import Path
+
 from app.ai.common import AIModelError
+
 
 def file_hash(path: Path)->str:
     h=sha256()

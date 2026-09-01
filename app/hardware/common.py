@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import tempfile
 import time
@@ -96,34 +97,152 @@ def require_file(path: Path, component: str, maximum_bytes: int = 128 * 1024 * 1
 
 
 class CommandRunner:
-    def __init__(self, *, timeout_seconds: int = 120, maximum_output_bytes: int = 4 * 1024 * 1024) -> None:
+    _INHERITED_ENVIRONMENT_KEYS = (
+        "PATH",
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "SHELL",
+        "TERM",
+    )
+
+    def __init__(
+        self,
+        *,
+        timeout_seconds: int = 120,
+        maximum_output_bytes: int = 4 * 1024 * 1024,
+    ) -> None:
         self.timeout_seconds = timeout_seconds
         self.maximum_output_bytes = maximum_output_bytes
 
     def executable(self, name: str) -> str:
         location = shutil.which(name)
         if not location:
-            raise HardwareIntegrationError("command", f"Required executable is unavailable: {name}")
+            raise HardwareIntegrationError(
+                "command",
+                f"Required executable is unavailable: {name}",
+            )
         return location
 
-    def run(self, command: Sequence[str], *, cwd: Path | None = None, env: Mapping[str, str] | None = None) -> CommandResult:
+    @staticmethod
+    def _working_directory(cwd: Path | None) -> Path | None:
+        if cwd is None:
+            return None
+
+        try:
+            resolved = cwd.expanduser().resolve(strict=True)
+        except OSError as exc:
+            raise HardwareIntegrationError(
+                "command",
+                f"External command working directory is unavailable: {cwd}",
+            ) from exc
+
+        if not resolved.is_dir():
+            raise HardwareIntegrationError(
+                "command",
+                f"External command working directory is not a directory: {resolved}",
+            )
+
+        return resolved
+
+    def _environment(
+        self,
+        cwd: Path | None,
+        overrides: Mapping[str, str] | None,
+    ) -> dict[str, str]:
+        environment = {
+            name: value
+            for name in self._INHERITED_ENVIRONMENT_KEYS
+            if (value := os.environ.get(name))
+        }
+
+        if overrides:
+            environment.update(
+                {
+                    str(name): str(value)
+                    for name, value in overrides.items()
+                }
+            )
+
+        environment["LC_ALL"] = "C"
+        environment["LANG"] = "C"
+
+        if cwd is not None:
+            temporary_directory = str(cwd)
+            environment["TMPDIR"] = temporary_directory
+            environment["TMP"] = temporary_directory
+            environment["TEMP"] = temporary_directory
+
+        return environment
+
+    def run(
+        self,
+        command: Sequence[str],
+        *,
+        cwd: Path | None = None,
+        env: Mapping[str, str] | None = None,
+    ) -> CommandResult:
         if not command:
             raise ValueError("command cannot be empty")
-        executable = self.executable(command[0]) if os.path.sep not in command[0] else command[0]
+
+        working_directory = self._working_directory(cwd)
+
+        executable = (
+            self.executable(command[0])
+            if os.path.sep not in command[0]
+            else command[0]
+        )
+
         clean = [executable, *command[1:]]
-        merged_env = {**os.environ, "LC_ALL": "C", "LANG": "C"}
-        if env:
-            merged_env.update({str(k): str(v) for k, v in env.items()})
+        clean_env = self._environment(
+            working_directory,
+            env,
+        )
+
         started = time.perf_counter()
+
         try:
             completed = subprocess.run(
-                clean, cwd=str(cwd) if cwd else None, env=merged_env,
-                stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                timeout=self.timeout_seconds, check=False,
+                clean,
+                cwd=(
+                    str(working_directory)
+                    if working_directory
+                    else None
+                ),
+                env=clean_env,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=self.timeout_seconds,
+                check=False,
+                umask=0o077,
             )
         except subprocess.TimeoutExpired as exc:
-            raise HardwareIntegrationError("command", "External command timed out", {"command": clean, "timeout": self.timeout_seconds}) from exc
-        duration = (time.perf_counter() - started) * 1000.0
-        stdout = completed.stdout[: self.maximum_output_bytes].decode("utf-8", errors="replace")
-        stderr = completed.stderr[: self.maximum_output_bytes].decode("utf-8", errors="replace")
-        return CommandResult(tuple(clean), completed.returncode, stdout, stderr, duration)
+            raise HardwareIntegrationError(
+                "command",
+                "External command timed out",
+                {
+                    "command": clean,
+                    "timeout": self.timeout_seconds,
+                },
+            ) from exc
+
+        duration = (
+            time.perf_counter() - started
+        ) * 1000.0
+
+        stdout = completed.stdout[
+            : self.maximum_output_bytes
+        ].decode("utf-8", errors="replace")
+
+        stderr = completed.stderr[
+            : self.maximum_output_bytes
+        ].decode("utf-8", errors="replace")
+
+        return CommandResult(
+            tuple(clean),
+            completed.returncode,
+            stdout,
+            stderr,
+            duration,
+        )

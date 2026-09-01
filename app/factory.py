@@ -12,19 +12,19 @@ from typing import Any
 
 from flask import Flask
 
-from app.api import bp as api_bp
-from app.blockchain import BlockchainService
 from app.ai.integration import build_ai_pipeline
+from app.api import bp as api_bp
 from app.api.error_handlers import register_error_handlers
 from app.api.request_context import register_request_context
 from app.api.routes import health_bp
-from app.config_loader import LoadedConfiguration, load_platform_configuration
-from app.compliance.integration import build_compliance_service
 from app.api.routes.compliance import bp as compliance_api_bp
+from app.blockchain import BlockchainService
+from app.compliance.integration import build_compliance_service
+from app.config_loader import LoadedConfiguration, load_platform_configuration
 from app.dashboard import bp as dashboard_bp
 from app.extensions import socketio
-from app.integration import IntegratedPipelineService
 from app.hardware.integration import HardwareSecurityPipeline
+from app.integration import IntegratedPipelineService
 from app.observability.logging import configure_logging
 from app.security.headers import register_security_headers
 from app.security.rate_limiting import RateLimiter

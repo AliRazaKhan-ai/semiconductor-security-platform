@@ -1,12 +1,18 @@
 """Scikit-learn risk engine with model fusion, classification, and confidence."""
 from __future__ import annotations
+
 from pathlib import Path
+
 import numpy as np
+
 from app.ai.common import AIDecision, ModelOutput, canonical_hash
-from .model import load_risk_model,predict_risk
-from .calibration import confidence_score,risk_level
-from .policy_fusion import fuse
+
+from .calibration import confidence_score, risk_level
 from .explanation import explain
+from .model import load_risk_model, predict_risk
+from .policy_fusion import fuse
+
+
 class RiskEngineService:
  def __init__(self,model_path:Path,feature_names:tuple[str,...],version:str="1.0.0",expected_hash:str|None=None): self.path=model_path; self.names=feature_names; self.version=version; self.expected_hash=expected_hash; self._model=None
  def decide(self,features:np.ndarray,cnn:ModelOutput,anomaly:ModelOutput,controls:dict,evidence_quality:float=1.0)->AIDecision:

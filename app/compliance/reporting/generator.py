@@ -1,10 +1,14 @@
-from datetime import UTC,datetime
-from pathlib import Path
 import json
+from datetime import UTC, datetime
+from pathlib import Path
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate,Paragraph,Spacer,Table
-from app.compliance.common import canonical_hash,sign
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table
+
+from app.compliance.common import canonical_hash, sign
+
+
 class ComplianceReportGenerator:
  def __init__(self,root:Path,c:dict):
   self.root=root;self.c=c;self.json_root=root/"reports/json";self.pdf_root=root/"reports/pdf";self.audit_root=root/"government_audit"

@@ -1,9 +1,14 @@
 from __future__ import annotations
-import hashlib, uuid
+
+import hashlib
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
+
 from app.hardware.common import atomic_write_json, canonical_json, sha256_file
 from app.hardware.sbom.schemas import SBOMComponent, SBOMResult
+
+
 class SBOMGenerator:
     def generate(self,*,chip_id:str,artifacts:list[Path],output:Path,metadata:dict[str,str]|None=None)->SBOMResult:
         components=[]

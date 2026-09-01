@@ -1,6 +1,9 @@
 from __future__ import annotations
+
 from dataclasses import asdict, dataclass
 from typing import Any
+
+
 @dataclass(frozen=True, slots=True)
 class SBOMComponent:
     component_type:str; name:str; version:str; supplier:str; hashes:dict[str,str]; licenses:tuple[str,...]; properties:dict[str,str]

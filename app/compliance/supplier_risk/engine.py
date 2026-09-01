@@ -1,4 +1,6 @@
 from app.compliance.common import clamp
+
+
 class SupplierRiskEngine:
  def __init__(self,c:dict):
   self.c=c; total=sum(c["weights"].values()); self.w={k:v/total for k,v in c["weights"].items()}

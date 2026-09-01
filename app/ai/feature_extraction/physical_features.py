@@ -1,9 +1,13 @@
 """Numerically stable extraction of side-channel power, EM, and timing features."""
 from __future__ import annotations
+
 import math
 from typing import Any
+
 import numpy as np
+
 from app.ai.common import AIFeatureError
+
 
 def _array(value: Any, name: str) -> np.ndarray:
     a=np.asarray(value, dtype=np.float64).reshape(-1)

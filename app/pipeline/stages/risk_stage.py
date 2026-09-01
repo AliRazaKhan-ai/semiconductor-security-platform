@@ -1,9 +1,13 @@
 """Fuse model outputs and mandatory controls into a fail-closed risk decision."""
 from __future__ import annotations
-from typing import Any,Protocol
+
+from typing import Any, Protocol
+
 from app.constants import EventType
 from app.storage.event_store import EventStore
 from app.storage.event_store.schemas import EventRecord
+
+
 class Publisher(Protocol):
  def publish_record(self,record:EventRecord)->None: ...
 class RiskStage:

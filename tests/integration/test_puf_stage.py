@@ -6,9 +6,9 @@ from pathlib import Path
 
 from app.hardware.puf.adapter import PUFAdapter
 from app.hardware.puf.config import load_puf_config
-from tests.puf_test_config import compact_puf_config
 from app.pipeline.stages.puf_stage import PUFStage
 from app.storage.event_store import EventStore
+from tests.puf_test_config import compact_puf_config
 
 
 class RecordingPublisher:

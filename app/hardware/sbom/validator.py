@@ -1,6 +1,10 @@
 from __future__ import annotations
+
 from pathlib import Path
+
 from app.hardware.common import load_json, sha256_file
+
+
 def validate_sbom(path:Path,forbidden_licenses:set[str]|None=None)->tuple[str,...]:
     d=load_json(path); reasons=[]
     if d.get('bomFormat')!='CycloneDX': reasons.append('UNSUPPORTED_SBOM_FORMAT')

@@ -1,7 +1,10 @@
 from __future__ import annotations
+
 import hashlib
+
 from app.hardware.common import canonical_json
 from app.hardware.digital_twin.schemas import DigitalTwin, TwinValidationResult
+
 
 def validate_twin(twin:DigitalTwin,evidence:dict[str,str])->TwinValidationResult:
     fields=('chip_id','puf_identity_hash','rtl_digest','netlist_digest','firmware_digest','sbom_digest')

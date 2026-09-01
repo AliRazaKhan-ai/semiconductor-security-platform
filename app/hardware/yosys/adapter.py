@@ -1,11 +1,15 @@
 from __future__ import annotations
+
 import hashlib
 from pathlib import Path
+
 from app.hardware.common import load_json, sha256_file
 from app.hardware.yosys.parser import parse_metrics
 from app.hardware.yosys.rules import evaluate
 from app.hardware.yosys.runner import YosysRunner
 from app.hardware.yosys.schemas import YosysResult
+
+
 class YosysAdapter:
     def __init__(self,policy:dict,runner:YosysRunner|None=None)->None: self.policy=policy; self.runner=runner or YosysRunner()
     @classmethod

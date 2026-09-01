@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "evidence_scope": "RTL_EDA_ONLY",
+  "evidence_label": "CONTROLLED_RESEARCH_TROJAN",
+  "rtl_file": "hardware_lab/rtl/controlled_trojan/semisecure_demo_core_trojan.sv",
+  "rtl_top_module": "semisecure_demo_core",
+  "testbench_file": "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+  "verilator_top_module": "tb_semisecure_demo_core",
+  "controlled_trojan": {
+    "trigger": "Eight consecutive valid transactions with opcode 3 and data 0xA5",
+    "payload": "Flip bit 0 of the next non-trigger transaction result once",
+    "purpose": "Benign, deterministic research evidence for RTL security validation"
+  },
+  "expected_results": {
+    "yosys": "PASS_WITH_STRUCTURAL_DIFFERENCE_EXPECTED",
+    "verilator": "FAIL_ON_POST_TRIGGER_PAYLOAD_CHECK"
+  },
+  "evidence_state": {
+    "rtl_source": "IMPLEMENTED",
+    "yosys_synthesis": "SYNTHESISED",
+    "verilator_simulation": "SIMULATED_CONTROLLED_PAYLOAD_DETECTED",
+    "fpga_deployment": "NOT_DEPLOYED",
+    "physical_measurement": "NOT_MEASURED"
+  }
+}

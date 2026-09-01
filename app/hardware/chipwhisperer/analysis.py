@@ -1,9 +1,14 @@
 from __future__ import annotations
-import cmath, hashlib, math
+
+import cmath
+import hashlib
+import math
 from statistics import mean
+
 from app.hardware.chipwhisperer.preprocessing import align, centre_scale, validate_trace
 from app.hardware.chipwhisperer.schemas import ChipWhispererResult, TraceStatistics
 from app.hardware.common import canonical_json
+
 
 def _spectrum(values:list[float])->list[float]:
     n=len(values); bins=min(n//2,256); return [abs(sum(v*cmath.exp(-2j*math.pi*k*i/n) for i,v in enumerate(values))) for k in range(bins)]

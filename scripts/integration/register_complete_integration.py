@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-
 root = Path(".").resolve()
 
 factory_path = root / "app/factory.py"

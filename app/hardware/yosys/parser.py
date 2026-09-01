@@ -1,5 +1,8 @@
 from __future__ import annotations
+
 from app.hardware.yosys.schemas import YosysMetrics
+
+
 def parse_metrics(stats:dict,top:str)->YosysMetrics:
     modules=stats.get('modules',{}); module=modules.get(top) or modules.get('\\'+top)
     if not isinstance(module,dict): raise ValueError(f'top module not found in Yosys statistics: {top}')

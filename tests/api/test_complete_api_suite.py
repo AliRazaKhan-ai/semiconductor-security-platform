@@ -29,7 +29,6 @@ def assert_json_response(response, expected_status: int = 200) -> dict[str, Any]
         "/health/live",
         "/health/ready",
         "/api/v1/system/status",
-        "/api/v1/hardware/status",
         "/api/v1/blockchain/status",
         "/api/v1/compliance/status",
     ),

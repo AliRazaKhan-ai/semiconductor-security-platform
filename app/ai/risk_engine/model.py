@@ -1,9 +1,15 @@
 """Integrity-checked Scikit-learn risk-model loading and probability inference."""
 from __future__ import annotations
+
 from hashlib import sha256
 from pathlib import Path
-import joblib, numpy as np
+
+import joblib
+import numpy as np
+
 from app.ai.common import AIModelError
+
+
 def _hash(path:Path)->str:
  h=sha256(); h.update(path.read_bytes()); return h.hexdigest()
 def load_risk_model(path:Path,expected_hash:str|None=None):

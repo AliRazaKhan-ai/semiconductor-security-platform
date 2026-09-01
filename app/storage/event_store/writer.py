@@ -14,7 +14,11 @@ from typing import Any
 from app.exceptions import ConflictError, EventStoreError
 from app.storage.event_store.hash_chain import seal_event
 from app.storage.event_store.locking import FileLock
-from app.storage.event_store.partitioning import scan_event_path, scan_lock_path, validate_identifier
+from app.storage.event_store.partitioning import (
+    scan_event_path,
+    scan_lock_path,
+    validate_identifier,
+)
 from app.storage.event_store.schemas import EventRecord
 from app.storage.indexes.builder import IndexBuilder
 from app.storage.indexes.reader import IndexReader
