@@ -10,6 +10,7 @@ from typing import Any
 
 from app.hardware.chipwhisperer.capture import load_trace_evidence
 from app.hardware.common import HardwareIntegrationError
+from app.integration import evidence_features
 
 
 class AdapterError(RuntimeError):
@@ -387,6 +388,7 @@ def build_ai_evidence(
     simulation: Mapping[str, Any],
     puf_result: Mapping[str, Any],
     hardware_result: Mapping[str, Any],
+    schema_version: str | None = None,
 ) -> dict[str, Any]:
     """Build strict AI evidence from explicit and verified preceding evidence."""
 
@@ -659,17 +661,28 @@ def build_ai_evidence(
     ):
         supply_chain = {}
 
-    missing_model_features = [
-        "yosys.gate_count",
-        "yosys.unused_logic_ratio",
-        "yosys.rare_net_count",
-        "yosys.netlist_delta_ratio",
-    ]
+    # Reference-relative design features. A hardware Trojan is characterised by
+    # divergence from a known-good reference, not by absolute design size, so these
+    # are the only design features that can express one. Absence stays absent: a
+    # feature defaulted to 0.0 would reach the model as a constant column.
+    netlist_delta = evidence_features.netlist_delta_ratio(
+        yosys
+    )
 
-    if not verified_puf:
-        missing_model_features.append(
-            "puf.verified_authentication"
-        )
+    simulation_failure = evidence_features.simulation_failure_ratio(
+        verilator
+    )
+
+    active_schema = (
+        str(schema_version) if schema_version else "1.0"
+    )
+
+    missing_model_features = evidence_features.missing_model_features(
+        schema_version=active_schema,
+        netlist_delta=netlist_delta,
+        simulation_failure=simulation_failure,
+        puf_verified=verified_puf,
+    )
 
     return {
         "chip_id": simulation.get(
@@ -710,12 +723,26 @@ def build_ai_evidence(
             "combinational_cells": (
                 combinational_cells
             ),
+            "netlist_delta_ratio": (
+                netlist_delta
+            ),
         },
         "verilator": {
             "assertion_count": (
                 assertion_count
             ),
-            "failed_assertions": 0,
+            "failed_assertions": (
+                round(
+                    simulation_failure[0]
+                    * assertion_count
+                )
+                if simulation_failure is not None
+                else 0
+            ),
+            "failed_assertions_is_lower_bound": (
+                simulation_failure is not None
+                and not simulation_failure[1]
+            ),
         },
         "puf": {
             "stability_score": (
@@ -765,7 +792,19 @@ def build_ai_evidence(
         "hardware": dict(
             stages
         ),
-        "evidence_quality": 0.0,
+        "evidence_quality": evidence_features.evidence_quality(
+            stages=stages,
+            puf_verified=verified_puf,
+            physical_capture=bool(
+                chipwhisperer.get(
+                    "physical_capture_verified",
+                    False,
+                )
+            ),
+            structural_baseline_applied=(
+                netlist_delta is not None
+            ),
+        ),
         "evidence_provenance": {
             "side_channel_analysis_mode": (
                 chipwhisperer.get(
@@ -923,6 +962,33 @@ def build_ai_controls(
     }
 
 
+def _active_feature_schema(service: Any) -> str:
+    """Return the feature schema version the registered AI service is running.
+
+    Resolved from the feature extractor's own name tuple, matched against
+    FEATURE_SCHEMAS. Falls back to "1.0", which fails the contract closed, when the
+    schema cannot be determined; an unknown schema must never be treated as complete.
+    """
+    from app.ai.feature_extraction.schemas import FEATURE_SCHEMAS
+
+    features = getattr(service, "features", None)
+    names = getattr(features, "feature_names", None)
+
+    if not names:
+        return "1.0"
+
+    active = tuple(str(name) for name in names)
+
+    for version, schema in FEATURE_SCHEMAS.items():
+        if tuple(schema) == active:
+            return str(version)
+
+    raise AdapterError(
+        "The AI feature extractor is using a schema that is not registered in "
+        "FEATURE_SCHEMAS; the hardware-to-AI contract cannot be evaluated"
+    )
+
+
 def run_ai_pipeline(
     *,
     service: Any,
@@ -943,10 +1009,16 @@ def run_ai_pipeline(
             "Registered AI service has no callable analyze() method"
         )
 
+    # Read the active feature schema from the running extractor rather than from
+    # configuration. The contract check must be evaluated against the schema the
+    # model is actually using, so it cannot drift from a config value.
+    active_schema_version = _active_feature_schema(service)
+
     evidence = build_ai_evidence(
         simulation=simulation,
         puf_result=puf_result,
         hardware_result=hardware_result,
+        schema_version=active_schema_version,
     )
 
     controls = build_ai_controls(

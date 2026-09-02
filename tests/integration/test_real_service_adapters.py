@@ -296,7 +296,11 @@ def test_ai_evidence_uses_verified_hardware_outputs(
         evidence[
             "evidence_quality"
         ]
-        == 0.0
+        # Was pinned to 0.0, which asserted the hardcoded value rather than a
+        # computed one. 4 hardware stages at 0.15 = 0.60, plus digital_twin 0.10.
+        # PUF scores 0 because the fixture declares SIMULATED_PUF_FIXTURE, not
+        # VERIFIED_PUF_STAGE; no reference RTL; OFFLINE_TRACE not physical capture.
+        == 0.7
     )
 
     assert (
