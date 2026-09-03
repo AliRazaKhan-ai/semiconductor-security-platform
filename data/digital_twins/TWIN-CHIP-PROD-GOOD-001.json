@@ -1,0 +1,18 @@
+{
+  "chip_id": "CHIP-PROD-GOOD-001",
+  "created_at_utc": "2026-09-03T09:41:51.381+00:00",
+  "custody_hashes": [],
+  "firmware_digest": "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722",
+  "lifecycle_state": "PROD",
+  "lot_id": "LOT-DE-2026-0716-A",
+  "manufacturer": "TrustedFab Europe-1",
+  "netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+  "puf_identity_hash": "eb02dcfc374526e625509514f93bc2de47bb73bb7a82f2f579eaadd473408510",
+  "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+  "sbom_digest": "3ed10f21f7e82555eb57fe2847f391bf272da7ed95b729a53bb6d802ab34b9f4",
+  "schema_version": "1.0",
+  "serial_number": "SN-GOOD-000001",
+  "supplier_id": "SUP-DE-001",
+  "twin_id": "TWIN-CHIP-PROD-GOOD-001",
+  "updated_at_utc": "2026-09-03T09:41:51.381+00:00"
+}

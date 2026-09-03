@@ -1,106 +1,139 @@
 {
-  "schema_version": "1.0",
   "chip_id": "CHIP-PROD-SUPPLIER-005",
+  "compliance": {
+    "defense_related": true,
+    "destination_country": "GB",
+    "eccn": "3A090",
+    "end_use": "defense communications accelerator",
+    "end_user_name": "Example Defense Communications Contractor",
+    "end_user_type": "defense contractor",
+    "license_required_expected": true,
+    "specially_designed_for_military": true,
+    "subject_to_ear": true,
+    "technical_data_transfer": true,
+    "usml_category": "XI"
+  },
+  "expected_results": {
+    "blockchain_result": {
+      "ethereum": "NOT_ANCHORED",
+      "fabric": "NOT_COMMITTED_AS_DEPLOYABLE_RECORD",
+      "local_audit": "COMPLIANCE_DECISION_AND_REPORT_HASHES_RETAINED_LOCALLY"
+    },
+    "dashboard_result": {
+      "alert_color": "AMBER",
+      "classification": "TECHNICALLY_CLEAN_SUPPLIER_HIGH_RISK",
+      "deployment_badge": "LICENSE_REQUIRED",
+      "overall_status": "COMPLIANCE_HOLD",
+      "risk_level": "HIGH"
+    },
+    "deployment_decision": "DO_NOT_DEPLOY_PENDING_LICENSE_AND_HUMAN_REVIEW",
+    "pipeline_result": "STOP_AT_SUPPLIER_RISK_OR_COMPLIANCE_ENGINE"
+  },
+  "failure_reason": {
+    "description": "The chip is technically functional, but supplier country risk, threat intelligence, financial distress and controlled ECCN require licensing and human review.",
+    "stage": "SUPPLIER_RISK_AND_COMPLIANCE",
+    "type": "HIGH_GEOPOLITICAL_AND_EXPORT_CONTROL_RISK"
+  },
+  "hardware_manifest": {
+    "ai_em_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SUPPLIER-005/ai_em_trace.json",
+    "ai_timing_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SUPPLIER-005/ai_timing_trace.json",
+    "device_seed": "1307b5a8cfbb6068",
+    "device_seed_source": "sha256(chip_id)[:16]",
+    "device_seed_verification_command": "python3 -c \"import hashlib,sys; print(hashlib.sha256(sys.argv[1].encode()).hexdigest()[:16])\" CHIP-PROD-SUPPLIER-005",
+    "opentitan_evidence": "hardware_lab/opentitan/attestation/CHIP-PROD-SUPPLIER-005.json",
+    "puf_identity_hash": "4cddee3f13ece57c3dee9934f9e3702ba39a1b40576a31cef3b6b79a8ff83394",
+    "reference_rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+    "rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+    "sbom_artifacts": [
+      "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+      "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+      "hardware_lab/opentitan/firmware/simulated_rom_image.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SUPPLIER-005/side_channel_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SUPPLIER-005/side_channel_reference.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SUPPLIER-005/ai_em_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SUPPLIER-005/ai_timing_trace.json"
+    ],
+    "scoped_evidence": "supplier risk scoring; not a side-channel threat model",
+    "side_channel_reference": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SUPPLIER-005/side_channel_reference.json",
+    "side_channel_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SUPPLIER-005/side_channel_trace.json",
+    "structural_scoping": {
+      "derivation": "BY_CONSTRUCTION_NO_DISTINCT_RTL",
+      "netlist_delta_ratio": 0.0,
+      "netlist_source": "REFERENCE_NETLIST_NO_DISTINCT_RTL",
+      "statement": "Candidate and reference are the same artefact because no distinct RTL exists for this fixture, so the 0.0 delta is uninformative rather than a measurement of two designs found identical."
+    },
+    "synthesis_top_module": "semisecure_demo_core",
+    "testbench_file": "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+    "top_module": "tb_semisecure_demo_core",
+    "twin_id": "TWIN-CHIP-PROD-SUPPLIER-005"
+  },
+  "hardware_security": {
+    "chipwhisperer": {
+      "em_peak_to_peak": 0.31,
+      "em_rms": 0.39,
+      "em_spectral_entropy": 0.3,
+      "power_peak_to_peak": 0.35,
+      "power_rms": 0.41,
+      "power_spectral_entropy": 0.33,
+      "timing_jitter": 0.03
+    },
+    "opentitan": {
+      "debug_locked": true,
+      "lifecycle_state": "PROD",
+      "otp_integrity": true,
+      "rom_digest_valid": true,
+      "secure_boot": true
+    },
+    "puf": {
+      "authentication_expected": true,
+      "intra_device_hamming_distance": 0.046875,
+      "stability_score": 0.953125
+    },
+    "verilator": {
+      "failed_vectors": 0,
+      "simulation_failure_ratio": 0.0,
+      "simulation_passed": true,
+      "test_vectors": 50000
+    },
+    "yosys": {
+      "gate_count": 125020,
+      "netlist_delta_ratio": 0.0,
+      "rare_net_ratio": 0.01,
+      "unused_logic_ratio": 0.01
+    }
+  },
+  "manufacturing": {
+    "chain_of_custody_complete": true,
+    "country_of_origin": "RU",
+    "current_stage": "PROCUREMENT_AND_PRE_DEPLOYMENT_COMPLIANCE",
+    "design_house": "SecureSilicon Design GmbH",
+    "fabrication_facility": "Frontier Microelectronics Plant-7",
+    "lot_id": "LOT-RU-2026-0716-R",
+    "packaging_facility": "Frontier Package Services",
+    "serial_number": "SN-RISK-000005",
+    "test_facility": "Third-Party Test House",
+    "wafer_id": "WAFER-RU-44007"
+  },
   "scenario": "HIGH_RISK_SUPPLIER",
+  "schema_version": "1.0",
   "source": {
     "component": "terminal",
     "operator": "ali-raza"
   },
-  "manufacturing": {
-    "current_stage": "PROCUREMENT_AND_PRE_DEPLOYMENT_COMPLIANCE",
-    "design_house": "SecureSilicon Design GmbH",
-    "fabrication_facility": "Frontier Microelectronics Plant-7",
-    "packaging_facility": "Frontier Package Services",
-    "test_facility": "Third-Party Test House",
-    "country_of_origin": "RU",
-    "lot_id": "LOT-RU-2026-0716-R",
-    "wafer_id": "WAFER-RU-44007",
-    "serial_number": "SN-RISK-000005",
-    "chain_of_custody_complete": true
-  },
-  "failure_reason": {
-    "stage": "SUPPLIER_RISK_AND_COMPLIANCE",
-    "type": "HIGH_GEOPOLITICAL_AND_EXPORT_CONTROL_RISK",
-    "description": "The chip is technically functional, but supplier country risk, threat intelligence, financial distress and controlled ECCN require licensing and human review."
-  },
-  "hardware_security": {
-    "puf": {
-      "intra_device_hamming_distance": 0.046875,
-      "stability_score": 0.953125,
-      "authentication_expected": true
-    },
-    "opentitan": {
-      "secure_boot": true,
-      "lifecycle_state": "PROD",
-      "otp_integrity": true,
-      "rom_digest_valid": true,
-      "debug_locked": true
-    },
-    "chipwhisperer": {
-      "power_rms": 0.41,
-      "power_peak_to_peak": 0.35,
-      "power_spectral_entropy": 0.33,
-      "em_rms": 0.39,
-      "em_peak_to_peak": 0.31,
-      "em_spectral_entropy": 0.3,
-      "timing_jitter": 0.03
-    },
-    "yosys": {
-      "gate_count": 125020,
-      "unused_logic_ratio": 0.01,
-      "rare_net_ratio": 0.01,
-      "netlist_delta_ratio": 0.0
-    },
-    "verilator": {
-      "simulation_passed": true,
-      "test_vectors": 50000,
-      "failed_vectors": 0,
-      "simulation_failure_ratio": 0.0
-    }
-  },
-  "supply_chain": {
-    "digital_twin_match": true,
-    "sbom_match": true,
-    "custody_gap_ratio": 0.05,
-    "certificate_risk": 0.4,
-    "sbom_mismatch_ratio": 0.02
-  },
   "supplier": {
-    "supplier_id": "SUP-RU-007",
-    "name": "Frontier Microelectronics Plant-7",
+    "counterfeit_history": 0.35,
     "country": "RU",
     "country_risk": 0.9,
-    "threat_intel_score": 0.88,
-    "counterfeit_history": 0.35,
-    "financial_distress": 0.72
+    "financial_distress": 0.72,
+    "name": "Frontier Microelectronics Plant-7",
+    "supplier_id": "SUP-RU-007",
+    "threat_intel_score": 0.88
   },
-  "compliance": {
-    "subject_to_ear": true,
-    "eccn": "3A090",
-    "destination_country": "GB",
-    "end_use": "defense communications accelerator",
-    "end_user_type": "defense contractor",
-    "license_required_expected": true,
-    "technical_data_transfer": true,
-    "end_user_name": "Example Defense Communications Contractor",
-    "defense_related": true,
-    "specially_designed_for_military": true,
-    "usml_category": "XI"
-  },
-  "expected_results": {
-    "pipeline_result": "STOP_AT_SUPPLIER_RISK_OR_COMPLIANCE_ENGINE",
-    "dashboard_result": {
-      "overall_status": "COMPLIANCE_HOLD",
-      "alert_color": "AMBER",
-      "risk_level": "HIGH",
-      "classification": "TECHNICALLY_CLEAN_SUPPLIER_HIGH_RISK",
-      "deployment_badge": "LICENSE_REQUIRED"
-    },
-    "blockchain_result": {
-      "fabric": "NOT_COMMITTED_AS_DEPLOYABLE_RECORD",
-      "ethereum": "NOT_ANCHORED",
-      "local_audit": "COMPLIANCE_DECISION_AND_REPORT_HASHES_RETAINED_LOCALLY"
-    },
-    "deployment_decision": "DO_NOT_DEPLOY_PENDING_LICENSE_AND_HUMAN_REVIEW"
+  "supply_chain": {
+    "certificate_risk": 0.4,
+    "custody_gap_ratio": 0.05,
+    "digital_twin_match": true,
+    "sbom_match": true,
+    "sbom_mismatch_ratio": 0.02
   }
 }

@@ -1,0 +1,18 @@
+{
+  "chip_id": "CHIP-PROD-FAKE-PROVENANCE-008",
+  "created_at_utc": "2026-09-03T06:30:44.835+00:00",
+  "custody_hashes": [],
+  "firmware_digest": "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722",
+  "lifecycle_state": "PROD",
+  "lot_id": "LOT-MY-2026-008",
+  "manufacturer": "TrustedFab Europe-1",
+  "netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+  "puf_identity_hash": "5115d2336503b812cf4cad0c2cdff392d8317b227a9b0d464ce170a2dd0bfcb0",
+  "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+  "sbom_digest": "cde21d3945010a7b12267515f5b94f795e97764aee89ac16317e1b2a2799d4ab",
+  "schema_version": "1.0",
+  "serial_number": "SN-PROVENANCE-000008",
+  "supplier_id": "DIST-RELAY-008",
+  "twin_id": "TWIN-CHIP-PROD-FAKE-PROVENANCE-008",
+  "updated_at_utc": "2026-09-03T06:30:44.835+00:00"
+}

@@ -1,0 +1,11 @@
+=== Side-channel operating margin, 2026-09-03T09:27:44+04:00 ===
+derivation: netlist-metric derived, pure function of (yosys_metrics, device_seed, channel)
+population: 8 synthetic device seeds over 2 real Yosys netlists (8 cells / 27 cells)
+
+reference netlist (8 cells)      min 0.2846  max 0.2920  mean 0.2882
+trojan netlist (27 cells)        min 0.4333  max 0.4637  mean 0.4434
+
+threshold 0.35   false positives 0/8   false negatives 0/8
+separation between distributions +0.1413
+
+Measured operating margin on a small synthetic population. Not a field error rate.

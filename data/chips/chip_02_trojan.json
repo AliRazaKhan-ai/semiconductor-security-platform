@@ -1,104 +1,137 @@
 {
-  "schema_version": "1.0",
   "chip_id": "CHIP-PROD-TROJAN-002",
+  "compliance": {
+    "defense_related": false,
+    "destination_country": "GB",
+    "eccn": "3A001",
+    "end_use": "telecommunications infrastructure",
+    "end_user_name": "Example Telecom Operator",
+    "end_user_type": "commercial operator",
+    "license_required_expected": true,
+    "specially_designed_for_military": false,
+    "subject_to_ear": true
+  },
+  "expected_results": {
+    "blockchain_result": {
+      "ethereum": "NOT_ANCHORED",
+      "fabric": "NOT_COMMITTED_BECAUSE_PIPELINE_STOPPED",
+      "local_audit": "FAILURE_EVENT_RETAINED_IN_JSON_EVENT_STORE"
+    },
+    "dashboard_result": {
+      "alert_color": "RED",
+      "classification": "TROJAN",
+      "deployment_badge": "BLOCKED",
+      "overall_status": "COMPROMISED",
+      "risk_level": "CRITICAL"
+    },
+    "deployment_decision": "DENIED_AND_QUARANTINED",
+    "pipeline_result": "STOP_AT_AI_RISK_ENGINE"
+  },
+  "failure_reason": {
+    "description": "Rare-net activation, unexpected combinational logic, abnormal power signature and simulation divergence indicate a fabrication-stage hardware Trojan.",
+    "stage": "AI_SECURITY_ANALYSIS",
+    "type": "HARDWARE_TROJAN_DETECTED"
+  },
+  "hardware_manifest": {
+    "ai_em_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TROJAN-002/ai_em_trace.json",
+    "ai_timing_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TROJAN-002/ai_timing_trace.json",
+    "device_seed": "dfd37a0b99efcbb7",
+    "device_seed_source": "sha256(chip_id)[:16]",
+    "device_seed_verification_command": "python3 -c \"import hashlib,sys; print(hashlib.sha256(sys.argv[1].encode()).hexdigest()[:16])\" CHIP-PROD-TROJAN-002",
+    "opentitan_evidence": "hardware_lab/opentitan/attestation/CHIP-PROD-TROJAN-002.json",
+    "puf_identity_hash": "1ba1c8549a32c5e4f36b7376ed7eb688b042ba9b2b3d3973ca8ce5c94a84c2c6",
+    "reference_rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+    "rtl_file": "hardware_lab/rtl/controlled_trojan/semisecure_demo_core_trojan.sv",
+    "sbom_artifacts": [
+      "hardware_lab/rtl/controlled_trojan/semisecure_demo_core_trojan.sv",
+      "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+      "hardware_lab/opentitan/firmware/simulated_rom_image.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TROJAN-002/side_channel_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TROJAN-002/side_channel_reference.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TROJAN-002/ai_em_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TROJAN-002/ai_timing_trace.json"
+    ],
+    "scoped_evidence": "side-channel / hardware trojan",
+    "side_channel_reference": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TROJAN-002/side_channel_reference.json",
+    "side_channel_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TROJAN-002/side_channel_trace.json",
+    "structural_scoping": {
+      "derivation": "MEASURED_REFERENCE_DIFFERENTIAL",
+      "netlist_delta_ratio": 1.0,
+      "netlist_source": "FIXTURE_SPECIFIC_NETLIST",
+      "statement": "Measured by differential synthesis of a distinct candidate netlist against the reference."
+    },
+    "synthesis_top_module": "semisecure_demo_core",
+    "testbench_file": "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+    "top_module": "tb_semisecure_demo_core",
+    "twin_id": "TWIN-CHIP-PROD-TROJAN-002"
+  },
+  "hardware_security": {
+    "chipwhisperer": {
+      "em_peak_to_peak": 4.11,
+      "em_rms": 2.51,
+      "em_spectral_entropy": 0.89,
+      "power_peak_to_peak": 4.92,
+      "power_rms": 2.84,
+      "power_spectral_entropy": 0.91,
+      "timing_jitter": 1.31
+    },
+    "opentitan": {
+      "debug_locked": true,
+      "lifecycle_state": "PROD",
+      "otp_integrity": true,
+      "rom_digest_valid": true,
+      "secure_boot": true
+    },
+    "puf": {
+      "authentication_expected": true,
+      "intra_device_hamming_distance": 0.046875,
+      "stability_score": 0.953125
+    },
+    "verilator": {
+      "failed_vectors": 6840,
+      "simulation_failure_ratio": 0.1368,
+      "simulation_passed": false,
+      "test_vectors": 50000
+    },
+    "yosys": {
+      "gate_count": 132900,
+      "netlist_delta_ratio": 0.18,
+      "rare_net_ratio": 0.24,
+      "unused_logic_ratio": 0.19
+    }
+  },
+  "manufacturing": {
+    "chain_of_custody_complete": true,
+    "country_of_origin": "CN",
+    "current_stage": "FABRICATION",
+    "design_house": "SecureSilicon Design GmbH",
+    "fabrication_facility": "SubcontractFab Asia-4",
+    "lot_id": "LOT-CN-2026-0716-T",
+    "packaging_facility": "SecurePack DE",
+    "serial_number": "SN-TROJAN-000002",
+    "test_facility": "Accredited Test Lab EU",
+    "wafer_id": "WAFER-CN-99214"
+  },
   "scenario": "HARDWARE_TROJAN",
+  "schema_version": "1.0",
   "source": {
     "component": "terminal",
     "operator": "ali-raza"
   },
-  "manufacturing": {
-    "current_stage": "FABRICATION",
-    "design_house": "SecureSilicon Design GmbH",
-    "fabrication_facility": "SubcontractFab Asia-4",
-    "packaging_facility": "SecurePack DE",
-    "test_facility": "Accredited Test Lab EU",
-    "country_of_origin": "CN",
-    "lot_id": "LOT-CN-2026-0716-T",
-    "wafer_id": "WAFER-CN-99214",
-    "serial_number": "SN-TROJAN-000002",
-    "chain_of_custody_complete": true
-  },
-  "failure_reason": {
-    "stage": "AI_SECURITY_ANALYSIS",
-    "type": "HARDWARE_TROJAN_DETECTED",
-    "description": "Rare-net activation, unexpected combinational logic, abnormal power signature and simulation divergence indicate a fabrication-stage hardware Trojan."
-  },
-  "hardware_security": {
-    "puf": {
-      "intra_device_hamming_distance": 0.046875,
-      "stability_score": 0.953125,
-      "authentication_expected": true
-    },
-    "opentitan": {
-      "secure_boot": true,
-      "lifecycle_state": "PROD",
-      "otp_integrity": true,
-      "rom_digest_valid": true,
-      "debug_locked": true
-    },
-    "chipwhisperer": {
-      "power_rms": 2.84,
-      "power_peak_to_peak": 4.92,
-      "power_spectral_entropy": 0.91,
-      "em_rms": 2.51,
-      "em_peak_to_peak": 4.11,
-      "em_spectral_entropy": 0.89,
-      "timing_jitter": 1.31
-    },
-    "yosys": {
-      "gate_count": 132900,
-      "unused_logic_ratio": 0.19,
-      "rare_net_ratio": 0.24,
-      "netlist_delta_ratio": 0.18
-    },
-    "verilator": {
-      "simulation_passed": false,
-      "test_vectors": 50000,
-      "failed_vectors": 6840,
-      "simulation_failure_ratio": 0.1368
-    }
-  },
-  "supply_chain": {
-    "digital_twin_match": true,
-    "sbom_match": true,
-    "custody_gap_ratio": 0.0,
-    "certificate_risk": 0.08,
-    "sbom_mismatch_ratio": 0.0
-  },
   "supplier": {
-    "supplier_id": "SUP-CN-004",
-    "name": "SubcontractFab Asia-4",
+    "counterfeit_history": 0.1,
     "country": "CN",
     "country_risk": 0.55,
-    "threat_intel_score": 0.68,
-    "counterfeit_history": 0.1,
-    "financial_distress": 0.1
+    "financial_distress": 0.1,
+    "name": "SubcontractFab Asia-4",
+    "supplier_id": "SUP-CN-004",
+    "threat_intel_score": 0.68
   },
-  "compliance": {
-    "subject_to_ear": true,
-    "eccn": "3A001",
-    "destination_country": "GB",
-    "end_use": "telecommunications infrastructure",
-    "end_user_type": "commercial operator",
-    "license_required_expected": true,
-    "end_user_name": "Example Telecom Operator",
-    "defense_related": false,
-    "specially_designed_for_military": false
-  },
-  "expected_results": {
-    "pipeline_result": "STOP_AT_AI_RISK_ENGINE",
-    "dashboard_result": {
-      "overall_status": "COMPROMISED",
-      "alert_color": "RED",
-      "risk_level": "CRITICAL",
-      "classification": "TROJAN",
-      "deployment_badge": "BLOCKED"
-    },
-    "blockchain_result": {
-      "fabric": "NOT_COMMITTED_BECAUSE_PIPELINE_STOPPED",
-      "ethereum": "NOT_ANCHORED",
-      "local_audit": "FAILURE_EVENT_RETAINED_IN_JSON_EVENT_STORE"
-    },
-    "deployment_decision": "DENIED_AND_QUARANTINED"
+  "supply_chain": {
+    "certificate_risk": 0.08,
+    "custody_gap_ratio": 0.0,
+    "digital_twin_match": true,
+    "sbom_match": true,
+    "sbom_mismatch_ratio": 0.0
   }
 }

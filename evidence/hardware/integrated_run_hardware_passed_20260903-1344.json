@@ -1,0 +1,635 @@
+{
+  "schema_version": "1.0",
+  "run_id": "611ac009-363b-4f74-b001-5b18b11d9a71",
+  "scan_id": "df454ea9-d6e8-4e03-ae04-91a80c1a61e2",
+  "chip_id": "CHIP-PROD-GOOD-001",
+  "scenario": "GOOD_CHIP",
+  "source_file": "/home/ali-raza/semiconductor_security_platform/data/chips/chip_01_good.json",
+  "source_sha256": "7b4da5adce47afd85793bee7b532d6ecee78da5762d4d69967eb471ecb6dc911",
+  "status": "INFRASTRUCTURE_HOLD",
+  "active_stage": "AI_ANALYSIS",
+  "stopped_stage": "AI_ANALYSIS",
+  "created_at_utc": "2026-09-03T09:41:54.736+00:00",
+  "updated_at_utc": "2026-09-03T09:42:17.385+00:00",
+  "completed_at_utc": null,
+  "stages": [
+    {
+      "stage": "INGESTION",
+      "status": "PASSED",
+      "mandatory": true,
+      "stop_pipeline": false,
+      "started_at_utc": "2026-09-03T09:41:54.742+00:00",
+      "completed_at_utc": "2026-09-03T09:41:54.811+00:00",
+      "duration_ms": 69.462,
+      "result_hash": "8e0af84a65ecddf6240648feba9d3b12188e6032ecb3a7e989eaf3875cfe6231",
+      "result": {
+        "chip_id": "CHIP-PROD-GOOD-001",
+        "component_version": "1.0.0",
+        "correlation_id": "25f4cb08-d33a-4f68-83f9-b29ef98270c0",
+        "event_hash": "30d97c7fe8ce35c803a7991aa7dab033e9ac0bfd2045510a968a9520c99159ad",
+        "event_id": "69775331-cf01-4d62-8cb9-ae285d8714f1",
+        "event_type": "scan.accepted",
+        "evidence_hashes": {},
+        "payload": {
+          "chip_file": "chip_01_good.json",
+          "evidence": {
+            "scenario": "GOOD_CHIP",
+            "simulation_file": "/home/ali-raza/semiconductor_security_platform/data/chips/chip_01_good.json",
+            "simulation_sha256": "7b4da5adce47afd85793bee7b532d6ecee78da5762d4d69967eb471ecb6dc911"
+          },
+          "metadata": {
+            "compliance": {
+              "defense_related": false,
+              "destination_country": "DE",
+              "eccn": "EAR99",
+              "end_use": "regulated critical-infrastructure validation",
+              "end_user_name": "German Critical Infrastructure Test Authority",
+              "end_user_type": "regulated infrastructure operator",
+              "specially_designed_for_military": false,
+              "subject_to_ear": true,
+              "tags": [
+                "commercial",
+                "civilian",
+                "critical-infrastructure"
+              ],
+              "technical_data_transfer": false
+            },
+            "expected_results": {
+              "blockchain_result": {
+                "ethereum": "ANCHOR_SHA256_ROOT_CONFIRMED",
+                "fabric": "COMMIT_FULL_PROVENANCE_VALID"
+              },
+              "dashboard_result": {
+                "alert_color": "GREEN",
+                "classification": "CLEAN",
+                "overall_status": "VERIFIED",
+                "risk_level": "LOW"
+              },
+              "deployment_decision": "APPROVED_FOR_CRITICAL_INFRASTRUCTURE",
+              "pipeline_result": "PASS_ALL_STAGES"
+            },
+            "failure_reason": null,
+            "hardware_manifest": {
+              "ai_em_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_em_trace.json",
+              "ai_timing_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_timing_trace.json",
+              "device_seed": "6cda03c054347456",
+              "device_seed_source": "sha256(chip_id)[:16]",
+              "device_seed_verification_command": "python3 -c \"import hashlib,sys; print(hashlib.sha256(sys.argv[1].encode()).hexdigest()[:16])\" CHIP-PROD-GOOD-001",
+              "opentitan_evidence": "hardware_lab/opentitan/attestation/CHIP-PROD-GOOD-001.json",
+              "puf_identity_hash": "eb02dcfc374526e625509514f93bc2de47bb73bb7a82f2f579eaadd473408510",
+              "reference_rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+              "rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+              "sbom_artifacts": [
+                "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+                "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+                "hardware_lab/opentitan/firmware/simulated_rom_image.json",
+                "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_trace.json",
+                "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_reference.json",
+                "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_em_trace.json",
+                "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_timing_trace.json"
+              ],
+              "scoped_evidence": "side-channel / baseline",
+              "side_channel_reference": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_reference.json",
+              "side_channel_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_trace.json",
+              "structural_scoping": {
+                "derivation": "BY_CONSTRUCTION_NO_DISTINCT_RTL",
+                "netlist_delta_ratio": 0.0,
+                "netlist_source": "REFERENCE_NETLIST_NO_DISTINCT_RTL",
+                "statement": "Candidate and reference are the same artefact because no distinct RTL exists for this fixture, so the 0.0 delta is uninformative rather than a measurement of two designs found identical."
+              },
+              "testbench_file": "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+              "top_module": "semisecure_demo_core",
+              "twin_id": "TWIN-CHIP-PROD-GOOD-001",
+              "verilator_top_module": "tb_semisecure_demo_core"
+            },
+            "hardware_security": {
+              "chipwhisperer": {
+                "em_peak_to_peak": 0.29,
+                "em_rms": 0.37,
+                "em_spectral_entropy": 0.28,
+                "power_peak_to_peak": 0.332,
+                "power_rms": 0.392,
+                "power_spectral_entropy": 0.31,
+                "timing_jitter": 0.02
+              },
+              "opentitan": {
+                "debug_locked": true,
+                "lifecycle_state": "PROD",
+                "otp_integrity": true,
+                "rom_digest_valid": true,
+                "secure_boot": true
+              },
+              "puf": {
+                "authentication_expected": true,
+                "intra_device_hamming_distance": 0.03125,
+                "stability_score": 0.96875
+              },
+              "verilator": {
+                "failed_vectors": 0,
+                "simulation_failure_ratio": 0.0,
+                "simulation_passed": true,
+                "test_vectors": 50000
+              },
+              "yosys": {
+                "gate_count": 125000,
+                "netlist_delta_ratio": 0.0,
+                "rare_net_ratio": 0.01,
+                "unused_logic_ratio": 0.01
+              }
+            },
+            "manufacturing": {
+              "chain_of_custody_complete": true,
+              "country_of_origin": "DE",
+              "current_stage": "FINAL_TEST_AND_RELEASE",
+              "design_house": "SecureSilicon Design GmbH",
+              "fabrication_facility": "TrustedFab Europe-1",
+              "lot_id": "LOT-DE-2026-0716-A",
+              "packaging_facility": "SecurePack DE",
+              "serial_number": "SN-GOOD-000001",
+              "test_facility": "Accredited Test Lab EU",
+              "wafer_id": "WAFER-DE-88102"
+            },
+            "scenario": "GOOD_CHIP",
+            "schema_version": "1.0",
+            "simulation_type": "production_terminal_chip_scan",
+            "supplier": {
+              "certificate_risk": 0.02,
+              "counterfeit_history": 0.0,
+              "country": "DE",
+              "country_risk": 0.1,
+              "custody_gap_ratio": 0.0,
+              "financial_distress": 0.05,
+              "name": "TrustedFab Europe-1",
+              "sbom_mismatch_ratio": 0.0,
+              "supplier_id": "SUP-DE-001",
+              "threat_intel_score": 0.02
+            },
+            "supply_chain": {
+              "certificate_risk": 0.02,
+              "custody_gap_ratio": 0.0,
+              "digital_twin_match": true,
+              "sbom_match": true,
+              "sbom_mismatch_ratio": 0.0
+            }
+          },
+          "source": {
+            "component": "terminal",
+            "environment": "development",
+            "operator": "ali-raza"
+          },
+          "status": "RECEIVED"
+        },
+        "pipeline_stage": "INGESTION",
+        "previous_event_hash": "",
+        "scan_id": "df454ea9-d6e8-4e03-ae04-91a80c1a61e2",
+        "schema_version": "1.0",
+        "sequence": 1,
+        "source_component": "flask-api",
+        "timestamp_utc": "2026-09-03T09:41:54.760+00:00"
+      }
+    },
+    {
+      "stage": "PUF_AUTHENTICATION",
+      "status": "PASSED",
+      "mandatory": true,
+      "stop_pipeline": false,
+      "started_at_utc": "2026-09-03T09:41:54.818+00:00",
+      "completed_at_utc": "2026-09-03T09:41:54.824+00:00",
+      "duration_ms": 6.573,
+      "result_hash": "d31ccbfd024f9edeabdf15cc51c9ab0b96ed66750353b59b51da09574ce24010",
+      "result": {
+        "passed": true,
+        "classification": "PUF_AUTHENTICATED",
+        "risk_score": 0.05,
+        "confidence": 0.96875,
+        "reasons": [],
+        "deployment_decision": "CONTINUE",
+        "details": {
+          "authentication_expected": true,
+          "intra_device_hamming_distance": 0.03125,
+          "stability_score": 0.96875
+        },
+        "verification_source": "SIMULATED_PUF_FIXTURE"
+      }
+    },
+    {
+      "stage": "HARDWARE_SECURITY",
+      "status": "PASSED",
+      "mandatory": true,
+      "stop_pipeline": false,
+      "started_at_utc": "2026-09-03T09:41:54.833+00:00",
+      "completed_at_utc": "2026-09-03T09:42:17.367+00:00",
+      "duration_ms": 22534.695,
+      "result_hash": "719d2cce96b058946565f611ab693eb02f8c21fb5fdb050447f37834232df759",
+      "result": {
+        "passed": true,
+        "classification": "HARDWARE_VALIDATED",
+        "risk_score": 0.05,
+        "confidence": 1.0,
+        "reasons": [],
+        "deployment_decision": "CONTINUE",
+        "manifest": {
+          "ai_em_trace": "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_em_trace.json",
+          "ai_timing_trace": "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_timing_trace.json",
+          "device_seed": "6cda03c054347456",
+          "device_seed_source": "sha256(chip_id)[:16]",
+          "device_seed_verification_command": "python3 -c \"import hashlib,sys; print(hashlib.sha256(sys.argv[1].encode()).hexdigest()[:16])\" CHIP-PROD-GOOD-001",
+          "opentitan_evidence": "/home/ali-raza/semiconductor_security_platform/hardware_lab/opentitan/attestation/CHIP-PROD-GOOD-001.json",
+          "puf_identity_hash": "eb02dcfc374526e625509514f93bc2de47bb73bb7a82f2f579eaadd473408510",
+          "reference_rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+          "rtl_file": "/home/ali-raza/semiconductor_security_platform/hardware_lab/rtl/reference/semisecure_demo_core.sv",
+          "sbom_artifacts": [
+            "/home/ali-raza/semiconductor_security_platform/hardware_lab/rtl/reference/semisecure_demo_core.sv",
+            "/home/ali-raza/semiconductor_security_platform/hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+            "/home/ali-raza/semiconductor_security_platform/hardware_lab/opentitan/firmware/simulated_rom_image.json",
+            "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_trace.json",
+            "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_reference.json",
+            "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_em_trace.json",
+            "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_timing_trace.json"
+          ],
+          "scoped_evidence": "side-channel / baseline",
+          "side_channel_reference": "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_reference.json",
+          "side_channel_trace": "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_trace.json",
+          "structural_scoping": {
+            "derivation": "BY_CONSTRUCTION_NO_DISTINCT_RTL",
+            "netlist_delta_ratio": 0.0,
+            "netlist_source": "REFERENCE_NETLIST_NO_DISTINCT_RTL",
+            "statement": "Candidate and reference are the same artefact because no distinct RTL exists for this fixture, so the 0.0 delta is uninformative rather than a measurement of two designs found identical."
+          },
+          "testbench_file": "/home/ali-raza/semiconductor_security_platform/hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+          "top_module": "semisecure_demo_core",
+          "twin_id": "TWIN-CHIP-PROD-GOOD-001",
+          "verilator_top_module": "tb_semisecure_demo_core"
+        },
+        "service_output": {
+          "passed": true,
+          "status": "HARDWARE_VALIDATED",
+          "results": {
+            "opentitan": {
+              "passed": true,
+              "status": "ATTESTED",
+              "reasons": [],
+              "evidence_digest": "01781d66dd4027868e3503ca85642a6363f04fc1c1b9aa126825982ca449163c",
+              "lifecycle_state": "PROD",
+              "firmware_digest": "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722",
+              "monotonic_counter": 4
+            },
+            "chipwhisperer": {
+              "passed": true,
+              "status": "CLEAN",
+              "anomaly_score": 0.2898244527792654,
+              "threshold": 0.35,
+              "reasons": [],
+              "statistics": {
+                "samples": 256,
+                "mean": -0.0543817643125,
+                "standard_deviation": 2.6706297144132787,
+                "rms": 2.6711833422281015,
+                "peak_to_peak": 12.587625107000001,
+                "crest_factor": 2.6180521072607146,
+                "spectral_centroid": 0.3869841254269555,
+                "high_frequency_ratio": 0.38321546410563273,
+                "correlation": 0.8497358682570207
+              },
+              "trace_digest": "10af149753bf3e3d90c72bebec71be603f636453cd00fcc39b37da88728e23ce",
+              "analysis_mode": "FILE_BASED_OFFLINE_ANALYSIS",
+              "candidate_source_type": "SIMULATED_TRACE",
+              "reference_source_type": "SIMULATED_TRACE",
+              "candidate_file_digest": "9babbf1a008936c646341ffcd0228b0239713475f91cdb0f70111659c8da6906",
+              "reference_file_digest": "3289d6eff145217c9495b716bfc28da200dcf0a54f911b9de2514ecd1dcdf8bd",
+              "physical_capture_verified": false
+            },
+            "yosys": {
+              "passed": true,
+              "status": "PASS",
+              "reasons": [],
+              "metrics": {
+                "wires": 15,
+                "wire_bits": 55,
+                "public_wires": 9,
+                "cells": 8,
+                "processes": 0,
+                "memories": 0,
+                "memory_bits": 0,
+                "cell_types": {
+                  "$add": 1,
+                  "$adff": 1,
+                  "$adffe": 1,
+                  "$eq": 2,
+                  "$logic_not": 1,
+                  "$not": 1,
+                  "$pmux": 1
+                }
+              },
+              "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+              "netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+              "log_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "structural_analysis": {
+                "structural_baseline_enabled": true,
+                "reference_rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+                "reference_netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+                "reference_log_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "reference_top_module": "semisecure_demo_core",
+                "reference_metrics": {
+                  "wires": 15,
+                  "wire_bits": 55,
+                  "public_wires": 9,
+                  "cells": 8,
+                  "processes": 0,
+                  "memories": 0,
+                  "memory_bits": 0,
+                  "cell_types": {
+                    "$add": 1,
+                    "$adff": 1,
+                    "$adffe": 1,
+                    "$eq": 2,
+                    "$logic_not": 1,
+                    "$not": 1,
+                    "$pmux": 1
+                  }
+                },
+                "candidate_metrics": {
+                  "wires": 15,
+                  "wire_bits": 55,
+                  "public_wires": 9,
+                  "cells": 8,
+                  "processes": 0,
+                  "memories": 0,
+                  "memory_bits": 0,
+                  "cell_types": {
+                    "$add": 1,
+                    "$adff": 1,
+                    "$adffe": 1,
+                    "$eq": 2,
+                    "$logic_not": 1,
+                    "$not": 1,
+                    "$pmux": 1
+                  }
+                },
+                "delta": {
+                  "absolute_cell_delta": 0,
+                  "absolute_wire_bit_delta": 0,
+                  "absolute_public_wire_delta": 0,
+                  "additional_sequential_cells": 0,
+                  "additional_control_cells": 0
+                },
+                "netlist_delta_ratio": 0.0,
+                "structural_reasons": [],
+                "structural_passed": true,
+                "analysis_mode": "REFERENCE_DIFFERENTIAL_SYNTHESIS",
+                "netlist_delta_ratio_reference_normalised": 0.0,
+                "normalisation": "max(reference_cells, candidate_cells)",
+                "available": true
+              },
+              "netlist_delta_ratio": 0.0,
+              "structural_reasons": []
+            },
+            "verilator": {
+              "passed": true,
+              "status": "PASS",
+              "reasons": [],
+              "assertions": 24,
+              "cycles": 12,
+              "warnings": [
+                "%Warning-BLKSEQ: /home/ali-raza/semiconductor_security_platform/hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv:26:19: Blocking assignment '=' in sequential logic process"
+              ],
+              "stdout_digest": "eb05923c88b0760f4229e44542f9b1f6c6dd7391c20f502ec21703ad21c1275f",
+              "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+              "testbench_digest": "a467e4d25f96b04b2cab96bd424b0945c9fec6998af7c21fecbb2825d3c35eeb"
+            },
+            "sbom": {
+              "passed": true,
+              "status": "GENERATED",
+              "reasons": [],
+              "serial_number": "urn:uuid:68a5e75e-8adb-579d-a70c-58213e65faea",
+              "component_count": 7,
+              "document_digest": "3ed10f21f7e82555eb57fe2847f391bf272da7ed95b729a53bb6d802ab34b9f4",
+              "path": "/home/ali-raza/semiconductor_security_platform/data/sbom/df454ea9-d6e8-4e03-ae04-91a80c1a61e2.cdx.json"
+            },
+            "digital_twin": {
+              "passed": true,
+              "status": "VERIFIED",
+              "reasons": [],
+              "twin_digest": "ed7d6a35302dfdcffe61f33f4e44248a3ed83d3c3ed53bae9854ddcc5f1d2047",
+              "mismatches": {}
+            }
+          },
+          "failed_stage": null
+        }
+      }
+    },
+    {
+      "stage": "AI_ANALYSIS",
+      "status": "INFRASTRUCTURE_ERROR",
+      "mandatory": true,
+      "stop_pipeline": true,
+      "started_at_utc": "2026-09-03T09:42:17.376+00:00",
+      "completed_at_utc": "2026-09-03T09:42:17.385+00:00",
+      "duration_ms": 9.745,
+      "error_type": "IntegrationError",
+      "error": "Hardware-to-AI feature contract is incomplete: yosys.gate_count, yosys.unused_logic_ratio, yosys.rare_net_count, puf.verified_authentication"
+    }
+  ],
+  "hardware": {
+    "passed": true,
+    "classification": "HARDWARE_VALIDATED",
+    "risk_score": 0.05,
+    "confidence": 1.0,
+    "reasons": [],
+    "deployment_decision": "CONTINUE",
+    "manifest": {
+      "ai_em_trace": "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_em_trace.json",
+      "ai_timing_trace": "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_timing_trace.json",
+      "device_seed": "6cda03c054347456",
+      "device_seed_source": "sha256(chip_id)[:16]",
+      "device_seed_verification_command": "python3 -c \"import hashlib,sys; print(hashlib.sha256(sys.argv[1].encode()).hexdigest()[:16])\" CHIP-PROD-GOOD-001",
+      "opentitan_evidence": "/home/ali-raza/semiconductor_security_platform/hardware_lab/opentitan/attestation/CHIP-PROD-GOOD-001.json",
+      "puf_identity_hash": "eb02dcfc374526e625509514f93bc2de47bb73bb7a82f2f579eaadd473408510",
+      "reference_rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+      "rtl_file": "/home/ali-raza/semiconductor_security_platform/hardware_lab/rtl/reference/semisecure_demo_core.sv",
+      "sbom_artifacts": [
+        "/home/ali-raza/semiconductor_security_platform/hardware_lab/rtl/reference/semisecure_demo_core.sv",
+        "/home/ali-raza/semiconductor_security_platform/hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+        "/home/ali-raza/semiconductor_security_platform/hardware_lab/opentitan/firmware/simulated_rom_image.json",
+        "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_trace.json",
+        "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_reference.json",
+        "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_em_trace.json",
+        "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/ai_timing_trace.json"
+      ],
+      "scoped_evidence": "side-channel / baseline",
+      "side_channel_reference": "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_reference.json",
+      "side_channel_trace": "/home/ali-raza/semiconductor_security_platform/hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-GOOD-001/side_channel_trace.json",
+      "structural_scoping": {
+        "derivation": "BY_CONSTRUCTION_NO_DISTINCT_RTL",
+        "netlist_delta_ratio": 0.0,
+        "netlist_source": "REFERENCE_NETLIST_NO_DISTINCT_RTL",
+        "statement": "Candidate and reference are the same artefact because no distinct RTL exists for this fixture, so the 0.0 delta is uninformative rather than a measurement of two designs found identical."
+      },
+      "testbench_file": "/home/ali-raza/semiconductor_security_platform/hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+      "top_module": "semisecure_demo_core",
+      "twin_id": "TWIN-CHIP-PROD-GOOD-001",
+      "verilator_top_module": "tb_semisecure_demo_core"
+    },
+    "service_output": {
+      "passed": true,
+      "status": "HARDWARE_VALIDATED",
+      "results": {
+        "opentitan": {
+          "passed": true,
+          "status": "ATTESTED",
+          "reasons": [],
+          "evidence_digest": "01781d66dd4027868e3503ca85642a6363f04fc1c1b9aa126825982ca449163c",
+          "lifecycle_state": "PROD",
+          "firmware_digest": "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722",
+          "monotonic_counter": 4
+        },
+        "chipwhisperer": {
+          "passed": true,
+          "status": "CLEAN",
+          "anomaly_score": 0.2898244527792654,
+          "threshold": 0.35,
+          "reasons": [],
+          "statistics": {
+            "samples": 256,
+            "mean": -0.0543817643125,
+            "standard_deviation": 2.6706297144132787,
+            "rms": 2.6711833422281015,
+            "peak_to_peak": 12.587625107000001,
+            "crest_factor": 2.6180521072607146,
+            "spectral_centroid": 0.3869841254269555,
+            "high_frequency_ratio": 0.38321546410563273,
+            "correlation": 0.8497358682570207
+          },
+          "trace_digest": "10af149753bf3e3d90c72bebec71be603f636453cd00fcc39b37da88728e23ce",
+          "analysis_mode": "FILE_BASED_OFFLINE_ANALYSIS",
+          "candidate_source_type": "SIMULATED_TRACE",
+          "reference_source_type": "SIMULATED_TRACE",
+          "candidate_file_digest": "9babbf1a008936c646341ffcd0228b0239713475f91cdb0f70111659c8da6906",
+          "reference_file_digest": "3289d6eff145217c9495b716bfc28da200dcf0a54f911b9de2514ecd1dcdf8bd",
+          "physical_capture_verified": false
+        },
+        "yosys": {
+          "passed": true,
+          "status": "PASS",
+          "reasons": [],
+          "metrics": {
+            "wires": 15,
+            "wire_bits": 55,
+            "public_wires": 9,
+            "cells": 8,
+            "processes": 0,
+            "memories": 0,
+            "memory_bits": 0,
+            "cell_types": {
+              "$add": 1,
+              "$adff": 1,
+              "$adffe": 1,
+              "$eq": 2,
+              "$logic_not": 1,
+              "$not": 1,
+              "$pmux": 1
+            }
+          },
+          "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+          "netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+          "log_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "structural_analysis": {
+            "structural_baseline_enabled": true,
+            "reference_rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+            "reference_netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+            "reference_log_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "reference_top_module": "semisecure_demo_core",
+            "reference_metrics": {
+              "wires": 15,
+              "wire_bits": 55,
+              "public_wires": 9,
+              "cells": 8,
+              "processes": 0,
+              "memories": 0,
+              "memory_bits": 0,
+              "cell_types": {
+                "$add": 1,
+                "$adff": 1,
+                "$adffe": 1,
+                "$eq": 2,
+                "$logic_not": 1,
+                "$not": 1,
+                "$pmux": 1
+              }
+            },
+            "candidate_metrics": {
+              "wires": 15,
+              "wire_bits": 55,
+              "public_wires": 9,
+              "cells": 8,
+              "processes": 0,
+              "memories": 0,
+              "memory_bits": 0,
+              "cell_types": {
+                "$add": 1,
+                "$adff": 1,
+                "$adffe": 1,
+                "$eq": 2,
+                "$logic_not": 1,
+                "$not": 1,
+                "$pmux": 1
+              }
+            },
+            "delta": {
+              "absolute_cell_delta": 0,
+              "absolute_wire_bit_delta": 0,
+              "absolute_public_wire_delta": 0,
+              "additional_sequential_cells": 0,
+              "additional_control_cells": 0
+            },
+            "netlist_delta_ratio": 0.0,
+            "structural_reasons": [],
+            "structural_passed": true,
+            "analysis_mode": "REFERENCE_DIFFERENTIAL_SYNTHESIS",
+            "netlist_delta_ratio_reference_normalised": 0.0,
+            "normalisation": "max(reference_cells, candidate_cells)",
+            "available": true
+          },
+          "netlist_delta_ratio": 0.0,
+          "structural_reasons": []
+        },
+        "verilator": {
+          "passed": true,
+          "status": "PASS",
+          "reasons": [],
+          "assertions": 24,
+          "cycles": 12,
+          "warnings": [
+            "%Warning-BLKSEQ: /home/ali-raza/semiconductor_security_platform/hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv:26:19: Blocking assignment '=' in sequential logic process"
+          ],
+          "stdout_digest": "eb05923c88b0760f4229e44542f9b1f6c6dd7391c20f502ec21703ad21c1275f",
+          "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+          "testbench_digest": "a467e4d25f96b04b2cab96bd424b0945c9fec6998af7c21fecbb2825d3c35eeb"
+        },
+        "sbom": {
+          "passed": true,
+          "status": "GENERATED",
+          "reasons": [],
+          "serial_number": "urn:uuid:68a5e75e-8adb-579d-a70c-58213e65faea",
+          "component_count": 7,
+          "document_digest": "3ed10f21f7e82555eb57fe2847f391bf272da7ed95b729a53bb6d802ab34b9f4",
+          "path": "/home/ali-raza/semiconductor_security_platform/data/sbom/df454ea9-d6e8-4e03-ae04-91a80c1a61e2.cdx.json"
+        },
+        "digital_twin": {
+          "passed": true,
+          "status": "VERIFIED",
+          "reasons": [],
+          "twin_digest": "ed7d6a35302dfdcffe61f33f4e44248a3ed83d3c3ed53bae9854ddcc5f1d2047",
+          "mismatches": {}
+        }
+      },
+      "failed_stage": null
+    }
+  },
+  "ai": null,
+  "compliance": null,
+  "blockchain": null,
+  "dashboard": null,
+  "deployment_decision": null,
+  "quarantined": false
+}

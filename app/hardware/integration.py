@@ -78,7 +78,7 @@ class HardwareSecurityPipeline:
           'opentitan':lambda:self.opentitan.verify_file(Path(manifest['opentitan_evidence'])).to_dict(),
           'chipwhisperer':lambda:self.chipwhisperer.analyse_files(Path(manifest['side_channel_trace']),Path(manifest['side_channel_reference'])).to_dict(),
           'yosys':lambda:self._yosys_stage(manifest),
-          'verilator':lambda:self.verilator.simulate(Path(manifest['rtl_file']),Path(manifest['testbench_file']),str(manifest['top_module'])).to_dict(),
+          'verilator':lambda:self.verilator.simulate(Path(manifest['rtl_file']),Path(manifest['testbench_file']),str(manifest['verilator_top_module'])).to_dict(),
           'sbom':lambda:self.sbom.generate(chip_id=chip_id,artifacts=[Path(p) for p in manifest['sbom_artifacts']],output=self.root/'data/sbom'/f'{scan_id}.cdx.json',metadata=manifest.get('sbom_metadata')).to_dict(),
         }
         for stage in ('opentitan','chipwhisperer','yosys','verilator','sbom'):

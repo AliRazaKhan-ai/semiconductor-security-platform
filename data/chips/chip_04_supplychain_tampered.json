@@ -1,109 +1,142 @@
 {
-  "schema_version": "1.0",
   "chip_id": "CHIP-PROD-TAMPER-004",
+  "compliance": {
+    "defense_related": false,
+    "destination_country": "GB",
+    "eccn": "5A992",
+    "end_use": "5G base-station controller",
+    "end_user_name": "Example 5G Network Operator",
+    "end_user_type": "commercial telecom operator",
+    "license_required_expected": true,
+    "specially_designed_for_military": false,
+    "subject_to_ear": true
+  },
+  "expected_results": {
+    "blockchain_result": {
+      "ethereum": "NOT_ANCHORED",
+      "fabric": "NOT_COMMITTED_AS_VERIFIED_PROVENANCE",
+      "local_audit": "TAMPER_EVIDENCE_AND_HASHES_RETAINED_IN_JSON_EVENT_STORE"
+    },
+    "dashboard_result": {
+      "alert_color": "RED",
+      "classification": "PROVENANCE_MISMATCH",
+      "deployment_badge": "QUARANTINED",
+      "overall_status": "SUPPLY_CHAIN_TAMPERED",
+      "risk_level": "CRITICAL"
+    },
+    "deployment_decision": "DENIED_AND_INCIDENT_RESPONSE_OPENED",
+    "pipeline_result": "STOP_AT_DIGITAL_TWIN_OR_SBOM_STAGE"
+  },
+  "failure_reason": {
+    "description": "Custody timestamps, packaging certificate, firmware digest and SBOM hashes do not match the registered digital twin.",
+    "stage": "DIGITAL_TWIN_AND_SBOM_VERIFICATION",
+    "type": "PROVENANCE_AND_COMPONENT_MISMATCH"
+  },
+  "hardware_manifest": {
+    "ai_em_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TAMPER-004/ai_em_trace.json",
+    "ai_timing_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TAMPER-004/ai_timing_trace.json",
+    "device_seed": "4c5f9fecc0feeb00",
+    "device_seed_source": "sha256(chip_id)[:16]",
+    "device_seed_verification_command": "python3 -c \"import hashlib,sys; print(hashlib.sha256(sys.argv[1].encode()).hexdigest()[:16])\" CHIP-PROD-TAMPER-004",
+    "opentitan_evidence": "hardware_lab/opentitan/attestation/CHIP-PROD-TAMPER-004.json",
+    "puf_identity_hash": "3718e346ce0c0a9d75d9365e12959571d126328da129bf5cbe3519a298c5556d",
+    "reference_rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+    "rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+    "sbom_artifacts": [
+      "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+      "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+      "hardware_lab/opentitan/firmware/simulated_rom_image.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TAMPER-004/side_channel_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TAMPER-004/side_channel_reference.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TAMPER-004/ai_em_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TAMPER-004/ai_timing_trace.json"
+    ],
+    "scoped_evidence": "supply-chain integrity; not a side-channel threat model",
+    "side_channel_reference": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TAMPER-004/side_channel_reference.json",
+    "side_channel_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-TAMPER-004/side_channel_trace.json",
+    "structural_scoping": {
+      "derivation": "BY_CONSTRUCTION_NO_DISTINCT_RTL",
+      "netlist_delta_ratio": 0.0,
+      "netlist_source": "REFERENCE_NETLIST_NO_DISTINCT_RTL",
+      "statement": "Candidate and reference are the same artefact because no distinct RTL exists for this fixture, so the 0.0 delta is uninformative rather than a measurement of two designs found identical."
+    },
+    "synthesis_top_module": "semisecure_demo_core",
+    "testbench_file": "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+    "top_module": "tb_semisecure_demo_core",
+    "twin_id": "TWIN-CHIP-PROD-TAMPER-004"
+  },
+  "hardware_security": {
+    "chipwhisperer": {
+      "em_peak_to_peak": 0.39,
+      "em_rms": 0.44,
+      "em_spectral_entropy": 0.4,
+      "power_peak_to_peak": 0.45,
+      "power_rms": 0.48,
+      "power_spectral_entropy": 0.42,
+      "timing_jitter": 0.07
+    },
+    "opentitan": {
+      "debug_locked": true,
+      "lifecycle_state": "PROD",
+      "otp_integrity": true,
+      "rom_digest_valid": false,
+      "secure_boot": true
+    },
+    "puf": {
+      "authentication_expected": true,
+      "intra_device_hamming_distance": 0.0625,
+      "stability_score": 0.9375
+    },
+    "verilator": {
+      "failed_vectors": 4,
+      "simulation_failure_ratio": 8e-05,
+      "simulation_passed": true,
+      "test_vectors": 50000
+    },
+    "yosys": {
+      "gate_count": 125100,
+      "netlist_delta_ratio": 0.01,
+      "rare_net_ratio": 0.02,
+      "unused_logic_ratio": 0.02
+    }
+  },
+  "manufacturing": {
+    "chain_of_custody_complete": false,
+    "country_of_origin": "DE",
+    "current_stage": "DISTRIBUTION_AND_RECEIVING_INSPECTION",
+    "design_house": "SecureSilicon Design GmbH",
+    "distributor": "Unknown Logistics Relay",
+    "fabrication_facility": "TrustedFab Europe-1",
+    "lot_id": "LOT-DE-2026-0716-S",
+    "packaging_facility": "SecurePack DE",
+    "serial_number": "SN-TAMPER-000004",
+    "test_facility": "Accredited Test Lab EU",
+    "wafer_id": "WAFER-DE-88190"
+  },
   "scenario": "SUPPLY_CHAIN_TAMPERING",
+  "schema_version": "1.0",
   "source": {
     "component": "terminal",
     "operator": "ali-raza"
   },
-  "manufacturing": {
-    "current_stage": "DISTRIBUTION_AND_RECEIVING_INSPECTION",
-    "design_house": "SecureSilicon Design GmbH",
-    "fabrication_facility": "TrustedFab Europe-1",
-    "packaging_facility": "SecurePack DE",
-    "test_facility": "Accredited Test Lab EU",
-    "distributor": "Unknown Logistics Relay",
-    "country_of_origin": "DE",
-    "lot_id": "LOT-DE-2026-0716-S",
-    "wafer_id": "WAFER-DE-88190",
-    "serial_number": "SN-TAMPER-000004",
-    "chain_of_custody_complete": false
-  },
-  "failure_reason": {
-    "stage": "DIGITAL_TWIN_AND_SBOM_VERIFICATION",
-    "type": "PROVENANCE_AND_COMPONENT_MISMATCH",
-    "description": "Custody timestamps, packaging certificate, firmware digest and SBOM hashes do not match the registered digital twin."
-  },
-  "hardware_security": {
-    "puf": {
-      "intra_device_hamming_distance": 0.0625,
-      "stability_score": 0.9375,
-      "authentication_expected": true
-    },
-    "opentitan": {
-      "secure_boot": true,
-      "lifecycle_state": "PROD",
-      "otp_integrity": true,
-      "rom_digest_valid": false,
-      "debug_locked": true
-    },
-    "chipwhisperer": {
-      "power_rms": 0.48,
-      "power_peak_to_peak": 0.45,
-      "power_spectral_entropy": 0.42,
-      "em_rms": 0.44,
-      "em_peak_to_peak": 0.39,
-      "em_spectral_entropy": 0.4,
-      "timing_jitter": 0.07
-    },
-    "yosys": {
-      "gate_count": 125100,
-      "unused_logic_ratio": 0.02,
-      "rare_net_ratio": 0.02,
-      "netlist_delta_ratio": 0.01
-    },
-    "verilator": {
-      "simulation_passed": true,
-      "test_vectors": 50000,
-      "failed_vectors": 4,
-      "simulation_failure_ratio": 8e-05
-    }
+  "supplier": {
+    "counterfeit_history": 0.5,
+    "country": "UNKNOWN",
+    "country_risk": 0.7,
+    "financial_distress": 0.3,
+    "name": "Unknown Logistics Relay",
+    "supplier_id": "DIST-UNKNOWN-004",
+    "threat_intel_score": 0.76
   },
   "supply_chain": {
+    "certificate_risk": 0.88,
+    "custody_gap_ratio": 0.42,
     "digital_twin_match": false,
     "sbom_match": false,
-    "custody_gap_ratio": 0.42,
-    "certificate_risk": 0.88,
     "sbom_mismatch_ratio": 0.36,
     "unexpected_components": [
       "flash_controller_revision_X9",
       "unregistered_debug_bridge"
     ]
-  },
-  "supplier": {
-    "supplier_id": "DIST-UNKNOWN-004",
-    "name": "Unknown Logistics Relay",
-    "country": "UNKNOWN",
-    "country_risk": 0.7,
-    "threat_intel_score": 0.76,
-    "counterfeit_history": 0.5,
-    "financial_distress": 0.3
-  },
-  "compliance": {
-    "subject_to_ear": true,
-    "eccn": "5A992",
-    "destination_country": "GB",
-    "end_use": "5G base-station controller",
-    "end_user_type": "commercial telecom operator",
-    "license_required_expected": true,
-    "end_user_name": "Example 5G Network Operator",
-    "defense_related": false,
-    "specially_designed_for_military": false
-  },
-  "expected_results": {
-    "pipeline_result": "STOP_AT_DIGITAL_TWIN_OR_SBOM_STAGE",
-    "dashboard_result": {
-      "overall_status": "SUPPLY_CHAIN_TAMPERED",
-      "alert_color": "RED",
-      "risk_level": "CRITICAL",
-      "classification": "PROVENANCE_MISMATCH",
-      "deployment_badge": "QUARANTINED"
-    },
-    "blockchain_result": {
-      "fabric": "NOT_COMMITTED_AS_VERIFIED_PROVENANCE",
-      "ethereum": "NOT_ANCHORED",
-      "local_audit": "TAMPER_EVIDENCE_AND_HASHES_RETAINED_IN_JSON_EVENT_STORE"
-    },
-    "deployment_decision": "DENIED_AND_INCIDENT_RESPONSE_OPENED"
   }
 }

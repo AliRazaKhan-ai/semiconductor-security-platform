@@ -1,85 +1,118 @@
 {
   "chip_id": "CHIP-PROD-SANCTIONED-007",
+  "compliance": {
+    "defense_related": true,
+    "destination_country": "GB",
+    "eccn": "3A090",
+    "end_use": "defense communications accelerator",
+    "end_user_name": "Example Defense Communications Contractor",
+    "end_user_type": "defense contractor",
+    "specially_designed_for_military": true,
+    "subject_to_ear": true,
+    "technical_data_transfer": true,
+    "usml_category": "XI"
+  },
+  "expected_results": {
+    "dashboard_result": {
+      "alert_color": "RED",
+      "classification": "SANCTIONED_MANUFACTURER",
+      "overall_status": "REJECTED",
+      "risk_level": "CRITICAL"
+    },
+    "deployment_decision": "REJECTED_PERMANENTLY",
+    "pipeline_result": "PERMANENT_REJECTION"
+  },
+  "failure_reason": {
+    "description": "The manufacturer is an exact deny-list match and cannot supply controlled critical-infrastructure hardware.",
+    "stage": "RESTRICTED_PARTY_SCREENING",
+    "type": "RESTRICTED_PARTY_AND_SANCTIONED_MANUFACTURER"
+  },
+  "hardware_manifest": {
+    "ai_em_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SANCTIONED-007/ai_em_trace.json",
+    "ai_timing_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SANCTIONED-007/ai_timing_trace.json",
+    "device_seed": "3c24b09e01588cd4",
+    "device_seed_source": "sha256(chip_id)[:16]",
+    "device_seed_verification_command": "python3 -c \"import hashlib,sys; print(hashlib.sha256(sys.argv[1].encode()).hexdigest()[:16])\" CHIP-PROD-SANCTIONED-007",
+    "opentitan_evidence": "hardware_lab/opentitan/attestation/CHIP-PROD-SANCTIONED-007.json",
+    "puf_identity_hash": "2a3dbf539442b9dc5b4be702c37974517b48438f5af8d809a1626727a3c2e875",
+    "reference_rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+    "rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+    "sbom_artifacts": [
+      "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+      "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+      "hardware_lab/opentitan/firmware/simulated_rom_image.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SANCTIONED-007/side_channel_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SANCTIONED-007/side_channel_reference.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SANCTIONED-007/ai_em_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SANCTIONED-007/ai_timing_trace.json"
+    ],
+    "scoped_evidence": "export control / compliance; not a side-channel threat model",
+    "side_channel_reference": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SANCTIONED-007/side_channel_reference.json",
+    "side_channel_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-SANCTIONED-007/side_channel_trace.json",
+    "structural_scoping": {
+      "derivation": "BY_CONSTRUCTION_NO_DISTINCT_RTL",
+      "netlist_delta_ratio": 0.0,
+      "netlist_source": "REFERENCE_NETLIST_NO_DISTINCT_RTL",
+      "statement": "Candidate and reference are the same artefact because no distinct RTL exists for this fixture, so the 0.0 delta is uninformative rather than a measurement of two designs found identical."
+    },
+    "synthesis_top_module": "semisecure_demo_core",
+    "testbench_file": "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+    "top_module": "tb_semisecure_demo_core",
+    "twin_id": "TWIN-CHIP-PROD-SANCTIONED-007"
+  },
+  "hardware_security": {
+    "opentitan": {
+      "debug_locked": true,
+      "lifecycle_state": "PROD",
+      "otp_integrity": true,
+      "rom_digest_valid": true,
+      "secure_boot": true
+    },
+    "puf": {
+      "authentication_expected": true,
+      "intra_device_hamming_distance": 0.04,
+      "stability_score": 0.96
+    }
+  },
+  "manufacturing": {
+    "chain_of_custody_complete": true,
+    "country_of_origin": "XX",
+    "current_stage": "EXPORT_CONTROL_SCREENING",
+    "design_house": "Restricted Advanced Systems Bureau",
+    "distributor": "Denied Export Trading Corporation",
+    "fabrication_facility": "Denied Semiconductor Entity Plant-3",
+    "lot_id": "LOT-XX-2026-007",
+    "packaging_facility": "Restricted Package Complex",
+    "serial_number": "SN-SANCTIONED-000007",
+    "test_facility": "State Electronics Test Centre",
+    "wafer_id": "WAFER-XX-77007"
+  },
   "scenario": "SANCTIONED_MANUFACTURER",
   "simulation_type": "production_terminal_chip_scan",
   "source": {
     "component": "terminal",
-    "operator": "ali-raza",
-    "environment": "development"
-  },
-  "manufacturing": {
-    "country_of_origin": "XX",
-    "design_house": "Restricted Advanced Systems Bureau",
-    "fabrication_facility": "Denied Semiconductor Entity Plant-3",
-    "packaging_facility": "Restricted Package Complex",
-    "test_facility": "State Electronics Test Centre",
-    "distributor": "Denied Export Trading Corporation",
-    "lot_id": "LOT-XX-2026-007",
-    "wafer_id": "WAFER-XX-77007",
-    "serial_number": "SN-SANCTIONED-000007",
-    "current_stage": "EXPORT_CONTROL_SCREENING",
-    "chain_of_custody_complete": true
+    "environment": "development",
+    "operator": "ali-raza"
   },
   "supplier": {
-    "supplier_id": "SUP-DENIED-007",
-    "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+    "certificate_risk": 0.15,
+    "counterfeit_history": 0.25,
     "country": "XX",
     "country_risk": 1.0,
-    "certificate_risk": 0.15,
     "custody_gap_ratio": 0.0,
+    "financial_distress": 0.45,
+    "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
     "sbom_mismatch_ratio": 0.0,
-    "threat_intel_score": 1.0,
-    "counterfeit_history": 0.25,
-    "financial_distress": 0.45
+    "supplier_id": "SUP-DENIED-007",
+    "threat_intel_score": 1.0
   },
   "supply_chain": {
     "certificate_risk": 0.15,
     "custody_gap_ratio": 0.0,
     "digital_twin_match": true,
-    "sbom_match": true,
-    "sbom_mismatch_ratio": 0.0,
+    "restricted_party_action": "DENY",
     "restricted_party_match": true,
-    "restricted_party_action": "DENY"
-  },
-  "hardware_security": {
-    "puf": {
-      "authentication_expected": true,
-      "intra_device_hamming_distance": 0.04,
-      "stability_score": 0.96
-    },
-    "opentitan": {
-      "secure_boot": true,
-      "debug_locked": true,
-      "otp_integrity": true,
-      "rom_digest_valid": true,
-      "lifecycle_state": "PROD"
-    }
-  },
-  "compliance": {
-    "subject_to_ear": true,
-    "eccn": "3A090",
-    "destination_country": "GB",
-    "end_use": "defense communications accelerator",
-    "end_user_type": "defense contractor",
-    "end_user_name": "Example Defense Communications Contractor",
-    "defense_related": true,
-    "specially_designed_for_military": true,
-    "technical_data_transfer": true,
-    "usml_category": "XI"
-  },
-  "failure_reason": {
-    "type": "RESTRICTED_PARTY_AND_SANCTIONED_MANUFACTURER",
-    "stage": "RESTRICTED_PARTY_SCREENING",
-    "description": "The manufacturer is an exact deny-list match and cannot supply controlled critical-infrastructure hardware."
-  },
-  "expected_results": {
-    "pipeline_result": "PERMANENT_REJECTION",
-    "deployment_decision": "REJECTED_PERMANENTLY",
-    "dashboard_result": {
-      "overall_status": "REJECTED",
-      "classification": "SANCTIONED_MANUFACTURER",
-      "risk_level": "CRITICAL",
-      "alert_color": "RED"
-    }
+    "sbom_match": true,
+    "sbom_mismatch_ratio": 0.0
   }
 }

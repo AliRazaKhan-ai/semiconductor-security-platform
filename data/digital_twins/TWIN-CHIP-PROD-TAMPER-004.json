@@ -1,0 +1,18 @@
+{
+  "chip_id": "CHIP-PROD-TAMPER-004",
+  "created_at_utc": "2026-09-03T06:26:41.844+00:00",
+  "custody_hashes": [],
+  "firmware_digest": "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722",
+  "lifecycle_state": "PROD",
+  "lot_id": "LOT-DE-2026-0716-S",
+  "manufacturer": "TrustedFab Europe-1",
+  "netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+  "puf_identity_hash": "3718e346ce0c0a9d75d9365e12959571d126328da129bf5cbe3519a298c5556d",
+  "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+  "sbom_digest": "5c3188a061e0e5f96a9e0c1de30042937f4babac5dcd9531b86a45416bc0e4a5",
+  "schema_version": "1.0",
+  "serial_number": "SN-TAMPER-000004",
+  "supplier_id": "DIST-UNKNOWN-004",
+  "twin_id": "TWIN-CHIP-PROD-TAMPER-004",
+  "updated_at_utc": "2026-09-03T06:26:41.844+00:00"
+}

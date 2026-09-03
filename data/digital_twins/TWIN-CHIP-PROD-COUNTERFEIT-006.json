@@ -1,0 +1,18 @@
+{
+  "chip_id": "CHIP-PROD-COUNTERFEIT-006",
+  "created_at_utc": "2026-09-03T06:28:43.042+00:00",
+  "custody_hashes": [],
+  "firmware_digest": "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722",
+  "lifecycle_state": "PROD",
+  "lot_id": "LOT-FAKE-2026-006",
+  "manufacturer": "Unverified Foundry",
+  "netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+  "puf_identity_hash": "b97da443ee60ba77bcabd7c4e6aa2c273059b8ce8e0c4976d5175e7121dad2c7",
+  "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+  "sbom_digest": "05b83de08c7d80d3d84c1815ccfcb4a3a527b74ce8e0c0a5481bc4d146a57077",
+  "schema_version": "1.0",
+  "serial_number": "SN-COUNTERFEIT-000006",
+  "supplier_id": "SUP-UNVERIFIED-006",
+  "twin_id": "TWIN-CHIP-PROD-COUNTERFEIT-006",
+  "updated_at_utc": "2026-09-03T06:28:43.042+00:00"
+}

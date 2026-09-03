@@ -139,3 +139,8 @@ blockchain/ethereum/artifacts/
 
 # Compiled Hyperledger Fabric chaincode binary
 blockchain/fabric/chaincode/semiconductor_provenance/semiconductor-provenance
+
+# OpenTitan attestation evidence is minted per run. It expires 300 seconds after
+# minting and its monotonic counter cannot be reused, so a committed copy is always
+# stale. Mint before demonstrating: scripts/demo/mint_hardware_evidence.py
+hardware_lab/opentitan/attestation/*.json

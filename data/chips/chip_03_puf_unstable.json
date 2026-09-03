@@ -1,85 +1,118 @@
 {
-  "schema_version": "1.0",
   "chip_id": "CHIP-PROD-PUF-003",
+  "compliance": {
+    "defense_related": false,
+    "destination_country": "DE",
+    "eccn": "EAR99",
+    "end_use": "power-grid controller",
+    "end_user_name": "German Power Grid Operator",
+    "end_user_type": "regulated infrastructure operator",
+    "license_required_expected": false,
+    "specially_designed_for_military": false,
+    "subject_to_ear": true
+  },
+  "expected_results": {
+    "blockchain_result": {
+      "ethereum": "NOT_ANCHORED",
+      "fabric": "NOT_COMMITTED_BECAUSE_IDENTITY_NOT_ESTABLISHED",
+      "local_audit": "PUF_FAILURE_RETAINED_IN_JSON_EVENT_STORE"
+    },
+    "dashboard_result": {
+      "alert_color": "AMBER",
+      "classification": "IDENTITY_UNRELIABLE",
+      "deployment_badge": "MANUAL_REVIEW",
+      "overall_status": "AUTHENTICATION_FAILED",
+      "risk_level": "HIGH"
+    },
+    "deployment_decision": "HOLD_FOR_RETEST_OR_REJECT",
+    "pipeline_result": "STOP_AT_PUF_AUTHENTICATION"
+  },
+  "failure_reason": {
+    "description": "Excessive intra-device Hamming distance under voltage and temperature drift makes the chip identity unreliable.",
+    "stage": "PUF_AUTHENTICATION",
+    "type": "PUF_INSTABILITY"
+  },
+  "hardware_manifest": {
+    "ai_em_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-PUF-003/ai_em_trace.json",
+    "ai_timing_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-PUF-003/ai_timing_trace.json",
+    "device_seed": "9f5c3395f85658d8",
+    "device_seed_source": "sha256(chip_id)[:16]",
+    "device_seed_verification_command": "python3 -c \"import hashlib,sys; print(hashlib.sha256(sys.argv[1].encode()).hexdigest()[:16])\" CHIP-PROD-PUF-003",
+    "opentitan_evidence": "hardware_lab/opentitan/attestation/CHIP-PROD-PUF-003.json",
+    "puf_identity_hash": "14bd5692ab9820cc5b46f1f9f5d48af52b528ccb25e9f0cf3403c8865cb86fbc",
+    "reference_rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+    "rtl_file": "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+    "sbom_artifacts": [
+      "hardware_lab/rtl/reference/semisecure_demo_core.sv",
+      "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+      "hardware_lab/opentitan/firmware/simulated_rom_image.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-PUF-003/side_channel_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-PUF-003/side_channel_reference.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-PUF-003/ai_em_trace.json",
+      "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-PUF-003/ai_timing_trace.json"
+    ],
+    "scoped_evidence": "PUF authentication; not a side-channel threat model",
+    "side_channel_reference": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-PUF-003/side_channel_reference.json",
+    "side_channel_trace": "hardware_lab/chipwhisperer/reference_traces/CHIP-PROD-PUF-003/side_channel_trace.json",
+    "structural_scoping": {
+      "derivation": "BY_CONSTRUCTION_NO_DISTINCT_RTL",
+      "netlist_delta_ratio": 0.0,
+      "netlist_source": "REFERENCE_NETLIST_NO_DISTINCT_RTL",
+      "statement": "Candidate and reference are the same artefact because no distinct RTL exists for this fixture, so the 0.0 delta is uninformative rather than a measurement of two designs found identical."
+    },
+    "synthesis_top_module": "semisecure_demo_core",
+    "testbench_file": "hardware_lab/verilator/testbenches/tb_semisecure_demo_core.sv",
+    "top_module": "tb_semisecure_demo_core",
+    "twin_id": "TWIN-CHIP-PROD-PUF-003"
+  },
+  "hardware_security": {
+    "opentitan": {
+      "debug_locked": true,
+      "lifecycle_state": "PROD",
+      "otp_integrity": true,
+      "rom_digest_valid": true,
+      "secure_boot": true
+    },
+    "puf": {
+      "authentication_expected": false,
+      "intra_device_hamming_distance": 0.28125,
+      "stability_score": 0.71875,
+      "temperature_drift": 0.21,
+      "voltage_drift": 0.17
+    }
+  },
+  "manufacturing": {
+    "chain_of_custody_complete": true,
+    "country_of_origin": "DE",
+    "current_stage": "PACKAGING_AND_ENVIRONMENTAL_STRESS_TEST",
+    "design_house": "SecureSilicon Design GmbH",
+    "fabrication_facility": "TrustedFab Europe-1",
+    "lot_id": "LOT-DE-2026-0716-P",
+    "packaging_facility": "PackageLab East-2",
+    "serial_number": "SN-PUF-000003",
+    "test_facility": "Environmental Reliability Lab",
+    "wafer_id": "WAFER-DE-88177"
+  },
   "scenario": "WEAK_PUF",
+  "schema_version": "1.0",
   "source": {
     "component": "terminal",
     "operator": "ali-raza"
   },
-  "manufacturing": {
-    "current_stage": "PACKAGING_AND_ENVIRONMENTAL_STRESS_TEST",
-    "design_house": "SecureSilicon Design GmbH",
-    "fabrication_facility": "TrustedFab Europe-1",
-    "packaging_facility": "PackageLab East-2",
-    "test_facility": "Environmental Reliability Lab",
-    "country_of_origin": "DE",
-    "lot_id": "LOT-DE-2026-0716-P",
-    "wafer_id": "WAFER-DE-88177",
-    "serial_number": "SN-PUF-000003",
-    "chain_of_custody_complete": true
-  },
-  "failure_reason": {
-    "stage": "PUF_AUTHENTICATION",
-    "type": "PUF_INSTABILITY",
-    "description": "Excessive intra-device Hamming distance under voltage and temperature drift makes the chip identity unreliable."
-  },
-  "hardware_security": {
-    "puf": {
-      "intra_device_hamming_distance": 0.28125,
-      "stability_score": 0.71875,
-      "voltage_drift": 0.17,
-      "temperature_drift": 0.21,
-      "authentication_expected": false
-    },
-    "opentitan": {
-      "secure_boot": true,
-      "lifecycle_state": "PROD",
-      "otp_integrity": true,
-      "rom_digest_valid": true,
-      "debug_locked": true
-    }
-  },
-  "supply_chain": {
-    "digital_twin_match": true,
-    "sbom_match": true,
-    "custody_gap_ratio": 0.0,
-    "certificate_risk": 0.05,
-    "sbom_mismatch_ratio": 0.0
-  },
   "supplier": {
-    "supplier_id": "SUP-DE-PKG-002",
-    "name": "PackageLab East-2",
+    "counterfeit_history": 0.0,
     "country": "DE",
     "country_risk": 0.1,
-    "threat_intel_score": 0.05,
-    "counterfeit_history": 0.0,
-    "financial_distress": 0.05
+    "financial_distress": 0.05,
+    "name": "PackageLab East-2",
+    "supplier_id": "SUP-DE-PKG-002",
+    "threat_intel_score": 0.05
   },
-  "compliance": {
-    "subject_to_ear": true,
-    "eccn": "EAR99",
-    "destination_country": "DE",
-    "end_use": "power-grid controller",
-    "end_user_type": "regulated infrastructure operator",
-    "license_required_expected": false,
-    "end_user_name": "German Power Grid Operator",
-    "defense_related": false,
-    "specially_designed_for_military": false
-  },
-  "expected_results": {
-    "pipeline_result": "STOP_AT_PUF_AUTHENTICATION",
-    "dashboard_result": {
-      "overall_status": "AUTHENTICATION_FAILED",
-      "alert_color": "AMBER",
-      "risk_level": "HIGH",
-      "classification": "IDENTITY_UNRELIABLE",
-      "deployment_badge": "MANUAL_REVIEW"
-    },
-    "blockchain_result": {
-      "fabric": "NOT_COMMITTED_BECAUSE_IDENTITY_NOT_ESTABLISHED",
-      "ethereum": "NOT_ANCHORED",
-      "local_audit": "PUF_FAILURE_RETAINED_IN_JSON_EVENT_STORE"
-    },
-    "deployment_decision": "HOLD_FOR_RETEST_OR_REJECT"
+  "supply_chain": {
+    "certificate_risk": 0.05,
+    "custody_gap_ratio": 0.0,
+    "digital_twin_match": true,
+    "sbom_match": true,
+    "sbom_mismatch_ratio": 0.0
   }
 }

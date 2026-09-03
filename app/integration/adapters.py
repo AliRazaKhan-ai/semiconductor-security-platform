@@ -26,6 +26,7 @@ HARDWARE_MANIFEST_KEYS = (
     "rtl_file",
     "testbench_file",
     "top_module",
+    "verilator_top_module",
     "sbom_artifacts",
     "puf_identity_hash",
     "twin_id",

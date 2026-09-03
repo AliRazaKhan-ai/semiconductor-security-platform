@@ -1,0 +1,28 @@
+=== Side-channel operating margin under sha256 device seeds, 2026-09-03T09:32:04+04:00 ===
+device_seed_source: sha256(chip_id)[:16]
+population: 8 device seeds over 2 real Yosys netlists (8 cells / 27 cells)
+
+chip_id                       device_seed        clean    trojan
+--------------------------------------------------------------------
+CHIP-PROD-GOOD-001            6cda03c054347456  0.2898   0.4455
+CHIP-PROD-TROJAN-002          dfd37a0b99efcbb7  0.2835   0.4508
+CHIP-PROD-PUF-003             9f5c3395f85658d8  0.2929   0.4677
+CHIP-PROD-TAMPER-004          4c5f9fecc0feeb00  0.2725   0.4635
+CHIP-PROD-RISK-005            a1afce42b7337c5a  0.2749   0.4642
+CHIP-PROD-COUNTERFEIT-006     25b3b4faec090d20  0.2928   0.4802
+CHIP-PROD-SANCTIONED-007      3c24b09e01588cd4  0.2918   0.4513
+CHIP-PROD-PROVENANCE-008      f61d944b5a44a068  0.2721   0.4861
+
+clean   min 0.2721  max 0.2929  mean 0.2838  spread 0.0208
+trojan  min 0.4455  max 0.4861  mean 0.4637  spread 0.0405
+
+threshold 0.35   false positives 0/8   false negatives 0/8
+separation between distributions +0.1527
+
+=== comparison with the chip_id-seeded population ===
+                       chip_id seeds    sha256 seeds
+clean mean                   0.2882          0.2838
+trojan mean                  0.4434          0.4637
+separation                  +0.1413         +0.1527
+
+Measured operating margin on a small synthetic population. Not a field error rate.
