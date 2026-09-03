@@ -1,0 +1,36 @@
+{
+  "artifact_type": "SIMULATED_FIRMWARE_IMAGE",
+  "provenance": {
+    "generated_by": "scripts/demo/provision_attestation_anchors.py",
+    "physical_device_verified": false,
+    "source_type": "SIMULATED_FIRMWARE_IMAGE",
+    "vendor_signed": false
+  },
+  "rom": {
+    "boot_stage": "ROM_EXT",
+    "code_sections": [
+      {
+        "name": ".rom_ext_start",
+        "size_bytes": 4096
+      },
+      {
+        "name": ".rom_ext_text",
+        "size_bytes": 32768
+      },
+      {
+        "name": ".rom_ext_rodata",
+        "size_bytes": 8192
+      }
+    ],
+    "device_family": "opentitan-earlgrey",
+    "image_role": "rom_ext",
+    "image_version": "0.0.0-simulated"
+  },
+  "schema_version": "1.0",
+  "trust_anchor_disclosure": {
+    "digest_derived_from_this_file": true,
+    "independently_supplied_vendor_image": false,
+    "locally_generated_verification_key": true,
+    "statement": "The trusted digest below was derived from the generated fixture at hardware_lab/opentitan/firmware/simulated_rom_image.json, not from an independently supplied vendor image. The image is therefore checked against a digest taken from itself. The HMAC verification key is likewise generated locally, so any evidence signed with it verifies. A real deployment requires a signed firmware image produced by the OpenTitan build, with its digest supplied out of band by the silicon vendor, and signature verification against a device-held key whose private half is never exported."
+  }
+}

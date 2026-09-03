@@ -1,0 +1,18 @@
+=== EDA toolchain ===
+Yosys 0.52 (git sha1 fee39a3284c90249e1d9684cf6944ffbbcbb8f90)
+Verilator 5.032 2025-01-01 rev (Debian 5.032-1)
+
+=== Hardware validation suite, 2026-09-02T16:39:18+04:00 ===
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /home/ali-raza/semiconductor_security_platform/venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/ali-raza/semiconductor_security_platform
+configfile: pytest.ini
+plugins: typeguard-4.5.2
+collecting ... collected 3 items
+
+tests/hardware/test_yosys_structural_policy.py::test_structural_policy_flags_controlled_trojan_against_reference PASSED [ 33%]
+tests/hardware/test_rtl_evidence.py::test_yosys_synthesises_reference_and_controlled_trojan PASSED [ 66%]
+tests/hardware/test_rtl_evidence.py::test_verilator_reference_passes_and_trojan_payload_is_detected PASSED [100%]
+
+============================== 3 passed in 38.27s ==============================

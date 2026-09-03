@@ -1,14 +1,18 @@
 {
-  "version": "1.1",
   "allowed_lifecycle_states": [
     "DEV",
     "PROD",
     "PROD_END"
   ],
-  "trusted_firmware_digests": [],
-  "minimum_counter": 0,
-  "minimum_nonce_bytes": 16,
   "maximum_attestation_age_seconds": 300,
   "maximum_future_skew_seconds": 30,
-  "replay_state_path": "data/hardware/opentitan-replay.json"
+  "minimum_counter": 0,
+  "minimum_nonce_bytes": 16,
+  "replay_state_path": "data/hardware/opentitan-replay.json",
+  "trusted_firmware_digests": [
+    "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722"
+  ],
+  "trusted_firmware_digests_disclosure": "The trusted digest below was derived from the generated fixture at hardware_lab/opentitan/firmware/simulated_rom_image.json, not from an independently supplied vendor image. The image is therefore checked against a digest taken from itself. The HMAC verification key is likewise generated locally, so any evidence signed with it verifies. A real deployment requires a signed firmware image produced by the OpenTitan build, with its digest supplied out of band by the silicon vendor, and signature verification against a device-held key whose private half is never exported.",
+  "trusted_firmware_digests_source": "hardware_lab/opentitan/firmware/simulated_rom_image.json",
+  "version": "1.1"
 }

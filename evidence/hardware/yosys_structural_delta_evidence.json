@@ -1,0 +1,120 @@
+{
+  "control": {
+    "analysis_mode": "REFERENCE_DIFFERENTIAL_SYNTHESIS",
+    "candidate_metrics": {
+      "cell_types": {
+        "$add": 1,
+        "$adff": 1,
+        "$adffe": 1,
+        "$eq": 2,
+        "$logic_not": 1,
+        "$not": 1,
+        "$pmux": 1
+      },
+      "cells": 8,
+      "memories": 0,
+      "memory_bits": 0,
+      "processes": 0,
+      "public_wires": 9,
+      "wire_bits": 55,
+      "wires": 15
+    },
+    "delta": {
+      "absolute_cell_delta": 0,
+      "absolute_public_wire_delta": 0,
+      "absolute_wire_bit_delta": 0,
+      "additional_control_cells": 0,
+      "additional_sequential_cells": 0
+    },
+    "netlist_delta_ratio": 0.0,
+    "reference_log_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "reference_metrics": {
+      "cell_types": {
+        "$add": 1,
+        "$adff": 1,
+        "$adffe": 1,
+        "$eq": 2,
+        "$logic_not": 1,
+        "$not": 1,
+        "$pmux": 1
+      },
+      "cells": 8,
+      "memories": 0,
+      "memory_bits": 0,
+      "processes": 0,
+      "public_wires": 9,
+      "wire_bits": 55,
+      "wires": 15
+    },
+    "reference_netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+    "reference_rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+    "reference_top_module": "semisecure_demo_core",
+    "structural_baseline_enabled": true,
+    "structural_passed": true,
+    "structural_reasons": []
+  },
+  "measurement": {
+    "analysis_mode": "REFERENCE_DIFFERENTIAL_SYNTHESIS",
+    "candidate_metrics": {
+      "cell_types": {
+        "$add": 2,
+        "$adff": 1,
+        "$adffe": 3,
+        "$eq": 5,
+        "$logic_and": 1,
+        "$logic_not": 1,
+        "$mux": 9,
+        "$ne": 1,
+        "$not": 2,
+        "$pmux": 1,
+        "$reduce_and": 1
+      },
+      "cells": 27,
+      "memories": 0,
+      "memory_bits": 0,
+      "processes": 0,
+      "public_wires": 13,
+      "wire_bits": 131,
+      "wires": 36
+    },
+    "delta": {
+      "absolute_cell_delta": 19,
+      "absolute_public_wire_delta": 4,
+      "absolute_wire_bit_delta": 76,
+      "additional_control_cells": 15,
+      "additional_sequential_cells": 2
+    },
+    "netlist_delta_ratio": 1.0,
+    "reference_log_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "reference_metrics": {
+      "cell_types": {
+        "$add": 1,
+        "$adff": 1,
+        "$adffe": 1,
+        "$eq": 2,
+        "$logic_not": 1,
+        "$not": 1,
+        "$pmux": 1
+      },
+      "cells": 8,
+      "memories": 0,
+      "memory_bits": 0,
+      "processes": 0,
+      "public_wires": 9,
+      "wire_bits": 55,
+      "wires": 15
+    },
+    "reference_netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
+    "reference_rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+    "reference_top_module": "semisecure_demo_core",
+    "structural_baseline_enabled": true,
+    "structural_passed": false,
+    "structural_reasons": [
+      "STRUCTURAL_CELL_DELTA_EXCEEDED",
+      "STRUCTURAL_WIRE_BIT_DELTA_EXCEEDED",
+      "STRUCTURAL_PUBLIC_WIRE_DELTA_EXCEEDED",
+      "STRUCTURAL_SEQUENTIAL_LOGIC_ADDED",
+      "STRUCTURAL_CONTROL_LOGIC_ADDED"
+    ]
+  }
+}
