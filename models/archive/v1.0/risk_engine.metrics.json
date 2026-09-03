@@ -1,36 +1,30 @@
 {
-  "evaluation_split": "TEST",
-  "dataset_sha256": "5d359ced43c7f1d1cfc96aeb976191d502be1a709aab708e271876880209903e",
-  "split_digest": "5eb2b762b4b6923ce3eef27f01b85d1dcd33c09a16a0f38ee3e40ba9250be71d",
-  "train_samples": 3500,
-  "validation_samples": 750,
-  "test_samples": 750,
   "roc_auc": 1.0,
   "classification_report": {
     "0": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 412.0
+      "support": 559.0
     },
     "1": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 338.0
+      "support": 441.0
     },
     "accuracy": 1.0,
     "macro avg": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 750.0
+      "support": 1000.0
     },
     "weighted avg": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 750.0
+      "support": 1000.0
     }
   }
 }

@@ -30,7 +30,7 @@ from sklearn.metrics import (
 )
 
 from app.ai.feature_extraction.normalization import RobustNormalizer  # noqa: E402
-from app.ai.feature_extraction.schemas import FEATURE_NAMES  # noqa: E402
+from corpus_schema import require_matching_normalizer  # noqa: E402
 
 
 def main() -> None:
@@ -87,13 +87,10 @@ def main() -> None:
         arguments.normalizer
     )
 
-    if (
-        tuple(normalizer.feature_names)
-        != FEATURE_NAMES
-    ):
-        raise ValueError(
-            "normalizer feature schema does not match training schema"
-        )
+    require_matching_normalizer(
+        normalizer.feature_names,
+        arguments.dataset,
+    )
 
     normalized_features = (
         normalizer.transform(

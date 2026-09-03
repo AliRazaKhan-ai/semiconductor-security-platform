@@ -27,7 +27,7 @@ from dataset import (  # noqa: E402
     sha256_file,
 )
 
-from app.ai.feature_extraction.schemas import FEATURE_NAMES  # noqa: E402
+from corpus_schema import require_matching_normalizer  # noqa: E402
 
 LINEAGE_SCHEMA_VERSION = "1.0"
 
@@ -262,15 +262,18 @@ def build_lineage_manifest(
         normalizer_path
     )
 
-    if tuple(
+    # A lineage manifest records what a training run did, so it must verify the
+    # normalizer against the corpus it was fitted to rather than against the schema
+    # production currently declares. Refusing to document a v2.1 training run
+    # because production still declares v1.0 records nothing. Still fail-closed:
+    # a normalizer that does not match its own corpus is rejected.
+    feature_names = require_matching_normalizer(
         normalizer.get(
             "feature_names",
             (),
-        )
-    ) != FEATURE_NAMES:
-        raise ValueError(
-            "normalizer feature schema does not match production schema"
-        )
+        ),
+        dataset_path,
+    )
 
     tensorflow_metrics = (
         _require_bound_metrics(
@@ -394,13 +397,13 @@ def build_lineage_manifest(
             "feature_schema_sha256": (
                 _json_digest(
                     list(
-                        FEATURE_NAMES
+                        feature_names
                     )
                 )
             ),
             "feature_count": (
                 len(
-                    FEATURE_NAMES
+                    feature_names
                 )
             ),
         },

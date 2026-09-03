@@ -1,5 +1,9 @@
 {
-  "threshold": 1.365724802017212,
-  "scale": 0.20623469352722168,
-  "clean_samples": 2794
+  "threshold_source": "CLEAN_VALIDATION",
+  "dataset_sha256": "5d359ced43c7f1d1cfc96aeb976191d502be1a709aab708e271876880209903e",
+  "split_digest": "5eb2b762b4b6923ce3eef27f01b85d1dcd33c09a16a0f38ee3e40ba9250be71d",
+  "clean_training_samples": 1923,
+  "clean_validation_samples": 412,
+  "threshold": 0.6359437704086304,
+  "scale": 0.09887657314538956
 }

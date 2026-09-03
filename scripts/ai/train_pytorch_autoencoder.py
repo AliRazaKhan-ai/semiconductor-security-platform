@@ -21,7 +21,7 @@ sys.path.insert(
 from dataset import load_dataset, load_split
 
 from app.ai.feature_extraction.normalization import RobustNormalizer
-from app.ai.feature_extraction.schemas import FEATURE_NAMES
+from corpus_schema import require_matching_normalizer
 from app.ai.pytorch_anomaly.loader import build_autoencoder
 
 
@@ -91,13 +91,10 @@ def main() -> None:
         arguments.normalizer
     )
 
-    if (
-        tuple(normalizer.feature_names)
-        != FEATURE_NAMES
-    ):
-        raise ValueError(
-            "normalizer feature schema does not match training schema"
-        )
+    require_matching_normalizer(
+        normalizer.feature_names,
+        arguments.dataset,
+    )
 
     normalized_features = (
         normalizer.transform(

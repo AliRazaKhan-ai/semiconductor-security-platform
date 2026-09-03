@@ -6,7 +6,8 @@ from pathlib import Path
 from typing import Any
 
 from app.ai import AIPipelineService
-from app.ai.feature_extraction import FEATURE_NAMES, FeatureExtractionService
+from app.ai.feature_extraction import FeatureExtractionService
+from app.ai.feature_extraction.schemas import FEATURE_SCHEMAS
 from app.ai.feature_extraction.normalization import RobustNormalizer
 from app.ai.pytorch_anomaly import PyTorchAnomalyService
 from app.ai.risk_engine import RiskEngineService
@@ -42,6 +43,30 @@ def build_ai_pipeline(
         config["risk_engine"]
     )
 
+    # ai.schema_version selects the production feature schema. It previously
+    # declared a version while every consumer imported the v1.0 constant directly,
+    # so the key was inert: changing it changed nothing and a schema migration
+    # surfaced as a shape error rather than a configuration statement.
+    schema_version = str(
+        config.get(
+            "schema_version",
+            "1.0",
+        )
+    )
+
+    if schema_version not in FEATURE_SCHEMAS:
+        raise ValueError(
+            f"ai.schema_version {schema_version!r} is not registered in "
+            f"FEATURE_SCHEMAS; known versions are "
+            f"{sorted(FEATURE_SCHEMAS)}"
+        )
+
+    feature_names = tuple(
+        FEATURE_SCHEMAS[
+            schema_version
+        ]
+    )
+
     normalizer = RobustNormalizer.load(
         _resolve(
             project_root,
@@ -57,10 +82,13 @@ def build_ai_pipeline(
         tuple(
             normalizer.feature_names
         )
-        != FEATURE_NAMES
+        != feature_names
     ):
         raise ValueError(
-            "normalizer feature schema does not match production schema"
+            "normalizer feature schema does not match production schema "
+            f"{schema_version}: normalizer has "
+            f"{len(normalizer.feature_names)} features, schema declares "
+            f"{len(feature_names)}"
         )
 
     cnn = TensorFlowClassifierService(
@@ -125,7 +153,7 @@ def build_ai_pipeline(
                 ]
             ),
         ),
-        FEATURE_NAMES,
+        feature_names,
         version=str(
             pytorch_config.get(
                 "version",
@@ -160,7 +188,7 @@ def build_ai_pipeline(
                 ]
             ),
         ),
-        FEATURE_NAMES,
+        feature_names,
         str(
             risk_config.get(
                 "version",
@@ -173,13 +201,18 @@ def build_ai_pipeline(
     )
 
     return AIPipelineService(
+        # The extractor is constructed with the declared schema rather than the
+        # default, so _active_feature_schema can read the running schema back from
+        # service.features.feature_names and the contract check cannot disagree
+        # with the model that is actually loaded.
         FeatureExtractionService(
             int(
                 config.get(
                     "sequence_length",
                     256,
                 )
-            )
+            ),
+            feature_names=feature_names,
         ),
         normalizer,
         cnn,

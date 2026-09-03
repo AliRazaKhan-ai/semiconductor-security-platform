@@ -18,8 +18,9 @@ sys.path.insert(
 
 from dataset import load_dataset, load_split
 
+from corpus_schema import resolve_feature_names
+
 from app.ai.feature_extraction.normalization import RobustNormalizer
-from app.ai.feature_extraction.schemas import FEATURE_NAMES
 
 
 def main() -> None:
@@ -57,9 +58,19 @@ def main() -> None:
         dtype=np.int64,
     )
 
+    # The corpus declares the schema it was generated against, so the normalizer
+    # is always fitted to the names the data actually has.
+    feature_names, source = resolve_feature_names(
+        arguments.dataset
+    )
+
+    print(
+        f"schema: {len(feature_names)} features via {source}"
+    )
+
     RobustNormalizer.fit(
         features[train_indices],
-        FEATURE_NAMES,
+        feature_names,
     ).save(
         arguments.output
     )
