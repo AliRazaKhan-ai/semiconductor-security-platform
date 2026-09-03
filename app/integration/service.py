@@ -546,59 +546,137 @@ class IntegratedPipelineService:
 
         return payload["data"]
 
+    def _puf_adapter(self) -> Any:
+        """Return the PUF adapter, constructed once per service instance.
+
+        IntegratedPipelineService is not given a PUF service through app.extensions, so it
+        builds one from the project root. Construction raises when
+        SEMISURE_PUF_MASTER_SECRET is absent, which surfaces as an infrastructure hold
+        rather than a silent pass.
+        """
+        adapter = getattr(self, "_cached_puf_adapter", None)
+
+        if adapter is None:
+            from app.hardware.puf.adapter import PUFAdapter
+
+            adapter = PUFAdapter.from_project(self.project_root)
+            self._cached_puf_adapter = adapter
+
+        return adapter
+
     def _run_puf(
         self,
         simulation: dict[str, Any],
     ) -> dict[str, Any]:
-        gate = evaluate_simulation_gate(
-            simulation
-        )
+        """Authenticate against the enrolled PUF profile when an envelope is supplied.
+
+        This stage previously had no path that authenticated anything. One branch returned
+        the simulation gate's verdict; the other returned passed=True unconditionally with
+        a hardcoded risk score and a confidence read from the fixture's own declared
+        stability_score. The 2,000-line PUF implementation was never invoked.
+
+        A minted fixture now carries a challenge/response envelope, which is verified
+        against the enrolled profile. Authentication consumes the challenge, so a replayed
+        envelope is rejected. verification_source distinguishes the three paths and must
+        stay visible in the run record.
+        """
+        from app.hardware.puf.exceptions import PUFError
+        from app.hardware.puf.schemas import PUFChallenge, PUFResponse
+
+        gate = evaluate_simulation_gate(simulation)
 
         if gate.stage == "PUF_AUTHENTICATION":
             return {
                 "passed": gate.passed,
-                "classification": (
-                    gate.classification
-                ),
+                "classification": gate.classification,
                 "risk_score": gate.risk_score,
                 "confidence": gate.confidence,
                 "reasons": list(gate.reasons),
-                "deployment_decision": (
-                    gate.deployment_decision
-                ),
+                "deployment_decision": gate.deployment_decision,
                 "details": gate.to_dict(),
-                "verification_source": (
-                    "SIMULATION_FIXTURE_GATE"
-                ),
+                "verification_source": "SIMULATION_FIXTURE_GATE",
             }
 
-        puf = (
-            simulation.get(
-                "hardware_security",
-                {},
-            ).get("puf", {})
-        )
+        puf = simulation.get("hardware_security", {}).get("puf", {})
+        chip_id = str(simulation.get("chip_id") or "")
 
+        challenge_value = puf.get("challenge")
+        response_value = puf.get("response")
+
+        if (
+            chip_id
+            and isinstance(challenge_value, dict)
+            and isinstance(response_value, dict)
+        ):
+            try:
+                result = self._puf_adapter().authenticate(
+                    chip_id,
+                    PUFChallenge.from_dict(challenge_value),
+                    PUFResponse.from_dict(response_value),
+                )
+            except PUFError as exc:
+                return {
+                    "passed": False,
+                    "classification": "PUF_AUTHENTICATION_FAILED",
+                    "risk_score": 0.99,
+                    "confidence": 0.99,
+                    "reasons": [str(exc)],
+                    "deployment_decision": "HOLD_FOR_RETEST_OR_REJECT",
+                    "details": {
+                        "error_type": type(exc).__name__,
+                        "message": str(exc),
+                    },
+                    "verification_source": "VERIFIED_PUF_STAGE",
+                }
+
+            details = result.to_dict()
+
+            # build_ai_evidence requires stability_score, which the fixture branch
+            # supplied from the fixture's own declared value. AuthenticationResult
+            # uses the verifier's vocabulary and has no such field, so it is derived
+            # here from the measured mean per-bit reliability over the enrolment
+            # reliability mask. The derivation is recorded rather than the two names
+            # being silently equated: they are different measurements.
+            details["stability_score"] = float(
+                details.get("response_reliability", 0.0)
+            )
+            details["stability_score_source"] = (
+                "MEASURED_RESPONSE_RELIABILITY"
+            )
+
+            return {
+                "passed": bool(result.accepted),
+                "classification": (
+                    "PUF_AUTHENTICATED"
+                    if result.accepted
+                    else "PUF_AUTHENTICATION_FAILED"
+                ),
+                "risk_score": 0.05 if result.accepted else 0.99,
+                "confidence": float(
+                    details.get("response_reliability", 0.95)
+                ),
+                "reasons": list(result.reasons),
+                "deployment_decision": (
+                    "CONTINUE"
+                    if result.accepted
+                    else "HOLD_FOR_RETEST_OR_REJECT"
+                ),
+                "details": details,
+                "verification_source": "VERIFIED_PUF_STAGE",
+            }
+
+        # No envelope. Behaviour is unchanged so fixtures that predate minting still run,
+        # but the result is explicitly marked unauthenticated. This branch still passes
+        # unconditionally and should be made fail-closed once every fixture is minted.
         return {
             "passed": True,
-            "classification": (
-                "PUF_AUTHENTICATED"
-            ),
+            "classification": "PUF_AUTHENTICATED",
             "risk_score": 0.05,
-            "confidence": float(
-                puf.get(
-                    "stability_score",
-                    0.95,
-                )
-            ),
+            "confidence": float(puf.get("stability_score", 0.95)),
             "reasons": [],
-            "deployment_decision": (
-                "CONTINUE"
-            ),
-            "details": puf,
-            "verification_source": (
-                "SIMULATED_PUF_FIXTURE"
-            ),
+            "deployment_decision": "CONTINUE",
+            "details": {**puf, "authenticated": False},
+            "verification_source": "SIMULATED_PUF_FIXTURE",
         }
 
     def _run_hardware(

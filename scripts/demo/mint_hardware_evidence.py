@@ -255,6 +255,21 @@ def mint_fixture(
 
     profile = puf.enroll_device(chip_id, replace=True)
 
+    # A challenge/response envelope so the pipeline can authenticate against the
+    # enrolled profile instead of reading the fixture's declared stability score.
+    # Challenges are single-use: authenticate() consumes the ledger entry, so a
+    # second pipeline run on the same minted fixture is correctly rejected as a
+    # replay. Re-mint before demonstrating, as the attestation already requires.
+    challenge = puf.issue_challenge(chip_id)
+    response = puf.simulate_response(chip_id, challenge)
+
+    hardware_security = fixture.setdefault("hardware_security", {})
+    puf_block = hardware_security.setdefault("puf", {})
+    puf_block["challenge"] = challenge.to_dict()
+    puf_block["response"] = response.to_dict()
+    puf_block["identity_hash"] = profile.identity_hash
+    puf_block["envelope_source"] = "MINTED_PUF_ENVELOPE"
+
     # SBOM over the design sources, the firmware image and every trace the verification
     # consumed. Substituting any of them after enrolment changes sbom_digest and fails the
     # twin, which is the binding this scope was chosen for.
