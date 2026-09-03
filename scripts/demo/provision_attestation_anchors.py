@@ -64,6 +64,12 @@ CONFIG_PATH = PROJECT_ROOT / "configs/hardware/opentitan.json"
 ENV_PATH = PROJECT_ROOT / ".env"
 
 ENV_KEY_NAME = "SEMISURE_OPENTITAN_VERIFICATION_KEY"
+
+# PUFAdapter.from_project requires this and nothing provisioned it. The PUF identity
+# hash is derived from it together with the config fingerprint, so rotating it or
+# editing configs/hardware/puf.json changes every identity_hash and invalidates every
+# digital twin that records one. Treat as a stable deployment constant.
+PUF_SECRET_NAME = "SEMISURE_PUF_MASTER_SECRET"
 KEY_PREFIX = "hex:"
 KEY_BYTES = 32
 MINIMUM_KEY_BYTES = 32
@@ -182,9 +188,14 @@ def load_verification_key() -> bytes:
     return key
 
 
-def provision_verification_key() -> tuple[int, str]:
-    """Ensure a prefixed key exists in .env. Returns (decoded byte length, action)."""
-    existing = read_env_value(ENV_KEY_NAME)
+def provision_secret(name: str) -> tuple[int, str]:
+    """Ensure a prefixed secret exists in .env. Returns (decoded byte length, action).
+
+    Both SEMISURE_OPENTITAN_VERIFICATION_KEY and SEMISURE_PUF_MASTER_SECRET use the
+    same hex:/base64:/UTF-8 convention and the same silent unprefixed fallback, so
+    they are provisioned identically and always written with an explicit prefix.
+    """
+    existing = read_env_value(name)
 
     if existing:
         if existing.startswith(KEY_PREFIX) or existing.startswith("base64:"):
@@ -203,8 +214,8 @@ def provision_verification_key() -> tuple[int, str]:
         for line in read_env_lines():
             key, separator, _ = line.partition("=")
 
-            if separator and key.strip() == ENV_KEY_NAME:
-                migrated.append(f"{ENV_KEY_NAME}={KEY_PREFIX}{existing}")
+            if separator and key.strip() == name:
+                migrated.append(f"{name}={KEY_PREFIX}{existing}")
             else:
                 migrated.append(line)
 
@@ -218,9 +229,9 @@ def provision_verification_key() -> tuple[int, str]:
     lines.extend(
         [
             "",
-            "# OpenTitan attestation HMAC key. Locally generated: see the trust anchor",
-            "# disclosure in scripts/demo/provision_attestation_anchors.py.",
-            f"{ENV_KEY_NAME}={value}",
+            f"# {name}. Locally generated: see the trust anchor disclosure in",
+            "# scripts/demo/provision_attestation_anchors.py.",
+            f"{name}={value}",
         ]
     )
 
@@ -293,8 +304,12 @@ def main() -> int:
     atomic_write_json(CONFIG_PATH, config, mode=0o644)
     print(f"config updated    : {CONFIG_PATH.relative_to(PROJECT_ROOT)}")
 
-    length, action = provision_verification_key()
-    print(f"verification key  : {action}, decodes to {length} bytes")
+    for label, name in (
+        ("attestation key", ENV_KEY_NAME),
+        ("puf master     ", PUF_SECRET_NAME),
+    ):
+        length, action = provision_secret(name)
+        print(f"{label}   : {action}, decodes to {length} bytes")
 
     print("\nTRUST ANCHOR DISCLOSURE")
     print(TRUST_ANCHOR_DISCLOSURE)
