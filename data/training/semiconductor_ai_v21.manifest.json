@@ -1,0 +1,85 @@
+{
+  "class_counts": [
+    2747,
+    1226,
+    1027
+  ],
+  "class_labels": [
+    "CLEAN",
+    "TROJAN",
+    "TAMPERED"
+  ],
+  "class_weights": [
+    0.55,
+    0.25,
+    0.2
+  ],
+  "dataset_sha256": "5d359ced43c7f1d1cfc96aeb976191d502be1a709aab708e271876880209903e",
+  "excluded_from_boost": [],
+  "feature_count": 34,
+  "feature_names": [
+    "power_mean",
+    "power_std",
+    "power_rms",
+    "power_peak_to_peak",
+    "power_crest_factor",
+    "power_skewness",
+    "power_kurtosis",
+    "power_spectral_entropy",
+    "em_mean",
+    "em_std",
+    "em_rms",
+    "em_peak_to_peak",
+    "em_spectral_entropy",
+    "timing_mean",
+    "timing_std",
+    "timing_jitter",
+    "cell_count_log",
+    "wire_count_log",
+    "wire_bit_count_log",
+    "public_wire_ratio",
+    "cell_type_diversity",
+    "sequential_ratio",
+    "combinational_ratio",
+    "memory_bit_count_log",
+    "netlist_delta_ratio",
+    "simulation_failure_ratio",
+    "supplier_risk",
+    "country_risk",
+    "custody_gap_ratio",
+    "certificate_risk",
+    "sbom_mismatch_ratio",
+    "threat_intel_score",
+    "puf_instability",
+    "opentitan_risk"
+  ],
+  "generator": "scripts/ai/generate_synthetic_dataset.py",
+  "label_noise": 0.0,
+  "samples": 5000,
+  "schema": "CANDIDATE_PLUS_FEATURE_NAMES",
+  "seed": 0,
+  "separability_note": "Classes are separated by explicit mean shifts on the named features above. Any classification metric obtained on this corpus measures the generator's designed separability, not detector performance on real silicon.",
+  "sequence_channels": 3,
+  "sequence_length": 256,
+  "supply_effect_sigma": 2.2,
+  "supply_features_absent_from_schema": [],
+  "supply_features_applied": [
+    "supplier_risk",
+    "country_risk",
+    "custody_gap_ratio",
+    "sbom_mismatch_ratio",
+    "threat_intel_score"
+  ],
+  "trojan_effect_sigma": 2.0,
+  "trojan_feature_set": "extended",
+  "trojan_features_absent_from_schema": [
+    "unused_logic_ratio",
+    "rare_net_ratio"
+  ],
+  "trojan_features_applied": [
+    "power_rms",
+    "power_peak_to_peak",
+    "netlist_delta_ratio",
+    "simulation_failure_ratio"
+  ]
+}
