@@ -1,0 +1,8 @@
+=== OpenTitan attestation controls, 2026-09-03T08:41:21+04:00 ===
+fixture: hardware_lab/opentitan/firmware/simulated_rom_image.json
+trusted digest: d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722
+
+positive: valid evidence           ATTESTED   -
+negative: firmware byte altered    REJECTED   UNTRUSTED_FIRMWARE
+negative: evidence tampered        REJECTED   INVALID_ATTESTATION_SIGNATURE
+negative: counter replayed         REJECTED   ATTESTATION_REPLAY_OR_ROLLBACK

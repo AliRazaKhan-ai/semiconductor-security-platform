@@ -25,6 +25,16 @@ private half never leaves the device. Neither is available here.
 The verification logic itself is unaffected and is exercised in both directions: a mutated
 firmware image is rejected as UNTRUSTED_FIRMWARE, and tampered evidence is rejected as
 INVALID_ATTESTATION_SIGNATURE.
+
+KEY ENCODING. _decode_verification_key is imported from the adapter rather than
+reimplemented. An earlier version of this script decoded bare hex while the adapter, which
+requires a "hex:" or "base64:" prefix, fell through to UTF-8 - two different keys from one
+string, and no signature could ever verify. One decoder, one place.
+
+That fallback is itself a hazard worth naming: an unprefixed 64-character hex key is
+silently accepted as 64 UTF-8 bytes, so a 32-byte key becomes a 64-byte key of half the
+intended entropy and the length check still passes. This script always writes the prefix
+and migrates an unprefixed value it finds.
 """
 
 from __future__ import annotations
@@ -33,8 +43,10 @@ import argparse
 import hashlib
 import hmac
 import json
+import os
 import secrets
 import sys
+import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -44,6 +56,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.hardware.common import atomic_write_json, canonical_json, sha256_file  # noqa: E402
+from app.hardware.opentitan.adapter import _decode_verification_key  # noqa: E402
 from app.hardware.opentitan.schemas import OpenTitanEvidence  # noqa: E402
 
 FIRMWARE_PATH = PROJECT_ROOT / "hardware_lab/opentitan/firmware/simulated_rom_image.json"
@@ -51,7 +64,9 @@ CONFIG_PATH = PROJECT_ROOT / "configs/hardware/opentitan.json"
 ENV_PATH = PROJECT_ROOT / ".env"
 
 ENV_KEY_NAME = "SEMISURE_OPENTITAN_VERIFICATION_KEY"
-KEY_BYTES = 48
+KEY_PREFIX = "hex:"
+KEY_BYTES = 32
+MINIMUM_KEY_BYTES = 32
 
 TRUST_ANCHOR_DISCLOSURE = (
     "The trusted digest below was derived from the generated fixture at "
@@ -67,18 +82,6 @@ TRUST_ANCHOR_DISCLOSURE = (
 
 def build_firmware_fixture() -> dict:
     """Return the declared simulated ROM image."""
-    rom_payload = {
-        "device_family": "opentitan-earlgrey",
-        "image_role": "rom_ext",
-        "image_version": "0.0.0-simulated",
-        "boot_stage": "ROM_EXT",
-        "code_sections": [
-            {"name": ".rom_ext_start", "size_bytes": 4096},
-            {"name": ".rom_ext_text", "size_bytes": 32768},
-            {"name": ".rom_ext_rodata", "size_bytes": 8192},
-        ],
-    }
-
     return {
         "artifact_type": "SIMULATED_FIRMWARE_IMAGE",
         "schema_version": "1.0",
@@ -94,34 +97,136 @@ def build_firmware_fixture() -> dict:
             "locally_generated_verification_key": True,
             "statement": TRUST_ANCHOR_DISCLOSURE,
         },
-        "rom": rom_payload,
+        "rom": {
+            "device_family": "opentitan-earlgrey",
+            "image_role": "rom_ext",
+            "image_version": "0.0.0-simulated",
+            "boot_stage": "ROM_EXT",
+            "code_sections": [
+                {"name": ".rom_ext_start", "size_bytes": 4096},
+                {"name": ".rom_ext_text", "size_bytes": 32768},
+                {"name": ".rom_ext_rodata", "size_bytes": 8192},
+            ],
+        },
     }
 
 
+def read_env_lines() -> list[str]:
+    """Return the .env file as lines, or an empty list when it does not exist."""
+    if not ENV_PATH.exists():
+        return []
+
+    return ENV_PATH.read_text(encoding="utf-8").splitlines()
+
+
+def read_env_value(name: str) -> str | None:
+    """Return the raw string assigned to name in .env, without interpreting it."""
+    for line in read_env_lines():
+        key, separator, value = line.partition("=")
+
+        if separator and key.strip() == name:
+            return value.strip()
+
+    return None
+
+
+def write_env_lines(lines: list[str]) -> None:
+    """Replace .env atomically, preserving permissions. No backup file is written.
+
+    A .env.bak would be untracked and NOT matched by the .gitignore entry for .env, which
+    is an exact match. Leaving a copy of a secrets file in an unignored path is a worse
+    outcome than the small risk this replacement carries, so it is done atomically instead.
+    """
+    handle, temporary = tempfile.mkstemp(
+        prefix=".env.",
+        dir=str(ENV_PATH.parent),
+    )
+
+    try:
+        with os.fdopen(handle, "w", encoding="utf-8") as stream:
+            stream.write("\n".join(lines).rstrip("\n") + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+
+        os.chmod(temporary, 0o600)
+        os.replace(temporary, ENV_PATH)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def decoded_key_length(raw: str) -> int:
+    """Return the length in bytes the adapter will derive from this raw value."""
+    return len(_decode_verification_key(raw))
+
+
 def load_verification_key() -> bytes:
-    """Return the configured HMAC key from the environment or .env."""
-    import os
+    """Return the HMAC key exactly as the adapter derives it.
 
-    value = os.environ.get(ENV_KEY_NAME)
+    Uses the adapter's own decoder so this script and the verifier cannot disagree about
+    what a given string means.
+    """
+    raw = os.environ.get(ENV_KEY_NAME) or read_env_value(ENV_KEY_NAME)
 
-    if not value and ENV_PATH.exists():
-        for line in ENV_PATH.read_text(encoding="utf-8").splitlines():
-            name, separator, candidate = line.partition("=")
-            if separator and name.strip() == ENV_KEY_NAME:
-                value = candidate.strip()
-                break
+    if not raw:
+        raise SystemExit(f"{ENV_KEY_NAME} is not set")
 
-    if not value:
-        raise SystemExit(f"{ENV_KEY_NAME} is not set; run this script without --verify-only")
+    key = _decode_verification_key(raw)
 
-    key = bytes.fromhex(value) if len(value) % 2 == 0 and all(
-        character in "0123456789abcdefABCDEF" for character in value
-    ) else value.encode("utf-8")
-
-    if len(key) < 32:
-        raise SystemExit(f"{ENV_KEY_NAME} must be at least 32 bytes, got {len(key)}")
+    if len(key) < MINIMUM_KEY_BYTES:
+        raise SystemExit(
+            f"{ENV_KEY_NAME} decodes to {len(key)} bytes, "
+            f"minimum is {MINIMUM_KEY_BYTES}"
+        )
 
     return key
+
+
+def provision_verification_key() -> tuple[int, str]:
+    """Ensure a prefixed key exists in .env. Returns (decoded byte length, action)."""
+    existing = read_env_value(ENV_KEY_NAME)
+
+    if existing:
+        if existing.startswith(KEY_PREFIX) or existing.startswith("base64:"):
+            return decoded_key_length(existing), "unchanged"
+
+        # An unprefixed value is taken by the adapter as raw UTF-8. Where the value is
+        # valid hexadecimal that is almost certainly not what was intended, so the prefix
+        # is added. The value itself is not altered.
+        try:
+            bytes.fromhex(existing)
+        except ValueError:
+            return decoded_key_length(existing), "unchanged, not hexadecimal"
+
+        migrated: list[str] = []
+
+        for line in read_env_lines():
+            key, separator, _ = line.partition("=")
+
+            if separator and key.strip() == ENV_KEY_NAME:
+                migrated.append(f"{ENV_KEY_NAME}={KEY_PREFIX}{existing}")
+            else:
+                migrated.append(line)
+
+        write_env_lines(migrated)
+
+        return decoded_key_length(f"{KEY_PREFIX}{existing}"), "migrated to hex: prefix"
+
+    value = f"{KEY_PREFIX}{secrets.token_hex(KEY_BYTES)}"
+
+    lines = read_env_lines()
+    lines.extend(
+        [
+            "",
+            "# OpenTitan attestation HMAC key. Locally generated: see the trust anchor",
+            "# disclosure in scripts/demo/provision_attestation_anchors.py.",
+            f"{ENV_KEY_NAME}={value}",
+        ]
+    )
+
+    write_env_lines(lines)
+
+    return decoded_key_length(value), "generated"
 
 
 def mint_fixture_attestation(
@@ -153,33 +258,15 @@ def mint_fixture_attestation(
 
     payload = evidence.to_dict()
     payload.pop("signature")
-    signature = hmac.new(key, canonical_json(payload), hashlib.sha256).hexdigest()
 
     document = evidence.to_dict()
-    document["signature"] = signature
+    document["signature"] = hmac.new(
+        key,
+        canonical_json(payload),
+        hashlib.sha256,
+    ).hexdigest()
+
     return document
-
-
-def write_env_key() -> int:
-    """Generate the verification key into .env if absent. Returns its length in bytes."""
-    existing = ENV_PATH.read_text(encoding="utf-8") if ENV_PATH.exists() else ""
-
-    for line in existing.splitlines():
-        name, separator, value = line.partition("=")
-        if separator and name.strip() == ENV_KEY_NAME and value.strip():
-            return len(bytes.fromhex(value.strip()))
-
-    key_hex = secrets.token_hex(KEY_BYTES)
-
-    with ENV_PATH.open("a", encoding="utf-8") as handle:
-        if existing and not existing.endswith("\n"):
-            handle.write("\n")
-        handle.write(f"# OpenTitan attestation HMAC key. Locally generated: see\n")
-        handle.write(f"# scripts/demo/provision_attestation_anchors.py trust anchor disclosure.\n")
-        handle.write(f"{ENV_KEY_NAME}={key_hex}\n")
-
-    ENV_PATH.chmod(0o600)
-    return KEY_BYTES
 
 
 def main() -> int:
@@ -206,8 +293,8 @@ def main() -> int:
     atomic_write_json(CONFIG_PATH, config, mode=0o644)
     print(f"config updated    : {CONFIG_PATH.relative_to(PROJECT_ROOT)}")
 
-    key_length = write_env_key()
-    print(f"verification key  : present in .env, {key_length} bytes")
+    length, action = provision_verification_key()
+    print(f"verification key  : {action}, decodes to {length} bytes")
 
     print("\nTRUST ANCHOR DISCLOSURE")
     print(TRUST_ANCHOR_DISCLOSURE)
