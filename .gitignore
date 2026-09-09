@@ -150,3 +150,8 @@ archive/generators/install_dashboard_error_1_fix.sh
 archive/generators/install_notification_fix.sh
 archive/generators/restore_permanent_rejection_routing.sh
 archive/generators/reset_semisecure_dashboard_to_git_head.sh
+
+# PUF and hardware secret material - owner-only on disk, must not be committed
+data/puf/
+data/hardware/
+data/sbom/
