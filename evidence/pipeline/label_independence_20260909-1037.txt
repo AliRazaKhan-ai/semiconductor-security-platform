@@ -1,0 +1,119 @@
+=== Phase 2: scenario-label short-circuit removal, 2026-09-09T10:37:13+04:00 ===
+
+--- Gate-relevant evidence in every fixture ---
+chip_01_good.json                      scenario=GOOD_CHIP
+                                       simulation_passed=True failure_ratio=0.0
+                                       rare_net_ratio=0.01 netlist_delta_ratio=0.0
+chip_02_trojan.json                    scenario=HARDWARE_TROJAN
+                                       simulation_passed=False failure_ratio=0.1368
+                                       rare_net_ratio=0.24 netlist_delta_ratio=0.18
+chip_03_puf_unstable.json              scenario=WEAK_PUF
+                                       simulation_passed=None failure_ratio=None
+                                       rare_net_ratio=None netlist_delta_ratio=None
+chip_04_supplychain_tampered.json      scenario=SUPPLY_CHAIN_TAMPERING
+                                       simulation_passed=True failure_ratio=8e-05
+                                       rare_net_ratio=0.02 netlist_delta_ratio=0.01
+chip_05_highrisk_supplier.json         scenario=HIGH_RISK_SUPPLIER
+                                       simulation_passed=True failure_ratio=0.0
+                                       rare_net_ratio=0.01 netlist_delta_ratio=0.0
+chip_06_counterfeit.json               scenario=COUNTERFEIT_CHIP
+                                       simulation_passed=None failure_ratio=None
+                                       rare_net_ratio=None netlist_delta_ratio=None
+chip_07_sanctioned_manufacturer.json   scenario=SANCTIONED_MANUFACTURER
+                                       simulation_passed=None failure_ratio=None
+                                       rare_net_ratio=None netlist_delta_ratio=None
+chip_08_fake_provenance.json           scenario=FAKE_BLOCKCHAIN_PROVENANCE
+                                       simulation_passed=None failure_ratio=None
+                                       rare_net_ratio=None netlist_delta_ratio=None
+
+--- Label reference before change ---
+51:    scenario = str(simulation.get("scenario") or "UNKNOWN").upper()
+162:        scenario == "HARDWARE_TROJAN"
+
+--- AFTER: label reference ---
+(no scenario reference remains)
+
+--- Diff ---
+diff --git a/app/pipeline/simulation_gate.py b/app/pipeline/simulation_gate.py
+index c1a3e88..9d6b09d 100644
+--- a/app/pipeline/simulation_gate.py
++++ b/app/pipeline/simulation_gate.py
+@@ -48,7 +48,6 @@ def evaluate_simulation_gate(
+     verilator = _mapping(hardware.get("verilator"))
+     yosys = _mapping(hardware.get("yosys"))
+     supply_chain = _mapping(simulation.get("supply_chain"))
+-    scenario = str(simulation.get("scenario") or "UNKNOWN").upper()
+ 
+     authentication_expected = bool(
+         puf.get("authentication_expected", True)
+@@ -159,8 +158,7 @@ def evaluate_simulation_gate(
+     )
+ 
+     if (
+-        scenario == "HARDWARE_TROJAN"
+-        or not simulation_passed
++        not simulation_passed
+         or simulation_failure_ratio > 0.02
+         or rare_net_ratio > 0.10
+         or netlist_delta_ratio > 0.10
+
+--- N-2 ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /home/ali-raza/semiconductor_security_platform/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/ali-raza/semiconductor_security_platform
+configfile: pytest.ini
+plugins: typeguard-4.5.2
+collecting ... collected 4 items
+
+tests/pipeline/test_gate_label_independence.py::test_trojan_evidence_fails_despite_a_benign_label PASSED [ 25%]
+tests/pipeline/test_gate_label_independence.py::test_clean_evidence_passes_despite_a_trojan_label PASSED [ 50%]
+tests/pipeline/test_gate_label_independence.py::test_simulation_failure_evidence_still_fails PASSED [ 75%]
+tests/pipeline/test_gate_label_independence.py::test_gate_source_contains_no_scenario_comparison PASSED [100%]
+
+============================== 4 passed in 0.05s ===============================
+
+--- REGRESSION: existing gate tests against chip_02 ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /home/ali-raza/semiconductor_security_platform/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/ali-raza/semiconductor_security_platform
+configfile: pytest.ini
+testpaths: tests
+plugins: typeguard-4.5.2
+collecting ... collected 233 items / 221 deselected / 12 selected
+
+tests/hardware/test_rtl_evidence.py::test_yosys_synthesises_reference_and_controlled_trojan PASSED [  8%]
+tests/hardware/test_rtl_evidence.py::test_verilator_reference_passes_and_trojan_payload_is_detected PASSED [ 16%]
+tests/hardware/test_yosys_structural_policy.py::test_structural_policy_flags_controlled_trojan_against_reference PASSED [ 25%]
+tests/pipeline/test_complete_pipeline_suite.py::test_every_chip_file_is_valid_json[chip_02_trojan.json] PASSED [ 33%]
+tests/pipeline/test_complete_pipeline_suite.py::test_good_chip_passes_simulation_gate PASSED [ 41%]
+tests/pipeline/test_complete_pipeline_suite.py::test_trojan_chip_fails_closed PASSED [ 50%]
+tests/pipeline/test_complete_pipeline_suite.py::test_failed_stage_prevents_deployment PASSED [ 58%]
+tests/pipeline/test_complete_pipeline_suite.py::test_simulation_gate_is_deterministic PASSED [ 66%]
+tests/pipeline/test_gate_label_independence.py::test_trojan_evidence_fails_despite_a_benign_label PASSED [ 75%]
+tests/pipeline/test_gate_label_independence.py::test_clean_evidence_passes_despite_a_trojan_label PASSED [ 83%]
+tests/unit/test_simulation_security_gate.py::test_good_chip_passes_security_gates PASSED [ 91%]
+tests/unit/test_simulation_security_gate.py::test_trojan_chip_stops_pipeline PASSED [100%]
+
+===================== 12 passed, 221 deselected in 42.43s ======================
+
+--- Lint and compile ---
+11 | from app.hardware.puf.exceptions import PUFIntegrityError, PUFReplayError
+   |
+
+Found 387 errors.
+[*] 51 fixable with the `--fix` option (5 hidden fixes can be enabled with the `--unsafe-fixes` option).
+compileall OK
+
+--- Full suite ---
+E         + STOPPED
+
+tests/integration/test_complete_module_integration.py:129: AssertionError
+----------------------------- Captured stderr call -----------------------------
+{"timestamp":"2026-09-09T06:39:48.092+00:00","level":"INFO","logger":"app.factory","message":"application_created","process":46043,"thread":"MainThread","application":"SemiSecure Platform","version":"1.0.0","environment":"development","sql_enabled":false,"authentication_enabled":false}
+{"timestamp":"2026-09-09T06:39:48.325+00:00","level":"INFO","logger":"app.api.request_context","message":"http_request","process":46043,"thread":"MainThread","correlation_id":"cbe1e6f8-11be-478f-b40f-d2b902618b33","method":"POST","path":"/api/v1/scans","status_code":202,"duration_ms":155.701,"remote_address":"127.0.0.1","content_length":13228}
+=========================== short test summary info ============================
+FAILED tests/ai/test_train_serve_parity.py::test_legacy_ae_calibration_override_is_retained_until_retraining
+FAILED tests/integration/test_complete_module_integration.py::test_good_chip_complete_integration
+2 failed, 231 passed in 104.02s (0:01:44)

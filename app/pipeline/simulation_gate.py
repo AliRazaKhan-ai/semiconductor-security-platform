@@ -48,7 +48,6 @@ def evaluate_simulation_gate(
     verilator = _mapping(hardware.get("verilator"))
     yosys = _mapping(hardware.get("yosys"))
     supply_chain = _mapping(simulation.get("supply_chain"))
-    scenario = str(simulation.get("scenario") or "UNKNOWN").upper()
 
     authentication_expected = bool(
         puf.get("authentication_expected", True)
@@ -159,8 +158,7 @@ def evaluate_simulation_gate(
     )
 
     if (
-        scenario == "HARDWARE_TROJAN"
-        or not simulation_passed
+        not simulation_passed
         or simulation_failure_ratio > 0.02
         or rare_net_ratio > 0.10
         or netlist_delta_ratio > 0.10
