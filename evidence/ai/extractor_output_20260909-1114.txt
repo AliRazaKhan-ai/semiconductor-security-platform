@@ -1,0 +1,69 @@
+=== CHIP-PROD-COUNTERFEIT-006 ===
+  power_trace    n=  256 mean=   -0.043257 std=  2.658046 min=   -5.4564 max=    6.1334
+  em_trace       n=  256 mean=    0.029568 std=  2.066204 min=   -5.6924 max=    4.8214
+  timing_trace   n=  256 mean=   -0.006078 std=  0.199897 min=   -0.5158 max=    0.4298
+  sequence: (256, 3)
+
+=== CHIP-PROD-FAKE-PROVENANCE-008 ===
+  power_trace    n=  256 mean=    0.051379 std=  2.634227 min=   -5.6362 max=    5.6391
+  em_trace       n=  256 mean=    0.036954 std=  2.173167 min=   -5.2715 max=    7.7669
+  timing_trace   n=  256 mean=   -0.006845 std=  0.202340 min=   -0.5162 max=    0.4626
+  sequence: (256, 3)
+
+=== CHIP-PROD-GOOD-001 ===
+  power_trace    n=  256 mean=   -0.054382 std=  2.670630 min=   -5.5943 max=    6.9933
+  em_trace       n=  256 mean=    0.039881 std=  2.171209 min=   -4.9464 max=    7.4167
+  timing_trace   n=  256 mean=   -0.001152 std=  0.200381 min=   -0.4735 max=    0.4155
+  sequence: (256, 3)
+
+=== CHIP-PROD-PUF-003 ===
+  power_trace    n=  256 mean=    0.051048 std=  2.702901 min=   -5.9789 max=    6.3768
+  em_trace       n=  256 mean=    0.062842 std=  2.091645 min=   -7.6691 max=    5.3936
+  timing_trace   n=  256 mean=    0.000437 std=  0.193035 min=   -0.4314 max=    0.4708
+  sequence: (256, 3)
+
+=== CHIP-PROD-SANCTIONED-007 ===
+  power_trace    n=  256 mean=   -0.069173 std=  2.638497 min=   -6.3488 max=    7.0575
+  em_trace       n=  256 mean=   -0.015892 std=  2.068891 min=   -5.5447 max=    6.9641
+  timing_trace   n=  256 mean=   -0.002979 std=  0.201984 min=   -0.4933 max=    0.5417
+  sequence: (256, 3)
+
+=== CHIP-PROD-SUPPLIER-005 ===
+  power_trace    n=  256 mean=    0.080454 std=  2.700960 min=   -5.5381 max=    5.7654
+  em_trace       n=  256 mean=   -0.003809 std=  2.170036 min=   -5.7458 max=    6.2716
+  timing_trace   n=  256 mean=    0.002969 std=  0.203567 min=   -0.5120 max=    0.5106
+  sequence: (256, 3)
+
+=== CHIP-PROD-TAMPER-004 ===
+  power_trace    n=  256 mean=   -0.069352 std=  2.706896 min=   -6.0321 max=    5.6129
+  em_trace       n=  256 mean=   -0.068605 std=  2.207814 min=   -6.0837 max=    5.3005
+  timing_trace   n=  256 mean=    0.007375 std=  0.188681 min=   -0.4715 max=    0.4798
+  sequence: (256, 3)
+
+=== CHIP-PROD-TROJAN-002 ===
+  power_trace    n=  256 mean=   -0.056510 std=  3.566191 min=   -7.4911 max=    8.6970
+  em_trace       n=  256 mean=   -0.115135 std=  3.241382 min=  -10.3049 max=   10.3487
+  timing_trace   n=  256 mean=   -0.008561 std=  0.287712 min=   -0.7405 max=    0.7444
+  sequence: (256, 3)
+
+=== extract_physical output vs corpus range ===
+feature                      fixture_min   fixture_max  corpus_min  corpus_max  covered
+em_mean                          -0.1151        0.0628     -4.1388      3.7732  yes
+em_peak_to_peak                  10.5138       20.6537     -3.7345      3.4814  NO
+em_rms                            2.0664        3.2434     -3.9785      3.3959  yes
+em_spectral_entropy               0.7835        0.8689     -3.7572      3.8260  yes
+em_std                            2.0662        3.2414     -3.5494      3.5077  yes
+power_crest_factor                2.1336        2.6739     -3.7157      3.8193  yes
+power_kurtosis                   -0.8287       -0.5850     -3.3448      4.2673  yes
+power_mean                       -0.0694        0.0805     -3.8208      3.5804  yes
+power_peak_to_peak               11.2753       16.1881     -4.4102      5.3953  NO
+power_rms                         2.6347        3.5666     -3.4289      5.1262  yes
+power_skewness                   -0.0431        0.1635     -3.8539      3.5574  yes
+power_spectral_entropy            0.2877        0.3900     -3.5667      4.0392  yes
+power_std                         2.6342        3.5662     -3.5983      3.6469  yes
+timing_jitter                    15.0810      243.9973     -3.4800      3.7293  NO
+timing_mean                      -0.0086        0.0074     -3.7021      3.3215  yes
+timing_std                        0.1887        0.2877     -3.2581      3.6943  yes
+
+OUTSIDE the corpus range (3): ['em_peak_to_peak', 'power_peak_to_peak', 'timing_jitter']
+These are the features the trained models have never seen.

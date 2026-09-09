@@ -48,7 +48,7 @@ def extract_physical(evidence: dict[str,Any], sequence_length: int=256) -> tuple
     features={**p,"em_mean":e["em_mean"],"em_std":e["em_std"],"em_rms":e["em_rms"],
               "em_peak_to_peak":e["em_peak_to_peak"],"em_spectral_entropy":e["em_spectral_entropy"],
               "timing_mean":timing_mean,"timing_std":timing_std,
-              "timing_jitter":float(np.mean(np.abs(np.diff(timing)))/(abs(timing_mean)+1e-12))}
+              "timing_jitter":float(np.mean(np.abs(np.diff(timing)))/(timing_std+1e-12))}
     seq=np.stack([resample(power,sequence_length),resample(em,sequence_length),resample(timing,sequence_length)],axis=-1)
     means=seq.mean(axis=0); stds=seq.std(axis=0); seq=(seq-means)/(stds+1e-8)
     return features, seq.astype(np.float32)
