@@ -1,0 +1,12 @@
+241	E702 	[ ] multiple-statements-on-one-line-semicolon
+ 80	E701 	[ ] multiple-statements-on-one-line-colon
+ 23	UP037	[*] quoted-annotation
+ 21	F401 	[*] unused-import
+  8	E402 	[ ] module-import-not-at-top-of-file
+  6	UP035	[*] deprecated-import
+  3	I001 	[-] unsorted-imports
+  3	UP040	[ ] non-pep695-type-alias
+  1	B905 	[ ] zip-without-explicit-strict
+  1	UP022	[ ] replace-stdout-stderr
+Found 387 errors.
+[*] 51 fixable with the `--fix` option (5 hidden fixes can be enabled with the `--unsafe-fixes` option).
