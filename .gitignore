@@ -155,3 +155,4 @@ archive/generators/reset_semisecure_dashboard_to_git_head.sh
 data/puf/
 data/hardware/
 data/sbom/
+archive/orphaned_sbom/
