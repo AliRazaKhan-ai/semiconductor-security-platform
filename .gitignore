@@ -144,3 +144,9 @@ blockchain/fabric/chaincode/semiconductor_provenance/semiconductor-provenance
 # minting and its monotonic counter cannot be reused, so a committed copy is always
 # stale. Mint before demonstrating: scripts/demo/mint_hardware_evidence.py
 hardware_lab/opentitan/attestation/*.json
+
+# Quarantined repair-bundle installers (Phase 1) - keep the pre-existing ignore intent
+archive/generators/install_dashboard_error_1_fix.sh
+archive/generators/install_notification_fix.sh
+archive/generators/restore_permanent_rejection_routing.sh
+archive/generators/reset_semisecure_dashboard_to_git_head.sh
