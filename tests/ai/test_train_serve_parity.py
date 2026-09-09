@@ -107,7 +107,15 @@ def test_signal_generator_normalizes_ae_features() -> None:
     )
 
 
-def test_legacy_ae_calibration_override_is_retained_until_retraining() -> None:
+def test_legacy_ae_calibration_override_has_been_retired() -> None:
+    """The config override is gone; calibration now comes from the model artifact.
+
+    Retired in Phase 3A. The guard it replaces asserted that the legacy
+    configs/application/ai.json threshold and scale were retained "until
+    retraining". The runtime reads loaded.threshold and loaded.scale from the
+    artifact and reports calibration_source MODEL_ARTIFACT, so the override is
+    obsolete and its absence is now the correct state.
+    """
     config = json.loads(
         (
             ROOT
@@ -119,14 +127,9 @@ def test_legacy_ae_calibration_override_is_retained_until_retraining() -> None:
 
     pytorch = config["ai"]["pytorch"]
 
-    assert "threshold" in pytorch
-    assert "scale" in pytorch
-    assert float(
-        pytorch["threshold"]
-    ) >= 0.0
-    assert float(
-        pytorch["scale"]
-    ) > 0.0
+    assert "threshold" not in pytorch
+    assert "scale" not in pytorch
+    assert "model_path" in pytorch
 
 
 def test_runtime_supports_artifact_calibration_after_retraining() -> None:
