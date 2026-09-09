@@ -1,0 +1,190 @@
+=== Generator quarantine, Phase 1, 2026-09-09T10:10:52+04:00 ===
+
+--- BEFORE: detector classification ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /home/ali-raza/semiconductor_security_platform/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/ali-raza/semiconductor_security_platform
+configfile: pytest.ini
+plugins: typeguard-4.5.2
+collecting ... collected 2 items
+
+tests/static/test_no_source_generation.py::test_no_script_generates_application_source FAILED [ 50%]
+tests/static/test_no_source_generation.py::test_archive_generators_is_excluded_from_the_scan PASSED [100%]
+
+=================================== FAILURES ===================================
+_________________ test_no_script_generates_application_source __________________
+
+    @pytest.mark.security
+    def test_no_script_generates_application_source() -> None:
+        """No operational script may write into app/, terminal/, or the entry points."""
+        findings: list[str] = []
+        for path in _candidate_files():
+            findings.extend(_scan(path))
+    
+>       assert not findings, (
+            "Scripts that write live application source must be relocated to "
+            "archive/generators/ (Phase 1). Offenders:\n  " + "\n  ".join(findings)
+        )
+E       AssertionError: Scripts that write live application source must be relocated to archive/generators/ (Phase 1). Offenders:
+E           dashboard_error_1_fix/install_dashboard_error_1_fix.sh:33: copy-or-move-onto-source: cp -a app/api/routes/scan_queries.py app/api/routes/scan_queries.py.before_error1_fix
+E           dashboard_error_1_fix/install_dashboard_error_1_fix.sh:34: copy-or-move-onto-source: cp -a app/integration/service.py app/integration/service.py.before_error1_fix
+E           scripts/integration/patch_manage_integration.py:249: write-via-variable 'path': path.write_text(
+E           scripts/integration/register_complete_integration.py:73: write-via-variable 'factory_path': factory_path.write_text(
+E           scripts/integration/register_complete_integration.py:119: write-via-variable 'routes_path': routes_path.write_text(
+E           scripts/maintenance/apply_file3_ai_evidence.py:179: write-via-variable 'BACKUP': BACKUP.write_text(original, encoding="utf-8")
+E           scripts/maintenance/apply_file3_ai_evidence.py:180: write-via-variable 'TARGET': TARGET.write_text(patched, encoding="utf-8")
+E           scripts/phase3/complete_phase3.sh:15: redirect-into-source: cat >app/pipeline/stage_result.py<<'PY'
+E           scripts/phase3/complete_phase3.sh:103: redirect-into-source: cat >app/pipeline/runtime_store.py<<'PY'
+E           scripts/phase3/complete_phase3.sh:269: redirect-into-source: cat >app/pipeline/orchestrator.py<<'PY'
+E           scripts/phase3/fix_phase3_compliance_cli.py:295: write-via-variable 'path': path.write_text(text, encoding="utf-8")
+E           scripts/phase3/fix_phase3_compliance_cli.py:330: write-via-variable 'path': path.write_text(text, encoding="utf-8")
+E           scripts/phase3/patch_manage_phase3.py:241: write-via-variable 'path': path.write_text(text, encoding="utf-8")
+E       assert not ['dashboard_error_1_fix/install_dashboard_error_1_fix.sh:33: copy-or-move-onto-source: cp -a app/api/routes/scan_queries.py app/api/routes/scan_queries.py.before_error1_fix', 'dashboard_error_1_fix/install_dashboard_error_1_fix.sh:34: copy-or-move-onto-source: cp -a app/integration/service.py app/integration/service.py.before_error1_fix', "scripts/integration/patch_manage_integration.py:249: write-via-variable 'path': path.write_text(", "scripts/integration/register_complete_integration.py:73: write-via-variable 'factory_path': factory_path.write_text(", "scripts/integration/register_complete_integration.py:119: write-via-variable 'routes_path': routes_path.write_text(", 'scripts/maintenance/apply_file3_ai_evidence.py:179: write-via-variable \'BACKUP\': BACKUP.write_text(original, encoding="utf-8")', ...]
+
+tests/static/test_no_source_generation.py:121: AssertionError
+=========================== short test summary info ============================
+FAILED tests/static/test_no_source_generation.py::test_no_script_generates_application_source
+========================= 1 failed, 1 passed in 0.22s ==========================
+
+--- BEFORE: tree ---
+scripts/integration:
+total 24
+drwxrwxr-x  2 ali-raza ali-raza 4096 Jul 28 22:00 .
+drwxrwxr-x 10 ali-raza ali-raza 4096 Jul 29 21:33 ..
+-rw-rw-r--  1 ali-raza ali-raza 2998 Aug 19 17:28 check_hardware_manifests.py
+-rw-rw-r--  1 ali-raza ali-raza 5695 Aug 19 17:28 patch_manage_integration.py
+-rw-rw-r--  1 ali-raza ali-raza 2415 Aug 19 17:28 register_complete_integration.py
+
+scripts/maintenance:
+total 20
+drwxrwxr-x  2 ali-raza ali-raza 4096 Sep  2 14:07 .
+drwxrwxr-x 10 ali-raza ali-raza 4096 Jul 29 21:33 ..
+-rw-rw-r--  1 ali-raza ali-raza 6764 Sep  2 14:07 apply_file3_ai_evidence.py
+-rwxrwxr-x  1 ali-raza ali-raza 1425 Jul 18 14:21 safe_cleanup.sh
+
+scripts/phase3:
+total 72
+drwxrwxr-x  2 ali-raza ali-raza  4096 Jul 28 22:00 .
+drwxrwxr-x 10 ali-raza ali-raza  4096 Jul 29 21:33 ..
+-rwxrwxr-x  1 ali-raza ali-raza 41037 Jul 17 09:48 complete_phase3.sh
+-rw-rw-r--  1 ali-raza ali-raza 10299 Aug 19 17:28 fix_phase3_compliance_cli.py
+-rw-rw-r--  1 ali-raza ali-raza  5981 Aug 19 17:28 patch_manage_phase3.py
+-rwxrwxr-x 1 ali-raza ali-raza 4430 Jul 28 21:42 cleanup_semisecure_project.sh
+-rwxrwxr-x 1 ali-raza ali-raza 4491 Jul 28 22:00 reset_semisecure_dashboard_to_git_head.sh
+-rwxrwxr-x 1 ali-raza ali-raza 7603 Jul 29 15:18 restore_permanent_rejection_routing.sh
+
+--- AFTER: tree ---
+total 112
+drwxrwxr-x 2 ali-raza ali-raza  4096 Sep  9 10:11 .
+drwxrwxr-x 3 ali-raza ali-raza  4096 Sep  9 10:11 ..
+-rw-rw-r-- 1 ali-raza ali-raza  6764 Sep  2 14:07 apply_file3_ai_evidence.py
+-rw-rw-r-- 1 ali-raza ali-raza 41037 Jul 17 09:48 complete_phase3.sh
+-rw-rw-r-- 1 ali-raza ali-raza 10299 Aug 19 17:28 fix_phase3_compliance_cli.py
+-rw-r--r-- 1 ali-raza ali-raza  2545 Jul 29 11:40 install_dashboard_error_1_fix.sh
+-rw-r--r-- 1 ali-raza ali-raza  1418 Jul 29 11:51 install_notification_fix.sh
+-rw-rw-r-- 1 ali-raza ali-raza  5695 Aug 19 17:28 patch_manage_integration.py
+-rw-rw-r-- 1 ali-raza ali-raza  5981 Aug 19 17:28 patch_manage_phase3.py
+-rw-rw-r-- 1 ali-raza ali-raza  4491 Jul 28 22:00 reset_semisecure_dashboard_to_git_head.sh
+-rw-rw-r-- 1 ali-raza ali-raza  7603 Jul 29 15:18 restore_permanent_rejection_routing.sh
+
+--- AFTER: detector ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /home/ali-raza/semiconductor_security_platform/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/ali-raza/semiconductor_security_platform
+configfile: pytest.ini
+plugins: typeguard-4.5.2
+collecting ... collected 2 items
+
+tests/static/test_no_source_generation.py::test_no_script_generates_application_source FAILED [ 50%]
+tests/static/test_no_source_generation.py::test_archive_generators_is_excluded_from_the_scan PASSED [100%]
+
+=================================== FAILURES ===================================
+_________________ test_no_script_generates_application_source __________________
+
+    @pytest.mark.security
+    def test_no_script_generates_application_source() -> None:
+        """No operational script may write into app/, terminal/, or the entry points."""
+        findings: list[str] = []
+        for path in _candidate_files():
+            findings.extend(_scan(path))
+    
+>       assert not findings, (
+            "Scripts that write live application source must be relocated to "
+            "archive/generators/ (Phase 1). Offenders:\n  " + "\n  ".join(findings)
+        )
+E       AssertionError: Scripts that write live application source must be relocated to archive/generators/ (Phase 1). Offenders:
+E           scripts/integration/register_complete_integration.py:73: write-via-variable 'factory_path': factory_path.write_text(
+E           scripts/integration/register_complete_integration.py:119: write-via-variable 'routes_path': routes_path.write_text(
+E       assert not ["scripts/integration/register_complete_integration.py:73: write-via-variable 'factory_path': factory_path.write_text(", "scripts/integration/register_complete_integration.py:119: write-via-variable 'routes_path': routes_path.write_text("]
+
+tests/static/test_no_source_generation.py:121: AssertionError
+=========================== short test summary info ============================
+FAILED tests/static/test_no_source_generation.py::test_no_script_generates_application_source
+========================= 1 failed, 1 passed in 0.18s ==========================
+
+--- Compile check ---
+compileall OK
+py_compile OK
+
+--- Full suite ---
+        """No operational script may write into app/, terminal/, or the entry points."""
+        findings: list[str] = []
+        for path in _candidate_files():
+            findings.extend(_scan(path))
+    
+>       assert not findings, (
+            "Scripts that write live application source must be relocated to "
+            "archive/generators/ (Phase 1). Offenders:\n  " + "\n  ".join(findings)
+        )
+E       AssertionError: Scripts that write live application source must be relocated to archive/generators/ (Phase 1). Offenders:
+E           scripts/integration/register_complete_integration.py:73: write-via-variable 'factory_path': factory_path.write_text(
+E           scripts/integration/register_complete_integration.py:119: write-via-variable 'routes_path': routes_path.write_text(
+E       assert not ["scripts/integration/register_complete_integration.py:73: write-via-variable 'factory_path': factory_path.write_text(", "scripts/integration/register_complete_integration.py:119: write-via-variable 'routes_path': routes_path.write_text("]
+
+tests/static/test_no_source_generation.py:121: AssertionError
+=========================== short test summary info ============================
+FAILED tests/ai/test_train_serve_parity.py::test_legacy_ae_calibration_override_is_retained_until_retraining
+FAILED tests/integration/test_complete_module_integration.py::test_good_chip_complete_integration
+FAILED tests/static/test_no_source_generation.py::test_no_script_generates_application_source
+3 failed, 226 passed in 124.48s (0:02:04)
+
+--- SCOPE EXTENSION: register_complete_integration.py (approved 2026-09-09T10:17:11+04:00) ---
+total 116
+drwxrwxr-x 2 ali-raza ali-raza  4096 Sep  9 10:17 .
+drwxrwxr-x 3 ali-raza ali-raza  4096 Sep  9 10:11 ..
+-rw-rw-r-- 1 ali-raza ali-raza  6764 Sep  2 14:07 apply_file3_ai_evidence.py
+-rw-rw-r-- 1 ali-raza ali-raza 41037 Jul 17 09:48 complete_phase3.sh
+-rw-rw-r-- 1 ali-raza ali-raza 10299 Aug 19 17:28 fix_phase3_compliance_cli.py
+-rw-r--r-- 1 ali-raza ali-raza  2545 Jul 29 11:40 install_dashboard_error_1_fix.sh
+-rw-r--r-- 1 ali-raza ali-raza  1418 Jul 29 11:51 install_notification_fix.sh
+-rw-rw-r-- 1 ali-raza ali-raza  5695 Aug 19 17:28 patch_manage_integration.py
+-rw-rw-r-- 1 ali-raza ali-raza  5981 Aug 19 17:28 patch_manage_phase3.py
+-rw-rw-r-- 1 ali-raza ali-raza  2415 Aug 19 17:28 register_complete_integration.py
+-rw-rw-r-- 1 ali-raza ali-raza  4491 Jul 28 22:00 reset_semisecure_dashboard_to_git_head.sh
+-rw-rw-r-- 1 ali-raza ali-raza  7603 Jul 29 15:18 restore_permanent_rejection_routing.sh
+
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /home/ali-raza/semiconductor_security_platform/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/ali-raza/semiconductor_security_platform
+configfile: pytest.ini
+plugins: typeguard-4.5.2
+collecting ... collected 2 items
+
+tests/static/test_no_source_generation.py::test_no_script_generates_application_source PASSED [ 50%]
+tests/static/test_no_source_generation.py::test_archive_generators_is_excluded_from_the_scan PASSED [100%]
+
+============================== 2 passed in 0.14s ===============================
+
+compileall OK
+
+tests/integration/test_complete_module_integration.py:129: AssertionError
+----------------------------- Captured stderr call -----------------------------
+{"timestamp":"2026-09-09T06:18:04.245+00:00","level":"INFO","logger":"app.factory","message":"application_created","process":36508,"thread":"MainThread","application":"SemiSecure Platform","version":"1.0.0","environment":"development","sql_enabled":false,"authentication_enabled":false}
+{"timestamp":"2026-09-09T06:18:04.480+00:00","level":"INFO","logger":"app.api.request_context","message":"http_request","process":36508,"thread":"MainThread","correlation_id":"9609c065-9af2-4679-9420-325a64dc7ae7","method":"POST","path":"/api/v1/scans","status_code":202,"duration_ms":159.577,"remote_address":"127.0.0.1","content_length":13228}
+=========================== short test summary info ============================
+FAILED tests/ai/test_train_serve_parity.py::test_legacy_ae_calibration_override_is_retained_until_retraining
+FAILED tests/integration/test_complete_module_integration.py::test_good_chip_complete_integration
+2 failed, 227 passed in 105.71s (0:01:45)
