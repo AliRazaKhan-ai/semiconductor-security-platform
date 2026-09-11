@@ -665,18 +665,25 @@ class IntegratedPipelineService:
                 "verification_source": "VERIFIED_PUF_STAGE",
             }
 
-        # No envelope. Behaviour is unchanged so fixtures that predate minting still run,
-        # but the result is explicitly marked unauthenticated. This branch still passes
-        # unconditionally and should be made fail-closed once every fixture is minted.
+        # No envelope, so nothing can be verified against the enrolled profile. This
+        # branch previously passed unconditionally, marked unauthenticated, while every
+        # fixture was minted; six of the eight took it and cleared an authentication
+        # stage without authenticating. All eight now carry challenge/response
+        # envelopes, so the condition its predecessor named is met and the branch fails
+        # closed. A declared stability_score is an assertion by the submitter, not a
+        # measurement, and cannot stand in for challenge-response verification.
         return {
-            "passed": True,
-            "classification": "PUF_AUTHENTICATED",
-            "risk_score": 0.05,
-            "confidence": float(puf.get("stability_score", 0.95)),
-            "reasons": [],
-            "deployment_decision": "CONTINUE",
+            "passed": False,
+            "classification": "PUF_AUTHENTICATION_FAILED",
+            "risk_score": 0.99,
+            "confidence": 0.99,
+            "reasons": [
+                "PUF challenge/response envelope is absent; the chip cannot be "
+                "authenticated against its enrolled profile"
+            ],
+            "deployment_decision": "HOLD_FOR_RETEST_OR_REJECT",
             "details": {**puf, "authenticated": False},
-            "verification_source": "SIMULATED_PUF_FIXTURE",
+            "verification_source": "NO_PUF_ENVELOPE",
         }
 
     def _run_hardware(
