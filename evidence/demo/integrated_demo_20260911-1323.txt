@@ -1,0 +1,17 @@
+=== SemiSecure integrated pipeline, 2026-09-11T13:23:14+04:00 ===
+Each chip is minted immediately before it runs: PUF challenges are
+single-use and OpenTitan attestation expires after 300 seconds.
+
+CHIP-PROD-GOOD-001               COMPLETED            decision=DEPLOY
+    INGESTION              PASSED
+    PUF_AUTHENTICATION     PASSED
+    HARDWARE_SECURITY      PASSED
+    AI_ANALYSIS            PASSED
+    COMPLIANCE             PASSED
+    BLOCKCHAIN             PASSED
+    DASHBOARD              PASSED
+    DEPLOYMENT_DECISION    PASSED
+==========================================
+ All 1 chip(s) completed
+ Dashboard: http://127.0.0.1:5000/dashboard
+ Evidence:  evidence/demo/integrated_demo_20260911-1323.txt
