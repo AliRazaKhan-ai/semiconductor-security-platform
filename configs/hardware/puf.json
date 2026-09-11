@@ -39,17 +39,33 @@
       "signature_run_sigma": 0.025
     },
     "enrollment": {
-      "challenge_count": 16,
+      "challenge_count": 8,
       "response_samples": 11,
       "minimum_bit_reliability": 0.82,
-      "minimum_stable_bit_ratio": 0.70,
+      "minimum_stable_bit_ratio": 0.7,
       "corners": [
-        {"temperature_c": 25.0, "voltage_v": 1.0},
-        {"temperature_c": -20.0, "voltage_v": 0.95},
-        {"temperature_c": 85.0, "voltage_v": 1.05},
-        {"temperature_c": 25.0, "voltage_v": 0.90},
-        {"temperature_c": 25.0, "voltage_v": 1.10}
-      ]
+        {
+          "temperature_c": 25.0,
+          "voltage_v": 1.0
+        },
+        {
+          "temperature_c": -20.0,
+          "voltage_v": 0.95
+        },
+        {
+          "temperature_c": 85.0,
+          "voltage_v": 1.05
+        },
+        {
+          "temperature_c": 25.0,
+          "voltage_v": 0.9
+        },
+        {
+          "temperature_c": 25.0,
+          "voltage_v": 1.1
+        }
+      ],
+      "challenge_count_note": "Challenge inventory, not policy. Each enrolment stores this many single-use challenges; authentication consumes one. Measured at 16: 62.4s per enrolment, 880 simulated responses across 5 PVT corners, 57 percent of demonstration runtime. Reduced to 8, which still exceeds any single demonstration. minimum_bit_reliability, minimum_stable_bit_ratio, response_samples and the five corners are unchanged: those determine whether a device passes, this determines only how many times it can be challenged before re-enrolment."
     },
     "authentication": {
       "response_samples": 9,
