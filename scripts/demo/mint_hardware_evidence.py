@@ -44,10 +44,21 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+# The PUF, attestation and Ethereum services read their secrets from the environment.
+# Without this the script aborts at PUFAdapter.from_project with
+# "SEMISURE_PUF_MASTER_SECRET is required", so the documented workflow of minting
+# immediately before a run could not be performed from a clean shell. This mirrors
+# tests/conftest.py, which loads the same file the same way. override=False keeps an
+# already-exported environment authoritative.
+from dotenv import load_dotenv  # noqa: E402
+
+load_dotenv(PROJECT_ROOT / ".env", override=False)
+
 from app.hardware.chipwhisperer.synthesis_trace import build_trace_document  # noqa: E402
 from app.hardware.common import atomic_write_json, sha256_file  # noqa: E402
 from app.hardware.digital_twin.service import DigitalTwinService  # noqa: E402
 from app.hardware.puf.adapter import PUFAdapter  # noqa: E402
+from app.hardware.puf.exceptions import PUFEnrollmentError  # noqa: E402
 from app.hardware.sbom.generator import SBOMGenerator  # noqa: E402
 from app.hardware.yosys.adapter import YosysAdapter  # noqa: E402
 from scripts.demo.provision_attestation_anchors import (  # noqa: E402
@@ -163,6 +174,40 @@ def relative(path: Path) -> str:
         raise MintError(f"artefact is outside the project root: {resolved}") from exc
 
 
+ENROLLMENT_ATTEMPTS = 5
+
+
+def enroll_with_retry(puf: PUFAdapter, chip_id: str) -> Any:
+    """Enrol a device, redrawing the challenge set when one challenge is marginal.
+
+    A response is deterministic given (device_id, stimulus_digest, corner), so retrying
+    the same challenge set cannot change the outcome. enroll_device draws a fresh set,
+    which is what a real enrolment does when a challenge proves unstable across PVT
+    corners: it re-challenges the device rather than abandoning the part.
+
+    The policy itself is not relaxed. minimum_stable_bit_ratio and
+    minimum_bit_reliability still have to be met by whichever set succeeds, and a
+    device that fails every attempt still fails.
+    """
+    last_error: PUFEnrollmentError | None = None
+
+    for attempt in range(1, ENROLLMENT_ATTEMPTS + 1):
+        try:
+            return puf.enroll_device(chip_id, replace=True)
+        except PUFEnrollmentError as error:
+            last_error = error
+            print(
+                f"  enrolment attempt {attempt}/{ENROLLMENT_ATTEMPTS} for {chip_id} "
+                f"drew a marginal challenge set: {error}",
+                flush=True,
+            )
+
+    raise PUFEnrollmentError(
+        f"{chip_id} failed enrolment on {ENROLLMENT_ATTEMPTS} independent challenge sets",
+        {"last_error": str(last_error)},
+    )
+
+
 def mint_fixture(
     filename: str,
     assignment: dict[str, Any],
@@ -253,7 +298,7 @@ def mint_fixture(
         mode=0o644,
     )
 
-    profile = puf.enroll_device(chip_id, replace=True)
+    profile = enroll_with_retry(puf, chip_id)
 
     # A challenge/response envelope so the pipeline can authenticate against the
     # enrolled profile instead of reading the fixture's declared stability score.

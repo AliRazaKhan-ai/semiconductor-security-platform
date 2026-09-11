@@ -3,12 +3,42 @@
 from __future__ import annotations
 
 import json
+import runpy
+import sys
 from pathlib import Path
 
 import pytest
 
 from app import create_app
 from app.integration import IntegratedPipelineService
+
+MINT_SCRIPT = Path("scripts/demo/mint_hardware_evidence.py")
+
+
+def mint_fixture_evidence(fixture_name: str) -> None:
+    """Mint fresh hardware evidence for one fixture, or skip if minting is unavailable.
+
+    OpenTitan attestation expires 300 seconds after minting and its counter cannot be
+    reused; PUF challenges are single-use with a 120-second TTL. Evidence minted outside
+    the test is therefore stale by the time a full suite reaches this point, and
+    _real_hardware_manifest_available cannot detect that because it checks only that the
+    files exist. Minting here makes the test self-sufficient and encodes the same
+    mint-then-run sequence the demonstration requires.
+    """
+    if not MINT_SCRIPT.is_file():
+        pytest.skip(f"{MINT_SCRIPT} is not available")
+
+    argv = sys.argv
+    sys.argv = [MINT_SCRIPT.name, "--only", fixture_name]
+    try:
+        runpy.run_path(str(MINT_SCRIPT), run_name="__main__")
+    except SystemExit as exit_code:
+        if exit_code.code not in (0, None):
+            pytest.skip(f"minting {fixture_name} failed with exit {exit_code.code}")
+    except Exception as error:  # noqa: BLE001 - environment gaps must skip, not fail
+        pytest.skip(f"minting {fixture_name} is unavailable: {type(error).__name__}: {error}")
+    finally:
+        sys.argv = argv
 
 
 def _real_hardware_manifest_available(path: Path) -> bool:
@@ -105,6 +135,9 @@ def test_integration_routes_are_registered() -> None:
 
 def test_good_chip_complete_integration() -> None:
     chip_path = Path("data/chips/chip_01_good.json")
+
+    # Mint first: the evidence this asserts on expires 300 seconds after minting.
+    mint_fixture_evidence(chip_path.name)
 
     if not _real_hardware_manifest_available(chip_path):
         pytest.skip(

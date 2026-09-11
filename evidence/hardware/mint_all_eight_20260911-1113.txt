@@ -1,0 +1,64 @@
+minting chip_01_good.json ...
+minting chip_02_trojan.json ...
+minting chip_03_puf_unstable.json ...
+minting chip_04_supplychain_tampered.json ...
+minting chip_05_highrisk_supplier.json ...
+minting chip_06_counterfeit.json ...
+minting chip_07_sanctioned_manufacturer.json ...
+minting chip_08_fake_provenance.json ...
+
+=== netlist scoping ===
+chip_id                       cells   delta  source                               derivation
+----------------------------------------------------------------------------------------------------------------------
+CHIP-PROD-GOOD-001                8  0.0000  REFERENCE_NETLIST_NO_DISTINCT_RTL    BY_CONSTRUCTION_NO_DISTINCT_RTL
+CHIP-PROD-TROJAN-002             27  1.0000  FIXTURE_SPECIFIC_NETLIST             MEASURED_REFERENCE_DIFFERENTIAL
+CHIP-PROD-PUF-003                 8  0.0000  REFERENCE_NETLIST_NO_DISTINCT_RTL    BY_CONSTRUCTION_NO_DISTINCT_RTL
+CHIP-PROD-TAMPER-004              8  0.0000  REFERENCE_NETLIST_NO_DISTINCT_RTL    BY_CONSTRUCTION_NO_DISTINCT_RTL
+CHIP-PROD-SUPPLIER-005            8  0.0000  REFERENCE_NETLIST_NO_DISTINCT_RTL    BY_CONSTRUCTION_NO_DISTINCT_RTL
+CHIP-PROD-COUNTERFEIT-006         8  0.0000  REFERENCE_NETLIST_NO_DISTINCT_RTL    BY_CONSTRUCTION_NO_DISTINCT_RTL
+CHIP-PROD-SANCTIONED-007          8  0.0000  REFERENCE_NETLIST_NO_DISTINCT_RTL    BY_CONSTRUCTION_NO_DISTINCT_RTL
+CHIP-PROD-FAKE-PROVENANCE-008      8  0.0000  REFERENCE_NETLIST_NO_DISTINCT_RTL    BY_CONSTRUCTION_NO_DISTINCT_RTL
+
+=== scoping marker consistency ===
+  PASS: 8/8 fixtures, both markers agree
+
+=== side-channel anomaly scores, candidate against reference ===
+chip_id                       anomaly  thresh  status     evidences
+------------------------------------------------------------------------------------------------------------
+CHIP-PROD-GOOD-001             0.2898    0.35  CLEAN      side-channel / baseline
+CHIP-PROD-PUF-003              0.2929    0.35  CLEAN      PUF authentication; not a side-channel threat model
+CHIP-PROD-TAMPER-004           0.2725    0.35  CLEAN      supply-chain integrity; not a side-channel threat model
+CHIP-PROD-SUPPLIER-005         0.3050    0.35  CLEAN      supplier risk scoring; not a side-channel threat model
+CHIP-PROD-COUNTERFEIT-006      0.2928    0.35  CLEAN      provenance / counterfeit; not a side-channel threat model
+CHIP-PROD-SANCTIONED-007       0.2918    0.35  CLEAN      export control / compliance; not a side-channel threat model
+CHIP-PROD-FAKE-PROVENANCE-008   0.2700    0.35  CLEAN      blockchain provenance; not a side-channel threat model
+CHIP-PROD-TROJAN-002           0.4508    0.35  ANOMALOUS  side-channel / hardware trojan
+
+=== minted ===
+  CHIP-PROD-GOOD-001           twin TWIN-CHIP-PROD-GOOD-001
+                               sbom 3ed10f21f7e82555eb57fe2847f391bf272da7ed95b729a53bb6d802ab34b9f4
+                               puf  a9e1dc585756699b6488fdcdccfce0b703e684afc253b2c7429c96c2fc197c4f
+  CHIP-PROD-TROJAN-002         twin TWIN-CHIP-PROD-TROJAN-002
+                               sbom 295894b91c0b149da8f12bbe50d9159eb54df2301d3653792cb167bc55480649
+                               puf  ef81acc7705cf5ef6f25e69c7718a941c0c9d49c1ee3aae824eda2ee4e233378
+  CHIP-PROD-PUF-003            twin TWIN-CHIP-PROD-PUF-003
+                               sbom 1d2b80c5293f56e85340a1e7de046ce4ea4230abde45b3d1613ebac87406d2c3
+                               puf  119696bd683afc3956797c5da20c4097635fa2dd6b46a60c78dce22b0d4c6708
+  CHIP-PROD-TAMPER-004         twin TWIN-CHIP-PROD-TAMPER-004
+                               sbom 5c3188a061e0e5f96a9e0c1de30042937f4babac5dcd9531b86a45416bc0e4a5
+                               puf  0ad7b42c3ca40566dda137562118fdddc9a14b7e6057fa64a73476d3f9338c32
+  CHIP-PROD-SUPPLIER-005       twin TWIN-CHIP-PROD-SUPPLIER-005
+                               sbom c23503367191520419cf62a8d8f21aca9428cc8a7c3271a16a63299aaf8698a6
+                               puf  014804bd9d6556cd6d4d56a8e76025358bd06ab67183117f51813d226d6c822c
+  CHIP-PROD-COUNTERFEIT-006    twin TWIN-CHIP-PROD-COUNTERFEIT-006
+                               sbom 05b83de08c7d80d3d84c1815ccfcb4a3a527b74ce8e0c0a5481bc4d146a57077
+                               puf  61b1b6a7d94c9b8607b094b75e3ada3b011e07e8ad2d7855d7d0468cb6d0ce6f
+  CHIP-PROD-SANCTIONED-007     twin TWIN-CHIP-PROD-SANCTIONED-007
+                               sbom 6878e6fa3b9580b73da349bb7b258ddf368f20e1506a71e22e23f0e0e3e8cbd6
+                               puf  f3aa87f30fbcef5cae7f36ad7b62ddab3802c2ce1b27586dbaea2129e52c52e1
+  CHIP-PROD-FAKE-PROVENANCE-008 twin TWIN-CHIP-PROD-FAKE-PROVENANCE-008
+                               sbom cde21d3945010a7b12267515f5b94f795e97764aee89ac16317e1b2a2799d4ab
+                               puf  01bb696a5d914fa71c06e4c3d7af0007f545cf7041df577ae7b24216c954276f
+
+OpenTitan attestation expires 300 seconds after minting and its counter cannot be reused.
+Run the pipeline now, or re-run this script before demonstrating.
