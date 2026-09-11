@@ -13,12 +13,18 @@ echo "=========================================="
 ./scripts/runtime/start_everything.sh
 
 echo
-echo "[1] Running all five security scenarios"
+echo "[1] Running the integrated pipeline"
+echo
+echo "    manage.py pipeline-all routes to Phase3Orchestrator, which returns"
+echo "    verdicts from a scenario-keyed lookup table and loads no model."
+echo "    This runs IntegratedPipelineService: eight stages on measured evidence."
+echo
+echo "    Chips default to chip_01_good. Pass filenames, or --all for the full"
+echo "    eight-scenario matrix at roughly two and a half minutes per chip."
+echo
 
-python manage.py pipeline-all \
-  data/chips \
-  --force \
-  | tee runtime/exam-pipeline-results.json
+./scripts/demo/run_integrated_demo.sh "$@" \
+  | tee runtime/exam-pipeline-results.txt
 
 echo
 echo "[2] Verifying event-store integrity"

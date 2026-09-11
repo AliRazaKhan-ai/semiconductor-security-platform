@@ -68,11 +68,12 @@ echo "[5/8] Checking services"
 ./venv/bin/python manage.py system-status \
     >runtime/demo-system-status.json
 
-echo "[6/8] Running all five scenarios"
-./venv/bin/python manage.py pipeline-all \
-    data/chips \
-    --force \
-    | tee runtime/demo-pipeline-results.json
+echo "[6/8] Running the integrated pipeline over all eight scenarios"
+# pipeline-all routes to Phase3Orchestrator and returns lookup-table verdicts.
+# run_integrated_demo.sh runs IntegratedPipelineService and mints per chip,
+# because a PUF challenge is single-use and attestation expires in 300 seconds.
+./scripts/demo/run_integrated_demo.sh --all \
+    | tee runtime/demo-pipeline-results.txt
 
 echo "[7/8] Verifying event store"
 ./venv/bin/python manage.py verify-event-store \

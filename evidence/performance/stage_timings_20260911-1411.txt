@@ -1,0 +1,29 @@
+=== SemiSecure per-stage durations ===
+Source: duration_ms recorded by IntegratedPipelineService in each run record.
+Not a benchmark: a single host, VirtualBox, no GPU, eight fixtures.
+
+runs examined: 16   completed end to end: 4
+
+stage                      n  warm_min_s    mean_s     max_s
+------------------------------------------------------------
+INGESTION                 16       0.082     0.224     0.977
+PUF_AUTHENTICATION        16       0.009     0.097     0.196
+HARDWARE_SECURITY          6      21.444    24.136    27.321
+AI_ANALYSIS                6       4.147    59.902   158.842
+COMPLIANCE                 6       8.621    13.081    22.463
+BLOCKCHAIN                 6       0.051     0.092     0.250
+DASHBOARD                  6       0.051     0.062     0.083
+DEPLOYMENT_DECISION        6       0.053     0.062     0.081
+------------------------------------------------------------
+TOTAL (warm)                      34.458 s
+
+READING THE NUMBERS
+  warm_min is the per-stage cost once the process is running. AI_ANALYSIS's
+  maximum is dominated by TensorFlow import and model load, paid once per
+  process, not per chip.
+  HARDWARE_SECURITY is Yosys synthesising two netlists for the reference
+  differential, Verilator compiling and executing the testbench, OpenTitan
+  attestation, ChipWhisperer trace analysis, SBOM generation and digital-twin
+  matching. Six sub-stages across two external toolchains.
+  The reference netlist is identical for every chip and is re-synthesised each
+  time. Caching it is the largest single available saving.
