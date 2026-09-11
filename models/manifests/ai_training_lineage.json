@@ -1,0 +1,89 @@
+{
+  "created_at_utc": "2026-09-10T05:21:08+00:00",
+  "dataset": {
+    "path": "data/training/semiconductor_ai_v22.npz",
+    "sample_count": 5000,
+    "sha256": "769b1e1c20c5160e04860b8a88ffad9d67bc7b8c5ff46434ead1be3391355252"
+  },
+  "lineage_digest": "826bcd79c7f284242272aa1dbdb3fe14897f1437e07921884d5dde1013991dbf",
+  "model_signals": {
+    "dataset_sha256": "769b1e1c20c5160e04860b8a88ffad9d67bc7b8c5ff46434ead1be3391355252",
+    "path": "data/training/model_signals_v22.npz",
+    "sha256": "1ad5c027ecca3e8b8228e680035cbd3105e50c2d51b87f8eb5112306e7798547",
+    "split_digest": "802990b4e2da4229fa1b3d8db51ddb0387ea75669d7ab3311d3efd9d2ce574a7"
+  },
+  "models": {
+    "pytorch": {
+      "artifact_path": "models/pytorch/anomaly_autoencoder.pt",
+      "artifact_sha256": "edfdf0fc6161d78e9e513273c656d9ba5e1258858081536a2063e41a5965b3d0",
+      "evaluation_contract": {
+        "threshold_source": "CLEAN_VALIDATION"
+      },
+      "framework": "torch",
+      "framework_version": "2.13.0+cpu",
+      "metrics_path": "models/pytorch/anomaly_autoencoder.metrics.json",
+      "metrics_sha256": "f9f5fcbee3f906c394b891866ee529a835cea48cee95cc56c85d951d65fb8159"
+    },
+    "risk_engine": {
+      "artifact_path": "models/sklearn/risk_engine.joblib",
+      "artifact_sha256": "9ff9f110b55f60ba94659b109afb04e57fb55e1bc5a1e28cf42fe7380036f8bd",
+      "evaluation_contract": {
+        "evaluation_split": "TEST"
+      },
+      "framework": "scikit-learn",
+      "framework_version": "1.9.0",
+      "metrics_path": "models/sklearn/risk_engine.metrics.json",
+      "metrics_sha256": "a8f1078e80474400b3b0a6d01ddf7bc57a745095e88c884a2324d6875328dfa6"
+    },
+    "tensorflow": {
+      "artifact_path": "models/tensorflow/trojan_cnn.keras",
+      "artifact_sha256": "4ab50664dd27e0152a6737046e6d7165e7b286f2cfa7d71bf878bfa17e9ecbe5",
+      "evaluation_contract": {
+        "evaluation_split": "TEST"
+      },
+      "framework": "tensorflow",
+      "framework_version": "2.21.0",
+      "metrics_path": "models/tensorflow/trojan_cnn.metrics.json",
+      "metrics_sha256": "04484ab6b22e16c28fc30157d65657e180ad23257e0cbcfcee09a1571e39b465"
+    }
+  },
+  "normalizer": {
+    "feature_count": 34,
+    "feature_schema_sha256": "162f36aaf77d075a9655301f9d58b9a401983026b5e86cd16ab714618aae05e1",
+    "path": "models/manifests/feature_normalizer.json",
+    "sha256": "85487550083c08f1cfb1d68b57ffa446eb9ca2e0bb687c99f0fad361673ecc66"
+  },
+  "schema_version": "1.0",
+  "split": {
+    "file_sha256": "a28705f8515a40b64fe759ac5edc64898a58ff69f9e6f107c7982ad5b2b90d32",
+    "path": "data/training/semiconductor_ai_v22.split.json",
+    "seed": 42,
+    "split_digest": "802990b4e2da4229fa1b3d8db51ddb0387ea75669d7ab3311d3efd9d2ce574a7",
+    "test_fraction": 0.15,
+    "train_fraction": 0.7,
+    "validation_fraction": 0.15
+  },
+  "status": "VERIFIED_TRAINING_RUN",
+  "training": {
+    "framework_versions": {
+      "joblib": "1.5.3",
+      "numpy": "2.5.1",
+      "python": "3.12.13",
+      "scikit_learn": "1.9.0",
+      "tensorflow": "2.21.0",
+      "torch": "2.13.0+cpu"
+    },
+    "seed": 42,
+    "source_sha256": {
+      "scripts/ai/dataset.py": "fa4ffaf61fcd0b905cf9a83cb0f50fb658abb94d052f0741c0b9e0a3d0c70332",
+      "scripts/ai/generate_model_signals.py": "cfb9e0a05d244ad4dc2a35ddf1783490b6214e526259f840b9fba4911322a983",
+      "scripts/ai/lineage.py": "e381b700569b78bef4af4246689bce4388131aaf121bf132d9ea243dcbb9df93",
+      "scripts/ai/train_all.sh": "20223a0bb6066b0e9d06a413272343381a3b6e570c0fcb528c177d82f6a34897",
+      "scripts/ai/train_normalizer.py": "3630a4451f2bbb0e4e3521bfc18f42256a10585176e258161c84841cb7541000",
+      "scripts/ai/train_pytorch_autoencoder.py": "858588b3bd83769ac753095d6dc31e2be1332970102de000fbad4d03a4002233",
+      "scripts/ai/train_risk_engine.py": "4fd771952a209278613a65b15f640d30ed6373dbcec5131fc5650349eda95caa",
+      "scripts/ai/train_tensorflow_cnn.py": "af791bcc0c90fded8227491149a4a96a6d75cc520d6a968eb35a0c80e5751cdd",
+      "scripts/ai/write_lineage_manifest.py": "9399e4f522a2d5e9093a99f9879935afa0fa6c852470573d9e1f6231da907389"
+    }
+  }
+}

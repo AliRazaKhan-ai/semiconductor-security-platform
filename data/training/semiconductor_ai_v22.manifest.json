@@ -1,0 +1,117 @@
+{
+  "class_counts": [
+    2747,
+    1226,
+    1027
+  ],
+  "class_labels": [
+    "CLEAN",
+    "TROJAN",
+    "TAMPERED"
+  ],
+  "class_weights": [
+    0.55,
+    0.25,
+    0.2
+  ],
+  "coverage_fraction": 0.15,
+  "dataset_sha256": "769b1e1c20c5160e04860b8a88ffad9d67bc7b8c5ff46434ead1be3391355252",
+  "excluded_from_boost": [],
+  "feature_count": 34,
+  "feature_names": [
+    "power_mean",
+    "power_std",
+    "power_rms",
+    "power_peak_to_peak",
+    "power_crest_factor",
+    "power_skewness",
+    "power_kurtosis",
+    "power_spectral_entropy",
+    "em_mean",
+    "em_std",
+    "em_rms",
+    "em_peak_to_peak",
+    "em_spectral_entropy",
+    "timing_mean",
+    "timing_std",
+    "timing_jitter",
+    "cell_count_log",
+    "wire_count_log",
+    "wire_bit_count_log",
+    "public_wire_ratio",
+    "cell_type_diversity",
+    "sequential_ratio",
+    "combinational_ratio",
+    "memory_bit_count_log",
+    "netlist_delta_ratio",
+    "simulation_failure_ratio",
+    "supplier_risk",
+    "country_risk",
+    "custody_gap_ratio",
+    "certificate_risk",
+    "sbom_mismatch_ratio",
+    "threat_intel_score",
+    "puf_instability",
+    "opentitan_risk"
+  ],
+  "generator": "scripts/ai/generate_synthetic_dataset.py",
+  "label_noise": 0.0,
+  "physical_features_from_extractor": [
+    "em_mean",
+    "em_peak_to_peak",
+    "em_rms",
+    "em_spectral_entropy",
+    "em_std",
+    "power_crest_factor",
+    "power_kurtosis",
+    "power_mean",
+    "power_peak_to_peak",
+    "power_rms",
+    "power_skewness",
+    "power_spectral_entropy",
+    "power_std",
+    "timing_jitter",
+    "timing_mean",
+    "timing_std"
+  ],
+  "physical_source": "extractor",
+  "samples": 5000,
+  "schema": "CANDIDATE_PLUS_FEATURE_NAMES",
+  "seed": 0,
+  "separability_note": "In raw mode, classes are separated by explicit mean shifts on the named features above. In extractor mode there are no mean shifts: separation derives from two netlist profiles, the 8-cell reference and the 27-cell controlled Trojan, propagated through the production trace synthesiser and the production feature extractors. Either way this is a two-design synthetic corpus. Any classification metric obtained on it measures separability between those two designs, not detector performance on real silicon.",
+  "sequence_channels": 3,
+  "sequence_length": 256,
+  "supply_effect_sigma": 2.2,
+  "supply_features_absent_from_schema": [],
+  "supply_features_applied": [
+    "supplier_risk",
+    "country_risk",
+    "custody_gap_ratio",
+    "sbom_mismatch_ratio",
+    "threat_intel_score"
+  ],
+  "trace_length": 256,
+  "trace_metric_jitter": 0.18,
+  "trace_metric_profiles": {
+    "clean": {
+      "activity": 21.75,
+      "combinational": 6.0,
+      "sequential": 2.0
+    },
+    "trojan": {
+      "activity": 59.75,
+      "combinational": 23.0,
+      "sequential": 4.0
+    }
+  },
+  "trace_parameter_source": "sequential_cells, combinational_cells and activity_proxy read from the provenance blocks of hardware_lab/chipwhisperer/reference_traces; corpus traces are produced by the same generate_samples() that produced the fixture traces, from the same kind of Yosys metrics",
+  "trace_synthesiser": "app/hardware/chipwhisperer/synthesis_trace.py",
+  "trojan_effect_sigma": null,
+  "trojan_effect_sigma_note": "null in extractor mode: no sigma shift is applied to any column. Physical features come from extract_physical over synthesised traces, design features from extract_design over the same netlist metrics. Class separation derives from the 8-cell reference against the 27-cell controlled Trojan.",
+  "trojan_feature_set": "extended",
+  "trojan_features_absent_from_schema": [
+    "unused_logic_ratio",
+    "rare_net_ratio"
+  ],
+  "trojan_features_applied": []
+}
