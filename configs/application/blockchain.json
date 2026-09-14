@@ -13,7 +13,17 @@
         "peer_tls_root_cert": "/home/ali-raza/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt",
         "orderer_address": "localhost:7050",
         "orderer_tls_root_cert": "/home/ali-raza/hyperledger/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem",
-        "peer_binary": "/home/ali-raza/hyperledger/fabric-samples/bin/peer"
+        "peer_binary": "/home/ali-raza/hyperledger/fabric-samples/bin/peer",
+        "endorsers": [
+          {
+            "address": "localhost:7051",
+            "tls_root_cert": "/home/ali-raza/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+          },
+          {
+            "address": "localhost:9051",
+            "tls_root_cert": "/home/ali-raza/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+          }
+        ]
       }
     },
     "ethereum": {

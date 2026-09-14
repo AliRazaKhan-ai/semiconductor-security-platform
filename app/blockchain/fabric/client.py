@@ -6,7 +6,6 @@ import os
 import re
 import subprocess
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any, Callable, Sequence
 
 from app.blockchain.fabric.identity import FabricIdentity
@@ -102,6 +101,19 @@ class FabricClient:
         *,
         transient: dict[str, str] | None = None,
     ) -> str:
+        if not self.identity.endorsers:
+            raise FabricCommandError(
+                "no endorsing peers are configured; blockchain.fabric.identity."
+                "endorsers must name every peer the endorsement policy requires",
+                CommandResult("", "", 1),
+            )
+
+        endorsement: list[str] = []
+        for address, tls_root_cert in self.identity.endorsers:
+            endorsement.extend(
+                ["--peerAddresses", address, "--tlsRootCertFiles", str(tls_root_cert)]
+            )
+
         command = [
             self.identity.peer_binary, "chaincode", "invoke",
             "-o", self.identity.orderer_address,
@@ -111,10 +123,7 @@ class FabricClient:
             "-C", self.channel,
             "-n", self.chaincode,
             "-c", self._ctor(function, arguments),
-            "--peerAddresses", "localhost:7051",
-            "--tlsRootCertFiles", str(Path.home() / "hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"),
-            "--peerAddresses", "localhost:9051",
-            "--tlsRootCertFiles", str(Path.home() / "hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"),
+            *endorsement,
             "--waitForEvent",
             "--waitForEventTimeout", self.wait_for_event_timeout,
         ]
