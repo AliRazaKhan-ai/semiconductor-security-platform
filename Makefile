@@ -61,7 +61,7 @@ demo-status:
 	@printf 'fabric peer 7051 : '; ss -ltn | grep -q ':7051' && echo UP || echo DOWN
 	@printf 'anvil 8545       : '; ss -ltn | grep -q ':8545' && echo UP || echo DOWN
 	@printf 'backend 5000     : '; ss -ltn | grep -q ':5000' && echo UP || echo DOWN
-	@printf 'demo-all running : '; \
+	@printf 'background demo-all: '; \
 		[ -f runtime/demo-all.pid ] && kill -0 $$(cat runtime/demo-all.pid) 2>/dev/null \
 		&& echo YES || echo NO
 	@echo 'dashboard        : http://127.0.0.1:5000/dashboard'
