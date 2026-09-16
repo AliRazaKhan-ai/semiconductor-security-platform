@@ -1,0 +1,111 @@
+==================================================================
+ SemiSecure integrated pipeline
+ Chips: 8
+==================================================================
+
+Loading models (paid once for the whole run) ...
+  ready in 5.2s
+
+[1/8] chip_01_good.json
+I0000 00:00:1789562493.197938   69880 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+    COMPLETED  DEPLOY  (109.9s)
+      INGESTION              PASSED
+      PUF_AUTHENTICATION     PASSED
+      HARDWARE_SECURITY      PASSED
+      AI_ANALYSIS            PASSED
+      COMPLIANCE             PASSED
+      BLOCKCHAIN             PASSED
+      DASHBOARD              PASSED
+      DEPLOYMENT_DECISION    PASSED
+
+[2/8] chip_02_trojan.json
+    STOPPED  DENIED_AND_QUARANTINED  (31.6s)
+      INGESTION              PASSED
+      PUF_AUTHENTICATION     PASSED
+      HARDWARE_SECURITY      FAILED
+
+[3/8] chip_03_puf_unstable.json
+    STOPPED  HOLD_FOR_RETEST_OR_REJECT  (31.4s)
+      INGESTION              PASSED
+      PUF_AUTHENTICATION     FAILED
+
+[4/8] chip_04_supplychain_tampered.json
+    MANUAL_REVIEW  DO_NOT_DEPLOY_PENDING_REVIEW  (64.0s)
+      INGESTION              PASSED
+      PUF_AUTHENTICATION     PASSED
+      HARDWARE_SECURITY      PASSED
+      AI_ANALYSIS            PASSED
+      COMPLIANCE             PASSED
+      BLOCKCHAIN             PASSED
+      DASHBOARD              PASSED
+      DEPLOYMENT_DECISION    PASSED
+
+[5/8] chip_05_highrisk_supplier.json
+    MANUAL_REVIEW  DO_NOT_DEPLOY_PENDING_REVIEW  (64.0s)
+      INGESTION              PASSED
+      PUF_AUTHENTICATION     PASSED
+      HARDWARE_SECURITY      PASSED
+      AI_ANALYSIS            PASSED
+      COMPLIANCE             PASSED
+      BLOCKCHAIN             PASSED
+      DASHBOARD              PASSED
+      DEPLOYMENT_DECISION    PASSED
+
+[6/8] chip_06_counterfeit.json
+    STOPPED  DENIED_AND_QUARANTINED  (67.7s)
+      INGESTION              PASSED
+      PUF_AUTHENTICATION     PASSED
+      HARDWARE_SECURITY      PASSED
+      AI_ANALYSIS            PASSED
+      COMPLIANCE             PASSED
+      BLOCKCHAIN             PASSED
+      DASHBOARD              PASSED
+      DEPLOYMENT_DECISION    PASSED
+
+[7/8] chip_07_sanctioned_manufacturer.json
+    MANUAL_REVIEW  DO_NOT_DEPLOY_PENDING_REVIEW  (64.5s)
+      INGESTION              PASSED
+      PUF_AUTHENTICATION     PASSED
+      HARDWARE_SECURITY      PASSED
+      AI_ANALYSIS            PASSED
+      COMPLIANCE             PASSED
+      BLOCKCHAIN             PASSED
+      DASHBOARD              PASSED
+      DEPLOYMENT_DECISION    PASSED
+
+[8/8] chip_08_fake_provenance.json
+    MANUAL_REVIEW  DO_NOT_DEPLOY_PENDING_REVIEW  (64.7s)
+      INGESTION              PASSED
+      PUF_AUTHENTICATION     PASSED
+      HARDWARE_SECURITY      PASSED
+      AI_ANALYSIS            PASSED
+      COMPLIANCE             PASSED
+      BLOCKCHAIN             PASSED
+      DASHBOARD              PASSED
+      DEPLOYMENT_DECISION    PASSED
+
+==================================================================
+ chip                             status                      s
+------------------------------------------------------------------
+ chip_01_good.json                COMPLETED               109.9
+                                  DEPLOY
+ chip_02_trojan.json              STOPPED                  31.6
+                                  DENIED_AND_QUARANTINED
+ chip_03_puf_unstable.json        STOPPED                  31.4
+                                  HOLD_FOR_RETEST_OR_REJECT
+ chip_04_supplychain_tampered.json MANUAL_REVIEW            64.0
+                                  DO_NOT_DEPLOY_PENDING_REVIEW
+ chip_05_highrisk_supplier.json   MANUAL_REVIEW            64.0
+                                  DO_NOT_DEPLOY_PENDING_REVIEW
+ chip_06_counterfeit.json         STOPPED                  67.7
+                                  DENIED_AND_QUARANTINED
+ chip_07_sanctioned_manufacturer.json MANUAL_REVIEW            64.5
+                                  DO_NOT_DEPLOY_PENDING_REVIEW
+ chip_08_fake_provenance.json     MANUAL_REVIEW            64.7
+                                  DO_NOT_DEPLOY_PENDING_REVIEW
+------------------------------------------------------------------
+ 8 chip(s) in 503.1s, 62.9s each
+ 0 failure(s)
+ Dashboard: http://127.0.0.1:5000/dashboard
+==================================================================
