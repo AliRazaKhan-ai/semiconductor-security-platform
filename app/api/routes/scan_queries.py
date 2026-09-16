@@ -79,6 +79,44 @@ def _stage_value(
     )
 
 
+# The dashboard shows PUF stability and the OpenTitan flags. It does not show
+# challenge vectors, and it must not receive them: hardware_security.puf.challenge
+# carries a challenge id, digest and dozens of 64-bit delay-challenge strings per
+# chip. Projecting the block whole made GET /api/v1/scans/latest return 11,473,695
+# bytes in 15.6 seconds, past the 10-second client timeout in api_client.js, so the
+# dashboard's primary feed never arrived. It also published challenge material to a
+# browser over plain HTTP while logging.json redacts puf_response from the logs.
+_PUF_DASHBOARD_FIELDS = (
+    "authentication_expected",
+    "stability_score",
+    "intra_device_hamming_distance",
+    "identity_hash",
+)
+
+
+def _dashboard_hardware_security(
+    hardware_security: Any,
+) -> dict[str, Any]:
+    """Return hardware evidence with PUF challenge and response material removed."""
+    if not isinstance(hardware_security, dict):
+        return {}
+
+    projected = {
+        key: value
+        for key, value in hardware_security.items()
+        if key != "puf"
+    }
+
+    puf = hardware_security.get("puf")
+
+    if isinstance(puf, dict):
+        projected["puf"] = {
+            key: puf[key] for key in _PUF_DASHBOARD_FIELDS if key in puf
+        }
+
+    return projected
+
+
 def _metadata_from_run(
     run: dict[str, Any],
 ) -> dict[str, Any]:
@@ -134,7 +172,9 @@ def _metadata_from_run(
                     "manufacturing": simulation.get("manufacturing", {}),
                     "supplier": simulation.get("supplier", {}),
                     "supply_chain": simulation.get("supply_chain", {}),
-                    "hardware_security": simulation.get("hardware_security", {}),
+                    "hardware_security": _dashboard_hardware_security(
+                        simulation.get("hardware_security", {})
+                    ),
                     "compliance": simulation.get("compliance", {}),
                     "failure_reason": simulation.get("failure_reason"),
                     "expected_results": simulation.get("expected_results", {}),
