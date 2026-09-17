@@ -38,7 +38,7 @@ clean:
 #   make semi-one     live, at slide 11, about two minutes
 #   make semi-down    after
 
-.PHONY: semi-up semi-all semi-one semi-watch semi-status semi-down semi-pair semi-fast semi-help semi-chip001 semi-chip002 semi-chip003 semi-chip004 semi-chip005 semi-chip006 semi-chip007 semi-chip008
+.PHONY: semi-reset semi-up semi-all semi-one semi-watch semi-status semi-down semi-pair semi-fast semi-help semi-chip001 semi-chip002 semi-chip003 semi-chip004 semi-chip005 semi-chip006 semi-chip007 semi-chip008
 
 semi-up:
 	./scripts/runtime/start_everything.sh
@@ -118,3 +118,18 @@ semi-help:
 	@echo 'semi-fast      all eight, three workers                 ~5.5m'
 	@echo 'semi-watch     follow a background semi-all'
 	@echo 'semi-down      stop everything'
+
+semi-reset:
+	@echo "Archiving the current stores, then clearing the dashboard."
+	@mkdir -p backups
+	@tar czf "backups/stores_$$(date +%Y%m%d-%H%M%S).tar.gz" \
+		data/integrated_runs data/event_store data/indexes \
+		data/quarantine data/compliance 2>/dev/null || true
+	@-./scripts/runtime/stop_backend.sh >/dev/null 2>&1
+	@rm -rf data/integrated_runs/* data/event_store/* data/indexes/* \
+		data/quarantine/* runtime/semi-all.pid runtime/semi-all.log
+	@bash scripts/initialize_event_store.sh >/dev/null 2>&1 || true
+	@./scripts/runtime/start_backend.sh
+	@echo
+	@echo "Dashboard cleared. Archive in backups/."
+	@echo "Next: make semi-chip001   (or semi-fast for all eight)"

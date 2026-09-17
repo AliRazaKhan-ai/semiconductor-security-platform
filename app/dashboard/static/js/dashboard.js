@@ -23,7 +23,11 @@
     const text = (id, value) => { const node = document.getElementById(id); if (node) node.textContent = value ?? "—"; };
     const asNumber = (value) => { const number = Number(value); return Number.isFinite(number) ? number : null; };
     const normalizeScore = window.SemiSecure.normalizeScore || ((value) => asNumber(value));
-    const extractRisk = window.SemiSecure.extractRisk || (() => null);
+    const measuredRisk = window.SemiSecure.extractRisk || (() => null);
+    // Every consumer - KPI tiles, scan table, notifications, trend chart,
+    // detail view - reads risk through effectiveRisk, so a chip stopped before
+    // AI_ANALYSIS reports the risk its decision implies instead of 0.0.
+    const extractRisk = (scan) => effectiveRisk(scan);
     const extractSupplierRisk = window.SemiSecure.extractSupplierRisk || (() => null);
     const formatScore = (value) => { const score = normalizeScore(value); return score === null ? "—" : `${score.toFixed(1)}`; };
     const formatPercent = (value) => { const score = normalizeScore(value); return score === null ? "—" : `${score.toFixed(1)}%`; };
@@ -656,11 +660,32 @@
         if (window.provenanceController) window.provenanceController.updatePanel(scans, state.eventsByScan);
     }
 
+    // A chip stopped before AI_ANALYSIS has no AI risk score, so extractRisk returns
+    // null. Filtering those out made a quarantined Trojan read as risk 0.0 with
+    // HIGH-RISK ACTIVE 0, because hardware security caught it before the models ran.
+    // The deployment decision is the authoritative signal: a chip the pipeline denied
+    // is maximum risk whichever control stopped it.
+    const DECISION_RISK = {
+        REJECTED: 100,
+        QUARANTINED: 99,
+        MANUAL_REVIEW: 60,
+    };
+
+    function effectiveRisk(scan) {
+        const measured = measuredRisk(scan);
+        const byDecision = DECISION_RISK[statusOf(scan)];
+
+        if (byDecision === undefined) return measured;
+        if (measured === null) return byDecision;
+
+        return Math.max(measured, byDecision);
+    }
+
     function renderKPIs(scans) {
         const statuses = scans.map(statusOf);
 
         const risks = scans
-            .map((scan) => extractRisk(scan))
+            .map((scan) => effectiveRisk(scan))
             .filter((value) => value !== null);
 
         const averageRisk = risks.length
@@ -668,7 +693,7 @@
             : 0;
 
         const highRisk = scans.filter((scan) => {
-            const risk = extractRisk(scan);
+            const risk = effectiveRisk(scan);
             const status = statusOf(scan);
 
             return (
