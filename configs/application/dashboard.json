@@ -1,6 +1,6 @@
 {
   "dashboard": {
-    "refresh_interval_ms": 5000,
+    "refresh_interval_ms": 15000,
     "initial_scan_limit": 20,
     "table_limit": 50,
     "read_only": true,

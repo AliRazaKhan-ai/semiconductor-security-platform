@@ -117,6 +117,31 @@ def _dashboard_hardware_security(
     return projected
 
 
+def _strip_puf_material(node: Any) -> Any:
+    """Remove PUF challenge and response material anywhere in a response tree.
+
+    _dashboard_hardware_security covers the projection built by _metadata_from_run,
+    but stored event payloads embed the same block at
+    stages[].result.payload.metadata.hardware_security.puf. The dashboard needs
+    stability and identity, never challenge vectors, so they are removed wherever
+    they appear rather than path by path.
+    """
+    if isinstance(node, dict):
+        return {
+            key: (
+                _dashboard_hardware_security(value)
+                if key == "hardware_security"
+                else _strip_puf_material(value)
+            )
+            for key, value in node.items()
+        }
+
+    if isinstance(node, list):
+        return [_strip_puf_material(item) for item in node]
+
+    return node
+
+
 def _metadata_from_run(
     run: dict[str, Any],
 ) -> dict[str, Any]:
@@ -205,6 +230,13 @@ def _load_run(scan_id: str) -> dict[str, Any] | None:
 
 
 def _enrich_snapshot(
+    snapshot: dict[str, Any],
+) -> dict[str, Any]:
+    """Enrich a scan snapshot, with PUF challenge material removed throughout."""
+    return _strip_puf_material(_enrich_snapshot_raw(snapshot))
+
+
+def _enrich_snapshot_raw(
     snapshot: dict[str, Any],
 ) -> dict[str, Any]:
     scan_id = str(snapshot.get("scan_id") or "")
