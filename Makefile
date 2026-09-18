@@ -133,3 +133,9 @@ semi-reset:
 	@echo
 	@echo "Dashboard cleared. Archive in backups/."
 	@echo "Next: make semi-chip001   (or semi-fast for all eight)"
+
+semi-backup:
+	./scripts/maintenance/backup_restore.sh backup
+
+semi-restore-check:
+	./scripts/maintenance/backup_restore.sh verify
