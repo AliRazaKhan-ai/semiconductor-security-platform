@@ -125,6 +125,13 @@ def create_app(
     event_store, audit_writer, _ = _initialise_storage(app)
     _initialise_socketio(app, event_store)
 
+    # Subsystems construct in try/except so a missing dependency does not stop the
+    # process: CI and the test suite run without Fabric or Anvil. Recording each
+    # failure here makes the absence visible in /health/ready, rather than a
+    # warning in the log while the server reports itself healthy. Observed live:
+    # the app started with hardware_pipeline and blockchain both absent.
+    degraded: dict[str, str] = {}
+
     try:
         app.extensions["semisecure.blockchain_service"] = BlockchainService(
             root=loaded.project_root,
@@ -134,6 +141,7 @@ def create_app(
         )
     except Exception as exc:
         logger.warning("blockchain_service_unavailable", extra={"error": str(exc)})
+        degraded["blockchain"] = str(exc)
         app.extensions["semisecure.blockchain_service"] = None
 
     try:
@@ -142,6 +150,7 @@ def create_app(
         )
     except Exception as exc:
         logger.warning("ai_pipeline_unavailable", extra={"error": str(exc)})
+        degraded["ai_pipeline"] = str(exc)
         app.extensions["semisecure.ai_pipeline"] = None
 
     try:
@@ -152,6 +161,7 @@ def create_app(
         )
     except Exception as exc:
         logger.warning('hardware_pipeline_unavailable', extra={'error': str(exc)})
+        degraded["hardware_pipeline"] = str(exc)
         app.extensions['semisecure.hardware_pipeline'] = None
 
     try:
@@ -164,6 +174,7 @@ def create_app(
         )
     except Exception as exc:
         logger.warning("compliance_service_unavailable", extra={"error": str(exc)})
+        degraded["compliance_service"] = str(exc)
         app.extensions["semisecure.compliance_service"] = None
 
     rate_limit_config = loaded.values["security"].get("rate_limit", {})
@@ -187,6 +198,8 @@ def create_app(
     app.register_blueprint(health_bp)
     app.register_blueprint(dashboard_bp)
     _register_cli(app)
+
+    app.extensions["semisecure.degraded"] = degraded
 
     logger.info(
         "application_created",
