@@ -1,7 +1,7 @@
 {
   "application": {
     "name": "SemiSecure Platform",
-    "version": "1.0.0",
+    "version": "4.0.0",
     "host": "127.0.0.1",
     "port": 5000,
     "debug": false,
@@ -15,10 +15,5 @@
     "scan_submission_enabled": true,
     "default_page_size": 50,
     "maximum_page_size": 500
-  },
-  "integrations": {
-    "hyperledger_fabric": {"enabled": false},
-    "ethereum_anchor": {"enabled": false}
   }
 }
-

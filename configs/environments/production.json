@@ -1,8 +1,9 @@
 {
   "application": {
     "debug": false,
-    "host": "0.0.0.0",
-    "port": 5000
+    "host": "127.0.0.1",
+    "port": 5000,
+    "host_note": "Loopback only. SECURITY.md: the platform has no application login and must not be exposed directly to the public internet. Place a gateway or mTLS terminator in front of it rather than binding every interface here."
   },
   "logging": {
     "level": "INFO"
@@ -12,4 +13,3 @@
     "verify_on_read": true
   }
 }
-
