@@ -1113,6 +1113,10 @@ def run_ai_pipeline(
         "tensorflow": result.get("tensorflow"),
         "pytorch": result.get("pytorch"),
         "decision": decision,
+        # RISK-09. Reported beside the model outputs, never used to decide: drift means
+        # the model is being asked about a distribution it was not trained on, which is
+        # an observability signal about the model, not evidence about the chip.
+        "drift": result.get("drift"),
         "evidence": evidence,
         "controls": controls,
         "service_output": result,
