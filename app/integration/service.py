@@ -831,7 +831,16 @@ class IntegratedPipelineService:
                             "End User"
                         ),
                     )
-                }
+                },
+                # RISK-03. Only the end user reached ExportControlEngine, so a denied
+                # party on the supply side was never screened. chip_07 carries end user
+                # "Example Defense Communications Contractor", which is clear, and
+                # supplier "DEMO DENIED SEMICONDUCTOR ENTITY", the sole entry on the
+                # Consolidated Screening List. The engine screens whatever party it is
+                # given; it was never given this one.
+                "supplier": {
+                    "name": str(supplier.get("name", "")),
+                },
             },
             "supplier": supplier,
             "ai": {
