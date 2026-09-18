@@ -150,8 +150,13 @@
             environment: {{ environment|default('production')|tojson }}
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.7.5/dist/socket.io.min.js" crossorigin="anonymous"></script>
+    {# chart.js 4.4.3 and socket.io-client 4.7.5, vendored. They were loaded from
+       cdn.jsdelivr.net without Subresource Integrity, so a supply-chain security
+       platform was executing unverified third-party JavaScript. Vendoring removes
+       the runtime dependency entirely rather than verifying it, and the dashboard
+       now works with no internet access. Digests in vendor/VENDOR_DIGESTS.txt. #}
+    <script src="{{ url_for('dashboard.static', filename='vendor/chartjs/chart.umd.min.js') }}"></script>
+    <script src="{{ url_for('dashboard.static', filename='vendor/socketio/socket.io.min.js') }}"></script>
     <script src="{{ url_for('dashboard.static', filename='vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('dashboard.static', filename='js/api_client.js') }}"></script>
     <script src="{{ url_for('dashboard.static', filename='js/socket_client.js') }}"></script>

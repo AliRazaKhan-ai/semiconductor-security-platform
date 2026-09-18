@@ -1,7 +1,11 @@
 {
   "security": {
-    "authentication": {"enabled": false},
-    "login_pages": {"enabled": false},
+    "authentication": {
+      "enabled": false
+    },
+    "login_pages": {
+      "enabled": false
+    },
     "rate_limit": {
       "enabled": true,
       "requests": 120,
@@ -9,7 +13,7 @@
       "scan_submission_requests": 20
     },
     "headers": {
-      "content_security_policy": "default-src 'self'; connect-src 'self' ws: wss:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+      "content_security_policy": "default-src 'self'; connect-src 'self' ws: wss:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'",
       "referrer_policy": "no-referrer",
       "frame_options": "DENY",
       "content_type_options": "nosniff",
@@ -17,4 +21,3 @@
     }
   }
 }
-
