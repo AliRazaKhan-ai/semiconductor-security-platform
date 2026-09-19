@@ -8,9 +8,8 @@ from __future__ import annotations
 
 from flask import Blueprint, Response, current_app, jsonify
 
-from app.observability.metrics import render_metrics
-
 from app.observability.health import liveness_payload, readiness_payload
+from app.observability.metrics import render_metrics
 
 bp = Blueprint("health", __name__)
 

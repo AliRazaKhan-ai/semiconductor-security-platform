@@ -23,13 +23,15 @@ def _escape(value: str) -> str:
     return value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", " ")
 
 
-def _line(name: str, value: float, **labels: str) -> str:
+def _line(metric: str, value: float, **labels: str) -> str:
+    """Render one sample. The first parameter is `metric`, not `name`, so that a
+    metric can carry a label called `name` without colliding with it."""
     if labels:
         rendered = ",".join(
             f'{key}="{_escape(str(val))}"' for key, val in sorted(labels.items())
         )
-        return f"{name}{{{rendered}}} {value}"
-    return f"{name} {value}"
+        return f"{metric}{{{rendered}}} {value}"
+    return f"{metric} {value}"
 
 
 def render_metrics(app: Flask) -> str:
@@ -46,7 +48,11 @@ def render_metrics(app: Flask) -> str:
             "semisecure_build_info",
             1,
             version=str(application.get("version", "unknown")),
-            environment=str(application.get("environment", "unknown")),
+            environment=str(
+                config.get("environment")
+                or application.get("environment")
+                or app.config.get("ENV", "unknown")
+            ),
         )
     )
 
@@ -85,40 +91,8 @@ def render_metrics(app: Flask) -> str:
     lines.append("# TYPE semisecure_scans_total gauge")
     lines.append(_line("semisecure_scans_total", total))
 
-    try:
-        recent: list[dict[str, Any]] = list(events.latest(50))
-    except Exception:  # noqa: BLE001
-        recent = []
-
-    decisions: dict[str, int] = {}
-    stages: dict[str, int] = {}
-
-    for scan in recent:
-        payload = scan.get("latest_payload") or {}
-        decision = str(
-            scan.get("deployment_decision")
-            or payload.get("deployment_decision")
-            or "UNKNOWN"
-        )
-        decisions[decision] = decisions.get(decision, 0) + 1
-
-        stage = str(scan.get("pipeline_stage") or scan.get("stage") or "UNKNOWN")
-        stages[stage] = stages.get(stage, 0) + 1
-
-    lines.append("")
-    lines.append(
-        "# HELP semisecure_recent_decisions Deployment decisions in the last 50 scans."
-    )
-    lines.append("# TYPE semisecure_recent_decisions gauge")
-    for decision, count in sorted(decisions.items()):
-        lines.append(_line("semisecure_recent_decisions", count, decision=decision))
-
-    lines.append("")
-    lines.append(
-        "# HELP semisecure_recent_stage Latest pipeline stage in the last 50 scans."
-    )
-    lines.append("# TYPE semisecure_recent_stage gauge")
-    for stage, count in sorted(stages.items()):
-        lines.append(_line("semisecure_recent_stage", count, stage=stage))
-
+    # The decision and stage gauges were removed: events.latest returns event
+    # snapshots, not run records, so deployment_decision is not on them and every
+    # sample reported UNKNOWN. They also dominated the scrape time. Scan count and
+    # subsystem status carry the useful signal and neither needs latest().
     return "\n".join(lines) + "\n"
