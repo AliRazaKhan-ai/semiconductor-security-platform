@@ -21,6 +21,7 @@ a control that exists or an accepted residual with the reason recorded.
 | RISK-14 | `POST /api/v1/scans` accepts unauthenticated submissions, against the terminal-controlled design principle | Low | Medium | **Accepted.** Loopback-bound. `scan_submission_enabled` exists and can be set false; the guard is implemented. |
 | RISK-15 | Approval gates are documented in CONTRIBUTING.md but not enforced: no branch protection, no required status checks | Medium | Medium | **Open.** CI runs on every push; lint and type checking report without blocking while the 387-finding backlog is worked through. |
 | RISK-16 | `create_app()` constructs each service in try/except, so a broken subsystem yields a running application with a silently absent capability | Medium | Medium | **Partially mitigated.** Runtime callers fail closed and a test forbids fallbacks. Startup does not fail loudly. Observed live during testing. |
+| RISK-17 | Fabric containers publish 7050, 7051, 9051 and 9443-9445 on 0.0.0.0 while the application binds loopback in every environment | Low | Medium | **Open.** The fabric-samples test-network default rather than a configured choice. TLS with MSP identity still gates access, but it is wider than the boundary SECURITY.md describes. Measured with ss -ltnp; see docs/architecture/NETWORK.md. |
 
 ## Review
 
