@@ -1,4 +1,74 @@
 {
-  "models": [],
-  "schema_version": 1
+  "schema_version": 2,
+  "recorded_at_utc": "2026-09-19T06:27:32+00:00",
+  "note": "A record of what is deployed, not a serving mechanism. The runtime loads models by the paths in configs/application/ai.json and does not read this file.",
+  "lineage": {
+    "dataset_sha256": [
+      "769b1e1c20c5160e04860b8a88ffad9d67bc7b8c5ff46434ead1be3391355252"
+    ],
+    "split_digest": [
+      "802990b4e2da4229fa1b3d8db51ddb0387ea75669d7ab3311d3efd9d2ce574a7"
+    ],
+    "consistent": true
+  },
+  "promotion_criteria": [
+    "Trained on a digest-verified split; dataset_sha256 and split_digest must agree across all three artefacts.",
+    "tests/ai/test_train_serve_parity.py passes, so the served threshold is the trained threshold.",
+    "tests/ai/test_train_serve_parity.py distribution checks pass, so the extractor output falls inside the fitted support.",
+    "No regression against the incumbent on the held-out TEST split.",
+    "tests/integration/test_complete_module_integration.py passes: the known-good chip completes all eight stages."
+  ],
+  "rollback_targets": [
+    "v1.0",
+    "v2.1-pre-phase3"
+  ],
+  "models": [
+    {
+      "name": "anomaly_autoencoder",
+      "framework": "pytorch",
+      "status": "DEPLOYED",
+      "artefact": "models/pytorch/anomaly_autoencoder.pt",
+      "artefact_sha256": "edfdf0fc6161d78e9e513273c656d9ba5e1258858081536a2063e41a5965b3d0",
+      "metrics": {
+        "threshold_source": "CLEAN_VALIDATION",
+        "dataset_sha256": "769b1e1c20c5160e04860b8a88ffad9d67bc7b8c5ff46434ead1be3391355252",
+        "split_digest": "802990b4e2da4229fa1b3d8db51ddb0387ea75669d7ab3311d3efd9d2ce574a7",
+        "clean_training_samples": 1923,
+        "clean_validation_samples": 412,
+        "threshold": 1.0832927227020264,
+        "scale": 0.1759956181049347
+      }
+    },
+    {
+      "name": "risk_engine",
+      "framework": "sklearn",
+      "status": "DEPLOYED",
+      "artefact": "models/sklearn/risk_engine.joblib",
+      "artefact_sha256": "9ff9f110b55f60ba94659b109afb04e57fb55e1bc5a1e28cf42fe7380036f8bd",
+      "metrics": {
+        "evaluation_split": "TEST",
+        "dataset_sha256": "769b1e1c20c5160e04860b8a88ffad9d67bc7b8c5ff46434ead1be3391355252",
+        "split_digest": "802990b4e2da4229fa1b3d8db51ddb0387ea75669d7ab3311d3efd9d2ce574a7",
+        "train_samples": 3500,
+        "validation_samples": 750,
+        "test_samples": 750,
+        "roc_auc": 0.9911314413741599
+      }
+    },
+    {
+      "name": "trojan_cnn",
+      "framework": "tensorflow",
+      "status": "DEPLOYED",
+      "artefact": "models/tensorflow/trojan_cnn.keras",
+      "artefact_sha256": "4ab50664dd27e0152a6737046e6d7165e7b286f2cfa7d71bf878bfa17e9ecbe5",
+      "metrics": {
+        "evaluation_split": "TEST",
+        "dataset_sha256": "769b1e1c20c5160e04860b8a88ffad9d67bc7b8c5ff46434ead1be3391355252",
+        "split_digest": "802990b4e2da4229fa1b3d8db51ddb0387ea75669d7ab3311d3efd9d2ce574a7",
+        "train_samples": 3500,
+        "validation_samples": 750,
+        "test_samples": 750
+      }
+    }
+  ]
 }
