@@ -18,6 +18,10 @@ class YosysAdapter:
     def __init__(self, policy: dict, runner: YosysRunner | None = None) -> None:
         self.policy = policy
         self.runner = runner or YosysRunner()
+        # Reference synthesis results, keyed on the reference RTL's SHA-256. Per
+        # instance and in memory: the eight-chip run shares one process, which is
+        # where the saving lands.
+        self._reference_cache: dict[str, tuple[dict, str, bytes]] = {}
 
     @classmethod
     def from_project(cls, root: Path) -> "YosysAdapter":
@@ -55,9 +59,27 @@ class YosysAdapter:
         """
         candidate_result = self.analyse(candidate_rtl, top)
 
-        reference_stats, reference_log, reference_netlist = self.runner.synthesise(
-            reference_rtl, top
-        )
+        # The reference is the same file for every chip, so synthesising it on each
+        # scan repeats about half of the 21.4s hardware stage. Measured across the
+        # eight fixtures, only chip_02 supplies a distinct candidate RTL; the rest
+        # compare the reference against itself.
+        #
+        # Keyed on the reference file's SHA-256 rather than its path, so a changed
+        # file cannot hit a stale entry: a different digest is a different key. The
+        # cached value is the raw synthesise() output, so every digest and metric
+        # downstream is byte-identical to an uncached run.
+        #
+        # In memory, on the adapter instance. A disk cache would need invalidation
+        # logic, and correctness risk on the control that produces the 8-versus-27
+        # cell delta is not worth ten seconds.
+        reference_digest = sha256_file(reference_rtl)
+        cached = self._reference_cache.get(reference_digest)
+
+        if cached is None:
+            cached = self.runner.synthesise(reference_rtl, top)
+            self._reference_cache[reference_digest] = cached
+
+        reference_stats, reference_log, reference_netlist = cached
         reference_metrics = parse_metrics(reference_stats, top)
 
         delta = structural_delta_summary(
@@ -81,7 +103,7 @@ class YosysAdapter:
             "structural_baseline_enabled": bool(
                 self.policy.get("structural_baseline", {}).get("enabled", False)
             ),
-            "reference_rtl_digest": sha256_file(reference_rtl),
+            "reference_rtl_digest": reference_digest,
             "reference_netlist_digest": hashlib.sha256(reference_netlist).hexdigest(),
             "reference_log_digest": hashlib.sha256(reference_log.encode()).hexdigest(),
             "reference_top_module": top,
