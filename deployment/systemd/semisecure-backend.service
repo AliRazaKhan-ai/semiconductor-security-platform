@@ -1,0 +1,81 @@
+# Purpose: Supervise the SemiSecure backend so it restarts on failure and after reboot.
+# Directory: deployment/systemd
+# Dependencies: systemd, Docker (Fabric containers), the project virtualenv.
+#
+# RISK-08 / availability. The backend died three times during testing: under
+# three-worker load, after a VM suspend, and after a reboot. Nothing brought it back,
+# and every dependent panel and every scan failed until it was started by hand.
+#
+# This supervises the backend only. Fabric and Anvil stay with semi-up, which is
+# health-gated and reports each step; wrapping that in systemd would make failures
+# harder to read rather than easier. The unit waits for Docker so Fabric containers
+# have started, but does not manage them.
+#
+# Install:
+#   sudo cp deployment/systemd/semisecure-backend.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now semisecure-backend
+#
+# Operate:
+#   systemctl status semisecure-backend
+#   journalctl -u semisecure-backend -f
+#   sudo systemctl restart semisecure-backend
+
+[Unit]
+Description=SemiSecure semiconductor supply chain security platform
+Documentation=file:///home/ali-raza/semiconductor_security_platform/docs/RUNBOOK.md
+After=network-online.target docker.service
+Wants=network-online.target
+# Five failures in five minutes stops the unit rather than looping: a crash
+# on every start is a fault to investigate, not one to retry indefinitely.
+StartLimitBurst=5
+StartLimitIntervalSec=300
+
+[Service]
+Type=exec
+User=ali-raza
+Group=ali-raza
+WorkingDirectory=/home/ali-raza/semiconductor_security_platform
+
+# The application reads its secrets from the environment. EnvironmentFile parses
+# KEY=VALUE without executing the file, matching env_loader.sh, which deliberately
+# avoids sourcing .env because a backtick in a secrets file would be executed.
+EnvironmentFile=/home/ali-raza/semiconductor_security_platform/.env
+Environment=PYTHONUNBUFFERED=1
+
+# Foreground. nohup and a PID file would detach the process from supervision.
+# One worker: the rate limiter keeps its counters in process memory, so a second
+# worker would silently multiply the effective limit. See RISK-06.
+ExecStart=/home/ali-raza/semiconductor_security_platform/venv/bin/gunicorn \
+    --bind 127.0.0.1:5000 \
+    --workers 1 \
+    --worker-class geventwebsocket.gunicorn.workers.GeventWebSocketWorker \
+    --timeout 120 \
+    --graceful-timeout 30 \
+    --keep-alive 5 \
+    --access-logfile - \
+    --error-logfile - \
+    --capture-output \
+    wsgi:app
+
+Restart=on-failure
+RestartSec=10
+# Five failures in five minutes stops the unit rather than looping: a crash on every
+# start is a fault to investigate, not one to retry indefinitely.
+
+# The process needs its own data directory and nothing else on the filesystem.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/ali-raza/semiconductor_security_platform/data
+ReadWritePaths=/home/ali-raza/semiconductor_security_platform/runtime
+ReadWritePaths=/home/ali-raza/semiconductor_security_platform/evidence
+ReadWritePaths=/home/ali-raza/semiconductor_security_platform/backups
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=semisecure
+
+[Install]
+WantedBy=multi-user.target
