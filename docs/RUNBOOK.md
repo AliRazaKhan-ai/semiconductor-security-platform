@@ -65,6 +65,8 @@ evidence-based.
     curl -s localhost:5000/metrics            platform state, Prometheus format
     curl -s localhost:5000/alerts             firing alerts; 503 when any is firing
     pytest -q                                 245 tests
+    python scripts/ai/registry.py show        deployed models and their lineage
+    python scripts/ai/registry.py rollback    archived generations and how to restore
 
 A readiness status of degraded names the subsystems that failed to construct and
 returns 503. The process still runs and runtime callers fail closed.
