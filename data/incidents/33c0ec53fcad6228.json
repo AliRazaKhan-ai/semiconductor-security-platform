@@ -1,0 +1,41 @@
+{
+  "incident_id": "33c0ec53fcad6228",
+  "opened_at_utc": "2026-09-19T06:37:53+00:00",
+  "trigger": {
+    "scan_id": "26793527-6535-49ee-9e5c-e6bf12f3137b",
+    "chip_id": "CHIP-PROD-TROJAN-002",
+    "deployment_decision": "DENIED_AND_QUARANTINED",
+    "stopped_stage": "HARDWARE_SECURITY"
+  },
+  "linkage": {
+    "supplier": "SubcontractFab Asia-4"
+  },
+  "affected_assets": [
+    {
+      "scan_id": "c5e2bf59-e6ec-4997-944f-adfd36345215",
+      "chip_id": "CHIP-PROD-TROJAN-002",
+      "deployment_decision": "DENIED_AND_QUARANTINED",
+      "shared": "supplier"
+    },
+    {
+      "scan_id": "d8c9bfe1-700f-445e-84f7-41da4c720469",
+      "chip_id": "CHIP-PROD-TROJAN-002",
+      "deployment_decision": "DENIED_AND_QUARANTINED",
+      "shared": "supplier"
+    },
+    {
+      "scan_id": "66063f6a-2ce8-44eb-beab-dc90aa76912d",
+      "chip_id": "CHIP-PROD-TROJAN-002",
+      "deployment_decision": "DENIED_AND_QUARANTINED",
+      "shared": "supplier"
+    }
+  ],
+  "required_actions": [
+    "Review the 3 chip(s) sharing evidence with CHIP-PROD-TROJAN-002.",
+    "Revoke the ledger record once confirmed: peer chaincode invoke -C semiconductor-channel -n semiconductor-provenance -c '{\"function\":\"RevokeProvenance\",\"Args\":[\"26793527-6535-49ee-9e5c-e6bf12f3137b\",\"<reason-sha256>\"]}'",
+    "Notify the supplier and the receiving parties. No mail transport is configured; notification is a manual step recorded here.",
+    "File a regulatory report if the chip reached a controlled end use. No regulator endpoint is configured; reporting is a manual step.",
+    "Record the outcome by re-running this command after the actions complete."
+  ],
+  "note": "Revocation is not automated: a ledger revocation cannot be undone, and a false positive would permanently mark a record. The commands below are for an operator to run after review."
+}

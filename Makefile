@@ -38,7 +38,7 @@ clean:
 #   make semi-one     live, at slide 11, about two minutes
 #   make semi-down    after
 
-.PHONY: semi-reset semi-up semi-all semi-one semi-watch semi-status semi-down semi-pair semi-fast semi-help semi-chip001 semi-chip002 semi-chip003 semi-chip004 semi-chip005 semi-chip006 semi-chip007 semi-chip008
+.PHONY: semi-incidents semi-incident semi-reset semi-up semi-all semi-one semi-watch semi-status semi-down semi-pair semi-fast semi-help semi-chip001 semi-chip002 semi-chip003 semi-chip004 semi-chip005 semi-chip006 semi-chip007 semi-chip008
 
 semi-up:
 	./scripts/runtime/start_everything.sh
@@ -139,3 +139,10 @@ semi-backup:
 
 semi-restore-check:
 	./scripts/maintenance/backup_restore.sh verify
+
+semi-incidents:
+	python scripts/incident.py list
+
+semi-incident:
+	@test -n "$(SCAN)" || { echo "usage: make semi-incident SCAN=<scan_id>"; exit 2; }
+	python scripts/incident.py open $(SCAN)
