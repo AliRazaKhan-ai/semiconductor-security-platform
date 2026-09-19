@@ -62,6 +62,8 @@ evidence-based.
     python manage.py verify-event-store       hash chain across every partition
     make semi-restore-check                   restore the newest backup and verify it
     curl -s localhost:5000/health/ready       readiness, with degraded subsystems named
+    curl -s localhost:5000/metrics            platform state, Prometheus format
+    curl -s localhost:5000/alerts             firing alerts; 503 when any is firing
     pytest -q                                 245 tests
 
 A readiness status of degraded names the subsystems that failed to construct and
