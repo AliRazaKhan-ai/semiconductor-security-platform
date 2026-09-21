@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "source": "development-fixture-not-a-live-threat-feed",
+  "source_note": "Hand-authored for demonstration. A deployment would populate this from a subscribed feed, a CERT advisory stream, or a government notice list, on a stated refresh cadence.",
+  "retrieved_at_utc": "2026-09-19T00:00:00+00:00",
+  "refresh_cadence": "manual",
+  "indicators": [
+    {
+      "name": "DEMO DENIED SEMICONDUCTOR ENTITY",
+      "score": 1.0,
+      "category": "RESTRICTED_PARTY",
+      "reason": "Present on the Consolidated Screening List fixture with action DENY",
+      "first_reported_utc": "2026-09-19T00:00:00+00:00"
+    },
+    {
+      "name": "Grey Market Components Broker",
+      "score": 0.92,
+      "category": "COUNTERFEIT_DISTRIBUTION",
+      "reason": "Distributor associated with counterfeit part circulation",
+      "first_reported_utc": "2026-09-19T00:00:00+00:00"
+    },
+    {
+      "name": "Frontier Microelectronics Plant-7",
+      "score": 0.88,
+      "category": "JURISDICTION_RISK",
+      "reason": "Fabrication in a jurisdiction with elevated diversion risk",
+      "first_reported_utc": "2026-09-19T00:00:00+00:00"
+    },
+    {
+      "name": "Unknown Logistics Relay",
+      "score": 0.76,
+      "category": "CUSTODY_GAP",
+      "reason": "Intermediary with no verifiable chain-of-custody record",
+      "first_reported_utc": "2026-09-19T00:00:00+00:00"
+    },
+    {
+      "name": "Transit Relay Logistics",
+      "score": 0.7,
+      "category": "CUSTODY_GAP",
+      "reason": "Transhipment point associated with provenance substitution",
+      "first_reported_utc": "2026-09-19T00:00:00+00:00"
+    },
+    {
+      "name": "SubcontractFab Asia-4",
+      "score": 0.68,
+      "category": "UNVERIFIED_SUBCONTRACT",
+      "reason": "Subcontracted fabrication without an audited security programme",
+      "first_reported_utc": "2026-09-19T00:00:00+00:00"
+    }
+  ]
+}
