@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+from app.hardware.common import CommandRunner, HardwareIntegrationError, require_file
 from pathlib import Path
 
 from app.hardware.common import load_json, sha256_file
@@ -57,6 +58,21 @@ class YosysAdapter:
         absolute cell delta normalised by the reference cell count, clamped to [0, 1].
         A ratio of 0.0 means the candidate is structurally identical to the reference.
         """
+        # The reference is the baseline every candidate is judged against. A modified
+        # reference would become the new baseline, and a Trojan inserted into both
+        # would difference to zero. Its digest must match one pinned in reviewed
+        # configuration before anything is synthesised; the chip manifest cannot
+        # supply it, because a submitter controls that.
+        trusted = self.policy.get("trusted_reference_digests")
+        if trusted is not None:
+            actual = sha256_file(reference_rtl)
+            if actual not in trusted:
+                raise HardwareIntegrationError(
+                    "yosys",
+                    "Reference RTL does not match a trusted digest",
+                    {"reference": str(reference_rtl), "sha256": actual},
+                )
+
         candidate_result = self.analyse(candidate_rtl, top)
 
         # The reference is the same file for every chip, so synthesising it on each

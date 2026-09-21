@@ -31,5 +31,9 @@
       "$reduce_and",
       "$reduce_or"
     ]
-  }
+  },
+  "trusted_reference_digests": {
+    "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000": "hardware_lab/rtl/reference/semisecure_demo_core.sv"
+  },
+  "trusted_reference_note": "Reference-differential synthesis compares every candidate against this design. A modified reference would become the new baseline, so its SHA-256 is pinned here, in reviewed configuration, rather than in the submitter-controlled chip manifest. Changing the reference requires changing this entry in the same commit."
 }
