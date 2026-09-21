@@ -1,0 +1,28 @@
+Hardware stage component split - measured 2026-09-21 on chip_01_good
+
+Method: every public method on the six adapters of the live
+HardwareSecurityPipeline was wrapped with a timer, counting only the outermost
+call per component, then one freshly minted chip was run through
+IntegratedPipelineService.
+
+component         seconds   share
+verilator           24.26   98.6%
+yosys                0.16    0.7%
+opentitan            0.10    0.4%
+chipwhisperer        0.07    0.3%
+sbom                 0.01    0.0%
+twins                0.00    0.0%
+accounted           24.60
+stage total         25.36
+
+Correction. Earlier project material attributed the hardware stage to Yosys
+synthesising two netlists, and stated that Yosys alone took about 21 seconds.
+That was inferred from the stage total and never measured. Yosys takes 160ms.
+The stage is Verilator building a C++ model with make and gcc.
+
+Commit ab522b0 states the Yosys adapter is constructed per scan. It is not: it
+is built once in app/factory.py:157, and the reference cache hits (0.19s cold,
+0.09s warm). The cache is correct but saves about 0.1s.
+
+The pipeline records no sub-stage timing. This split exists only because it was
+instrumented for this measurement.
