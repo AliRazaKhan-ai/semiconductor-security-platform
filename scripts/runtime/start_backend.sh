@@ -22,6 +22,14 @@ then
     exit 0
 fi
 
+# Refuse to start a second backend while systemd owns one. Both bind
+# 127.0.0.1:5000; use scripts/runtime/backend_ctl.sh, which picks the right manager.
+if systemctl is-active --quiet semisecure-backend 2>/dev/null; then
+    echo "semisecure-backend is running under systemd; not starting a second backend."
+    echo "Use: sudo systemctl restart semisecure-backend"
+    exit 0
+fi
+
 if [[ -f "$PID_FILE" ]]; then
     OLD_PID="$(cat "$PID_FILE")"
 

@@ -125,11 +125,11 @@ semi-reset:
 	@tar czf "backups/stores_$$(date +%Y%m%d-%H%M%S).tar.gz" \
 		data/integrated_runs data/event_store data/indexes \
 		data/quarantine data/compliance 2>/dev/null || true
-	@-./scripts/runtime/stop_backend.sh >/dev/null 2>&1
+	@-./scripts/runtime/backend_ctl.sh stop >/dev/null 2>&1
 	@rm -rf data/integrated_runs/* data/event_store/* data/indexes/* \
 		data/quarantine/* runtime/semi-all.pid runtime/semi-all.log
 	@bash scripts/initialize_event_store.sh >/dev/null 2>&1 || true
-	@./scripts/runtime/start_backend.sh
+	@./scripts/runtime/backend_ctl.sh start
 	@echo
 	@echo "Dashboard cleared. Archive in backups/."
 	@echo "Next: make semi-chip001   (or semi-fast for all eight)"

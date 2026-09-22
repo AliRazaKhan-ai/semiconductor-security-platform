@@ -173,7 +173,7 @@ fi
 
 echo "[5/7] Starting backend and dashboard"
 
-./scripts/runtime/start_backend.sh
+./scripts/runtime/backend_ctl.sh restart
 
 echo "[6/7] Checking services"
 

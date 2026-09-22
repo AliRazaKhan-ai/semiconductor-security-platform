@@ -4,7 +4,7 @@ set -Eeuo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$PROJECT_ROOT"
 
-./scripts/runtime/stop_backend.sh || true
+./scripts/runtime/backend_ctl.sh stop || true
 
 ./blockchain/ethereum/deployment/stop_anvil.sh || true
 

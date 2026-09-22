@@ -42,6 +42,12 @@ WorkingDirectory=/home/ali-raza/semiconductor_security_platform
 # avoids sourcing .env because a backtick in a secrets file would be executed.
 EnvironmentFile=/home/ali-raza/semiconductor_security_platform/.env
 Environment=PYTHONUNBUFFERED=1
+# The peer CLI locates core.yaml through FABRIC_CFG_PATH and its binaries through
+# PATH. start_everything.sh exports both in an interactive shell; systemd starts
+# with neither, so the backend's Fabric status check failed with 'Config File
+# "core" Not Found'. systemd does not expand $HOME, so the paths are absolute.
+Environment=FABRIC_CFG_PATH=/home/ali-raza/hyperledger/fabric-samples/config
+Environment=PATH=/home/ali-raza/hyperledger/fabric-samples/bin:/home/ali-raza/.foundry/bin:/home/ali-raza/semiconductor_security_platform/venv/bin:/usr/local/bin:/usr/bin:/bin
 
 # Foreground. nohup and a PID file would detach the process from supervision.
 # One worker: the rate limiter keeps its counters in process memory, so a second
