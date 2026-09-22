@@ -13,8 +13,11 @@ import pytest
 from flask.testing import FlaskClient
 
 
-def assert_json_response(response, expected_status: int = 200) -> dict[str, Any]:
-    assert response.status_code == expected_status
+def assert_json_response(
+    response, expected_status: int | tuple[int, ...] = 200
+) -> dict[str, Any]:
+    allowed = expected_status if isinstance(expected_status, tuple) else (expected_status,)
+    assert response.status_code in allowed
     assert response.content_type.startswith("application/json")
 
     payload = response.get_json()
@@ -38,7 +41,10 @@ def test_operational_get_endpoints_return_json(
     path: str,
 ) -> None:
     response = client.get(path)
-    payload = assert_json_response(response)
+    # /health/ready answers 503 when a subsystem failed to construct, naming it:
+    # degraded rather than unreachable (RISK-16). Every other path must be 200.
+    expected = (200, 503) if path == "/health/ready" else 200
+    payload = assert_json_response(response, expected)
 
     assert payload
 
@@ -50,7 +56,7 @@ def test_liveness_endpoint_reports_alive(client: FlaskClient) -> None:
 
 
 def test_readiness_endpoint_contains_checks(client: FlaskClient) -> None:
-    payload = assert_json_response(client.get("/health/ready"))
+    payload = assert_json_response(client.get("/health/ready"), (200, 503))
 
     assert payload["status"] in {"ready", "degraded"}
     assert isinstance(payload["checks"], list)

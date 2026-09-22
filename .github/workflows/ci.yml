@@ -33,6 +33,9 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
+          # CPU-only PyTorch first: requirements.txt says torch>=2.4,<3, which on a runner
+          # resolves to the CUDA build and about 2.5 GB of NVIDIA libraries it cannot use.
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements.txt
           pip install ruff mypy
 
@@ -54,6 +57,11 @@ jobs:
           SEMISURE_ENV: test
           SEMISURE_PUF_MASTER_SECRET: ci-only-master-secret-not-a-real-key-000000
           SEMISURE_OPENTITAN_VERIFICATION_KEY: ci-only-verification-key-not-real-00000
+          # Anvil's default account #0 key, printed by every Foundry install and used by
+          # the local development chain. Public, holds nothing, exists on no real network.
+          # Without it the blockchain service refuses to construct, readiness reports
+          # degraded, and seven tests fail.
+          SEMISURE_ETHEREUM_PRIVATE_KEY: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
         run: |
           python -m pytest -q \
             --deselect tests/integration/test_complete_module_integration.py::test_good_chip_complete_integration

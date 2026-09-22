@@ -4,6 +4,8 @@ from __future__ import annotations
 from flask import Blueprint, current_app, g, request
 
 from app.api.response import success
+from werkzeug.exceptions import ServiceUnavailable
+
 from app.exceptions import NotFoundError, ValidationError
 
 bp = Blueprint("blockchain_status", __name__)
@@ -12,13 +14,35 @@ bp = Blueprint("blockchain_status", __name__)
 def _service():
     service = current_app.extensions.get("semisecure.blockchain_service")
     if service is None:
-        raise RuntimeError("blockchain service is unavailable")
+        # 503, not 500: the service is absent, the server is not broken.
+        raise ServiceUnavailable("blockchain service is unavailable")
     return service
 
 
 @bp.get("/blockchain/status")
 def blockchain_status():
-    return success(_service().status())
+    # This route raised when the service had not constructed, returning 500 whenever
+    # no signing key was configured or Fabric was unreachable at startup. Its own test
+    # says the status contract must hold in all environments, so an absent service is
+    # reported, with the reason the factory recorded, rather than raised.
+    service = current_app.extensions.get("semisecure.blockchain_service")
+    if service is None:
+        reason = (current_app.extensions.get("semisecure.degraded") or {}).get(
+            "blockchain", "blockchain service was not constructed"
+        )
+        return success(
+            {
+                "available": False,
+                "reason": reason,
+                "hyperledger_fabric": {"enabled": False, "connection_state": "unavailable"},
+                "ethereum_anchor": {"enabled": False, "connection_state": "unavailable"},
+                "storage_policy": {
+                    "ethereum": "bytes32 SHA-256 Merkle roots only",
+                    "fabric": "complete provenance, evidence hashes, decisions, and private collections",
+                },
+            }
+        )
+    return success(service.status())
 
 
 @bp.get("/blockchain/provenance/<scan_id>")

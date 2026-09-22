@@ -17,6 +17,13 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_blockchain_service_is_registered() -> None:
+    import os
+
+    import pytest
+
+    if not os.environ.get("SEMISURE_ETHEREUM_PRIVATE_KEY"):
+        pytest.skip("the blockchain service needs an Ethereum signing key; none is configured")
+
     app = create_app({"TESTING": True})
 
     service = app.extensions.get("semisecure.blockchain_service")
