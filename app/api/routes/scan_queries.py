@@ -142,6 +142,74 @@ def _strip_puf_material(node: Any) -> Any:
     return node
 
 
+def _slim(node, keys):
+    """Keep only the named keys of a mapping; return None for anything else."""
+    if not isinstance(node, dict):
+        return None
+    return {key: node[key] for key in keys if key in node}
+
+
+def _summarise_scan(scan: dict[str, Any]) -> dict[str, Any]:
+    """Compact list entry for every scan except the newest.
+
+    GET /api/v1/scans/latest returned 11,056,247 bytes in 45.9 seconds for twenty
+    fully enriched scans, against a 10-second client timeout and a 15-second poll.
+    Each poll began a serialisation the next poll arrived before, and one gevent
+    worker cannot interleave CPU-bound work, so requests queued behind each other
+    until even /health/ready stopped answering. Observed: the worker at 72.6% CPU for
+    seven hours.
+
+    Every detail panel renders from the newest scan only. The rest feed the table,
+    the counters and the charts, which read the fields kept here. All top-level
+    scalars are kept, so identifiers, hashes, timestamps and decisions survive
+    without being named; heavy nested structures are dropped, except slim copies of
+    the nested fields statusOf, extractRisk, extractSupplierRisk and the Fabric
+    counter read.
+    """
+    summary = {
+        key: value
+        for key, value in scan.items()
+        if not isinstance(value, (dict, list))
+    }
+
+    compliance = scan.get("compliance") if isinstance(scan.get("compliance"), dict) else {}
+    decision = _slim(compliance.get("decision"), ("decision", "deployment_recommendation"))
+    compliance_chain = _slim(compliance.get("blockchain"), ("fabric",))
+    if compliance_chain and isinstance(compliance_chain.get("fabric"), dict):
+        compliance_chain["fabric"] = _slim(compliance_chain["fabric"], ("committed",))
+    if decision or compliance_chain:
+        summary["compliance"] = {
+            key: value for key, value in (("decision", decision), ("blockchain", compliance_chain))
+            if value
+        }
+
+    blockchain = scan.get("blockchain") if isinstance(scan.get("blockchain"), dict) else {}
+    fabric = _slim(blockchain.get("fabric"), ("committed", "transaction_id"))
+    if fabric:
+        summary["blockchain"] = {"fabric": fabric}
+
+    payload = scan.get("latest_payload") if isinstance(scan.get("latest_payload"), dict) else {}
+    slim_payload = _slim(
+        payload,
+        ("status", "deployment_decision", "risk_score", "overall_risk", "score",
+         "supplier_risk"),
+    ) or {}
+    for nested, keys in (
+        ("risk", ("score", "overall", "supplier")),
+        ("decision", ("risk_score",)),
+        ("supplier", ("risk_score",)),
+        ("supply_chain", ("supplier_risk",)),
+    ):
+        slimmed = _slim(payload.get(nested), keys)
+        if slimmed:
+            slim_payload[nested] = slimmed
+    if slim_payload:
+        summary["latest_payload"] = slim_payload
+
+    summary["summary_only"] = True
+    return summary
+
+
 def _metadata_from_run(
     run: dict[str, Any],
 ) -> dict[str, Any]:
@@ -451,18 +519,25 @@ def latest_scans():
 
     raw_items = event_store().latest(limit)
 
-    items = [
-        _enrich_snapshot(dict(item))
+    raw = [
+        _enrich_snapshot_raw(dict(item))
         for item in raw_items
         if isinstance(item, dict)
     ]
+
+    # Newest scan in full, with PUF material stripped; the rest as summaries.
+    items = (
+        [_strip_puf_material(raw[0])] + [_summarise_scan(scan) for scan in raw[1:]]
+        if raw
+        else []
+    )
 
     return success(
         items,
         meta={
             "count": len(items),
             "limit": limit,
-            "enriched": True,
+            "enriched": "first",
         },
     )
 
