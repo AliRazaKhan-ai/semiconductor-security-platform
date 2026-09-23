@@ -443,13 +443,25 @@ class IntegratedPipelineService:
         """Load a run by run ID or scan ID from either run store."""
         identifier = str(identifier).strip()
 
-        for path in self._candidate_run_files():
-            run = self._load_run_file(path)
+        # get_run opened and parsed every run file until one matched, so each lookup
+        # cost a pass over the whole store, and the list endpoint did that twenty
+        # times per poll. Measured at 63 runs: 4.36s for twenty lookups in a quiet
+        # process, 27 to 42 seconds through the server, against a 10-second client
+        # timeout. An index of identifier to path means one file read per lookup.
+        #
+        # A miss rebuilds the index once and retries, so a run created after the
+        # index was built is still found. First match wins, as it did in the scan.
+        for attempt in (0, 1):
+            index = getattr(self, "_run_index", None)
+            if index is None or attempt == 1:
+                index = self._rebuild_run_index()
 
-            if not run:
+            located = index.get(identifier)
+            if located is None:
                 continue
 
-            if (
+            run = self._load_run_file(located)
+            if run and (
                 str(run.get("run_id") or "") == identifier
                 or str(run.get("scan_id") or "") == identifier
             ):
@@ -458,6 +470,22 @@ class IntegratedPipelineService:
         raise FileNotFoundError(
             f"Integrated run not found: {identifier}"
         )
+
+    def _rebuild_run_index(self) -> dict[str, Any]:
+        """Map every run_id and scan_id to its file, first occurrence winning."""
+        index: dict[str, Any] = {}
+
+        for candidate in self._candidate_run_files():
+            run = self._load_run_file(candidate)
+            if not run:
+                continue
+            for key in ("run_id", "scan_id"):
+                value = str(run.get(key) or "")
+                if value:
+                    index.setdefault(value, candidate)
+
+        self._run_index = index
+        return index
 
     def list_runs(
         self,
