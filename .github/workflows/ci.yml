@@ -37,7 +37,9 @@ jobs:
           # resolves to the CUDA build and about 2.5 GB of NVIDIA libraries it cannot use.
           pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements.txt
-          pip install ruff mypy
+          # pytest is not in requirements.txt, which lists runtime dependencies only.
+          # Without it the Test step failed immediately with 'No module named pytest'.
+          pip install ruff mypy pytest
 
       - name: Lint
         run: ruff check app tests terminal
