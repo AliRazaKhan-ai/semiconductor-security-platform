@@ -39,7 +39,7 @@ jobs:
           pip install -r requirements.txt
           # pytest is not in requirements.txt, which lists runtime dependencies only.
           # Without it the Test step failed immediately with 'No module named pytest'.
-          pip install ruff mypy pytest
+          pip install -r requirements-dev.txt
 
       - name: Lint
         run: ruff check app tests terminal

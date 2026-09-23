@@ -1,6 +1,11 @@
--r requirements.txt
-pytest>=8.4,<10
-pytest-cov>=6.2,<8
-ruff>=0.12,<1
-mypy>=1.16,<2
-pre-commit>=4,<5
+# Test and quality tooling. requirements.txt lists runtime dependencies only, so a
+# fresh environment could not run the suite: CI failed first with "No module named
+# pytest", then with "No module named bs4". Both were installed in the developer's
+# virtualenv and recorded nowhere.
+#
+#   pip install -r requirements.txt -r requirements-dev.txt
+
+pytest>=8,<10
+beautifulsoup4>=4.12,<5
+ruff>=0.6
+mypy>=1.11
