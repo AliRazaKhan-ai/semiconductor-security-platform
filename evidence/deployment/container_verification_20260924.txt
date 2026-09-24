@@ -1,0 +1,65 @@
+=== container verification, 2026-09-24T13:16:22+04:00 ===
+image: semisecure:4.0.0  5.66GB
+
+Yosys 0.52 (git sha1 fee39a3284c90249e1d9684cf6944ffbbcbb8f90)
+Verilator 5.032 2025-01-01 rev (Debian 5.032-1+b2)
+
+reference synthesis inside the container:
+   Number of wires:                 15
+   Number of wire bits:             55
+   Number of cells:                  8
+
+readiness:
+{
+    "checks": [
+        {
+            "details": {
+                "path": "/app/data/event_store"
+            },
+            "healthy": true,
+            "name": "event_store",
+            "status": "available"
+        },
+        {
+            "details": {
+                "path": "/app/data/indexes"
+            },
+            "healthy": true,
+            "name": "indexes",
+            "status": "available"
+        },
+        {
+            "details": {
+                "path": "/app/data/snapshots"
+            },
+            "healthy": true,
+            "name": "snapshots",
+            "status": "available"
+        },
+        {
+            "details": {
+                "path": "/app/data/audit"
+            },
+            "healthy": true,
+            "name": "audit",
+            "status": "available"
+        },
+        {
+            "details": {
+                "path": "/app/runtime/locks"
+            },
+            "healthy": true,
+            "name": "locks",
+            "status": "available"
+        },
+        {
+            "details": {},
+            "healthy": true,
+            "name": "event_store_extension",
+            "status": "initialised"
+        }
+    ],
+    "degraded_subsystems": {},
+    "status": "ready",
+    "timestamp_utc": "2026-09-24T09:16:31.917+00:00"
+}
