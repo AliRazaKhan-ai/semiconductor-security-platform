@@ -105,24 +105,45 @@ Open the dashboard:
 http://localhost:5000/dashboard
 ```
 
-Run a terminal scan using the project's supported scan command or deployment wrapper:
+Run a terminal scan:
 
 ```bash
-scripts/deployment/run_scan.sh "$PWD" data/chips/chip_01_good.json
+make semi-chip001      # good chip, all eight stages, about 130 seconds
+make semi-chip002      # Trojan, stops at hardware security, about 35 seconds
+make semi-fast         # all eight chips, three workers, about 5.5 minutes
 ```
+
+Each target mints hardware evidence immediately before the scan. A PUF challenge
+is single-use with a 120-second TTL and OpenTitan attestation expires after 300
+seconds, so evidence minted earlier will have expired: anti-replay working, not a
+fault.
 
 ## Expected reference scenarios
 
-| Scenario | Expected decision |
-|---|---|
-| Known-good chip | APPROVED |
-| Hardware Trojan | QUARANTINED |
-| Weak PUF | QUARANTINED |
-| Supply-chain tampering | QUARANTINED |
-| High-risk supplier | MANUAL_REVIEW |
-| Counterfeit chip | REJECTED |
-| Sanctioned manufacturer | REJECTED |
-| Fake provenance | REJECTED |
+| Fixture | Decision | Stops at |
+|---|---|---|
+| chip_01_good | DEPLOY | completes all eight stages |
+| chip_02_trojan | DENIED_AND_QUARANTINED | HARDWARE_SECURITY |
+| chip_03_puf_unstable | HOLD_FOR_RETEST_OR_REJECT | PUF_AUTHENTICATION |
+| chip_04_supplychain_tampered | DO_NOT_DEPLOY_PENDING_REVIEW | DEPLOYMENT_DECISION |
+| chip_05_highrisk_supplier | DO_NOT_DEPLOY_PENDING_REVIEW | DEPLOYMENT_DECISION |
+| chip_06_counterfeit | DENIED_AND_QUARANTINED | - |
+| chip_07_sanctioned_manufacturer | DO_NOT_DEPLOY_PENDING_REVIEW | DEPLOYMENT_DECISION |
+| chip_08_fake_provenance | DO_NOT_DEPLOY_PENDING_REVIEW | DEPLOYMENT_DECISION |
+
+Measured across all eight fixtures in one run: 503.1s sequentially, 343.4s at
+three workers, with identical decisions either way.
+
+No fixture produces REJECTED_PERMANENTLY. That verdict belonged to the earlier
+pipeline, which assigned it by matching the scenario label in the fixture, and it
+went when detection became evidence-based. A counterfeit chip is now quarantined
+on measured evidence, and a sanctioned manufacturer goes to human review because
+export-control decisions require named human accountability: the compliance
+configuration states that it is decision support, not a licensing determination.
+
+The Trojan is caught by ChipWhisperer side-channel analysis, at an anomaly score
+of 0.4508 against a 0.35 threshold, before Yosys runs. The underlying signal is
+structural: the candidate netlist has 27 cells against the 8-cell reference.
 
 ## Health and verification
 
