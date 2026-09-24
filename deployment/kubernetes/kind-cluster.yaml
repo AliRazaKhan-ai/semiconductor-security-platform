@@ -1,0 +1,26 @@
+# Purpose: Local kind cluster for the SemiSecure platform.
+# Directory: deployment/kubernetes
+#
+# The platform shells out to the Fabric peer CLI, so a pod needs the binaries and
+# the MSP material. They are mounted from the host into the node, then into the
+# pod. That works on a single node; a managed cluster would need them in a
+# ConfigMap and Secret, or a Fabric gateway client instead of the CLI.
+#
+#   kind create cluster --config deployment/kubernetes/kind-cluster.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: semisecure
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      - containerPort: 30500
+        hostPort: 5002
+        listenAddress: "127.0.0.1"
+    extraMounts:
+      - hostPath: /home/ali-raza/hyperledger/fabric-samples
+        containerPath: /opt/fabric-samples
+        readOnly: true
+      - hostPath: /home/ali-raza/semiconductor_security_platform/data
+        containerPath: /opt/semisecure/data
+      - hostPath: /home/ali-raza/semiconductor_security_platform/runtime
+        containerPath: /opt/semisecure/runtime

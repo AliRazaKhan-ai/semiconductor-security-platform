@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: semisecure
+  namespace: semisecure
+spec:
+  # One replica. The rate limiter keeps its counters in process memory and the
+  # event store is a file-locked hash chain on disk; neither is safe across
+  # replicas. Horizontal scaling needs shared state first. See RISK-06.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: semisecure
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: semisecure
+    spec:
+      # uid 1000: the image creates /app/runtime as uid 10001, but the host
+      # directories mounted over it belong to uid 1000, as with compose.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: semisecure
+          image: semisecure:4.0.0
+          imagePullPolicy: Never          # loaded with: kind load docker-image
+          ports:
+            - containerPort: 5000
+          env:
+            - name: SEMISURE_ENV
+              value: "development"
+            - name: FABRIC_CFG_PATH
+              value: "/opt/fabric-samples/config"
+            - name: PATH
+              value: "/opt/fabric-samples/bin:/usr/local/bin:/usr/bin:/bin"
+          envFrom:
+            - secretRef:
+                name: semisecure-secrets
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              # TensorFlow and PyTorch load into one process; a full scan peaked
+              # near 2.6 GB resident during testing.
+              memory: "4Gi"
+              cpu: "2"
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 5000
+            initialDelaySeconds: 45
+            periodSeconds: 15
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 5000
+            initialDelaySeconds: 90
+            periodSeconds: 30
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: runtime
+              mountPath: /app/runtime
+            - name: fabric
+              mountPath: /opt/fabric-samples
+              readOnly: true
+      volumes:
+        - name: data
+          hostPath:
+            path: /opt/semisecure/data
+            type: Directory
+        - name: runtime
+          hostPath:
+            path: /opt/semisecure/runtime
+            type: Directory
+        - name: fabric
+          hostPath:
+            path: /opt/fabric-samples
+            type: Directory

@@ -1,0 +1,77 @@
+=== kubernetes deployment, 2026-09-24T13:44:25+04:00 ===
+NAME                          READY   STATUS    RESTARTS   AGE     IP           NODE                       NOMINATED NODE   READINESS GATES
+semisecure-79fd9f8f46-g6d56   1/1     Running   0          3m53s   10.244.0.5   semisecure-control-plane   <none>           <none>
+
+NAME         TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+semisecure   NodePort   10.96.194.164   <none>        5000:30500/TCP   4m11s
+
+readiness through NodePort 5002:
+{
+    "checks": [
+        {
+            "details": {
+                "path": "/app/data/event_store"
+            },
+            "healthy": true,
+            "name": "event_store",
+            "status": "available"
+        },
+        {
+            "details": {
+                "path": "/app/data/indexes"
+            },
+            "healthy": true,
+            "name": "indexes",
+            "status": "available"
+        },
+        {
+            "details": {
+                "path": "/app/data/snapshots"
+            },
+            "healthy": true,
+            "name": "snapshots",
+            "status": "available"
+        },
+        {
+            "details": {
+                "path": "/app/data/audit"
+            },
+            "healthy": true,
+            "name": "audit",
+            "status": "available"
+        },
+        {
+            "details": {
+                "path": "/app/runtime/locks"
+            },
+            "healthy": true,
+            "name": "locks",
+            "status": "available"
+        },
+        {
+            "details": {},
+            "healthy": true,
+            "name": "event_store_extension",
+            "status": "initialised"
+        }
+    ],
+    "degraded_subsystems": {},
+    "status": "ready",
+    "timestamp_utc": "2026-09-24T09:44:25.659+00:00"
+}
+
+metrics:
+# HELP semisecure_build_info Platform version and environment.
+# TYPE semisecure_build_info gauge
+semisecure_build_info{environment="unknown",version="4.0.0"} 1
+
+# HELP semisecure_subsystem_up Subsystem constructed at startup.
+# TYPE semisecure_subsystem_up gauge
+semisecure_subsystem_up{name="blockchain"} 1
+semisecure_subsystem_up{name="ai_pipeline"} 1
+semisecure_subsystem_up{name="hardware_pipeline"} 1
+semisecure_subsystem_up{name="compliance_service"} 1
+
+# HELP semisecure_scans_total Scans recorded in the event store.
+# TYPE semisecure_scans_total gauge
+semisecure_scans_total 67
