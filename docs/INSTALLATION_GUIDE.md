@@ -69,13 +69,18 @@ TensorFlow is available only for supported Python versions as defined in `requir
 
 ## 5. Environment variables
 
-Use the generated deployment helper when installed:
+Copy the template and fill in the three required secrets:
 
 ```bash
-scripts/deployment/generate_env.sh
+cp .env.example .env
+openssl rand -hex 32     # SEMISURE_PUF_MASTER_SECRET
+openssl rand -hex 32     # SEMISURE_OPENTITAN_VERIFICATION_KEY
 ```
 
-This creates `.env.production`. Keep it outside Git.
+`.env` is git-ignored and must stay that way. The PUF master secret cannot be
+recovered: enrolments derive from it, so keep it with your backups.
+`SEMISURE_ETHEREUM_PRIVATE_KEY` is pre-filled with Anvil's default development
+account, which is public and holds nothing on any real network.
 
 Typical variables:
 
@@ -139,10 +144,11 @@ Using the existing runtime script:
 ./scripts/runtime/start_backend.sh
 ```
 
-Or foreground production process:
+Or start the whole stack, including Fabric, Anvil and the contract:
 
 ```bash
-scripts/deployment/native_run.sh
+make semi-up
+make semi-status
 ```
 
 Verify:
@@ -161,7 +167,9 @@ http://localhost:5000/dashboard
 ## 9. Install systemd service
 
 ```bash
-scripts/deployment/install_systemd.sh
+sudo cp deployment/systemd/semisecure-backend.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now semisecure-backend
 ```
 
 Operations:
@@ -186,32 +194,33 @@ docker run --rm hello-world
 Build the application:
 
 ```bash
-scripts/deployment/docker_build.sh
+docker build -t semisecure:4.0.0 .
 ```
 
 Run with Compose:
 
 ```bash
-scripts/deployment/docker_up.sh
+docker compose up -d
 ```
 
 Check:
 
 ```bash
 docker compose ps
-scripts/deployment/health_check.sh
+make semi-status
+curl -fsS http://localhost:5001/health/ready | python -m json.tool
 ```
 
 Logs:
 
 ```bash
-scripts/deployment/docker_logs.sh
+docker compose logs -f semisecure
 ```
 
 Stop:
 
 ```bash
-scripts/deployment/docker_down.sh
+docker compose down
 ```
 
 When Ethereum runs on the host and the application runs in Docker:
@@ -248,8 +257,8 @@ python -m pytest tests/ai -q
 ## 13. Run reference scans
 
 ```bash
-scripts/deployment/run_scan.sh "$PWD" data/chips/chip_01_good.json
-scripts/deployment/run_scan.sh "$PWD" data/chips/chip_06_counterfeit.json
+make semi-chip001      # good chip, all eight stages, deploys
+make semi-chip006      # counterfeit, denied and quarantined
 ```
 
 Confirm results through the API:
