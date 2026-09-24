@@ -40,3 +40,17 @@ project_inventory.txt.gz
 tracked_zero_byte_files.txt
 zero_byte_audit.txt
 zero_byte_audit.txt.gz
+
+# Secret material: 0700 on disk, excluded from version control for the same
+# reason, and must never enter an image layer.
+data/puf
+data/hardware
+data/sbom
+data/incidents
+data/integrated_runs
+data/training
+evidence
+archive
+docs
+tests
+*.md

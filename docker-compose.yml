@@ -1,0 +1,49 @@
+# Purpose: Run the platform container against the existing Fabric and Anvil.
+#
+# Fabric already runs as five containers on the fabric_test bridge, and Anvil on
+# the host. This joins that network rather than duplicating it.
+#
+# Two host mounts are required. app/blockchain/fabric/client.py shells out to the
+# peer CLI, so the binaries and the MSP material must be reachable; both are
+# mounted read-only. .env supplies the secrets and is never copied into the image.
+#
+#   docker compose up -d
+#   docker compose logs -f semisecure
+
+services:
+  semisecure:
+    build: .
+    image: semisecure:4.0.0
+    container_name: semisecure
+    # The image creates /app/runtime as uid 10001, but the bind mounts below
+    # replace data, runtime and evidence with host directories owned by the
+    # developer. Running as that uid lets the container write them without
+    # loosening permissions on the host, and without running as root.
+    user: "${UID:-1000}:${GID:-1000}"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5001:5000"
+    env_file:
+      - .env
+    environment:
+      SEMISURE_ENV: development
+      FABRIC_CFG_PATH: /opt/fabric/config
+      PATH: /opt/fabric/bin:/usr/local/bin:/usr/bin:/bin
+      # By hostname, not localhost: inside a container localhost is the container.
+      SEMISURE_FABRIC_PEER_ADDRESS: peer0.org1.example.com:7051
+      SEMISURE_ETHEREUM_RPC_URL: http://host.docker.internal:8545
+    volumes:
+      - ./data:/app/data
+      - ./runtime:/app/runtime
+      - ./evidence:/app/evidence
+      - ${HOME}/hyperledger/fabric-samples/bin:/opt/fabric/bin:ro
+      - ${HOME}/hyperledger/fabric-samples/config:/opt/fabric/config:ro
+      - ${HOME}/hyperledger/fabric-samples/test-network/organizations:/opt/fabric/organizations:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - fabric_test
+
+networks:
+  fabric_test:
+    external: true
