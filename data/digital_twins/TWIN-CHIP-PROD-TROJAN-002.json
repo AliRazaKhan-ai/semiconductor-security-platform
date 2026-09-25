@@ -1,18 +1,18 @@
 {
   "chip_id": "CHIP-PROD-TROJAN-002",
-  "created_at_utc": "2026-09-19T06:48:25.278+00:00",
+  "created_at_utc": "2026-09-25T09:56:23.951+00:00",
   "custody_hashes": [],
   "firmware_digest": "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722",
   "lifecycle_state": "PROD",
   "lot_id": "LOT-CN-2026-0716-T",
   "manufacturer": "SubcontractFab Asia-4",
   "netlist_digest": "115095e43e3f38886e2c50dd25cdd819a183b2ccc2b55da7f480732ac555041d",
-  "puf_identity_hash": "77cafee4e559f265a43a44c271e02093d39df8efb5037274a244126c5a58d825",
+  "puf_identity_hash": "accb75f8084eb4f2169c6f545d6ae6167f19941a70c62bb00b672d613c276045",
   "rtl_digest": "805ca4fed3362dec5cd8d064121d2fcc0a0e6dbb45cef32db29efa6b85601998",
   "sbom_digest": "295894b91c0b149da8f12bbe50d9159eb54df2301d3653792cb167bc55480649",
   "schema_version": "1.0",
   "serial_number": "SN-TROJAN-000002",
   "supplier_id": "SUP-CN-004",
   "twin_id": "TWIN-CHIP-PROD-TROJAN-002",
-  "updated_at_utc": "2026-09-19T06:48:25.278+00:00"
+  "updated_at_utc": "2026-09-25T09:56:23.951+00:00"
 }

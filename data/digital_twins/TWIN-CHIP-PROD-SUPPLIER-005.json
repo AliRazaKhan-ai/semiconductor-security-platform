@@ -1,18 +1,18 @@
 {
   "chip_id": "CHIP-PROD-SUPPLIER-005",
-  "created_at_utc": "2026-09-18T07:32:17.181+00:00",
+  "created_at_utc": "2026-09-25T09:58:13.458+00:00",
   "custody_hashes": [],
   "firmware_digest": "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722",
   "lifecycle_state": "PROD",
   "lot_id": "LOT-RU-2026-0716-R",
   "manufacturer": "Frontier Microelectronics Plant-7",
   "netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
-  "puf_identity_hash": "b3031b8e0117ec7429684164146953fc4f9cc60eea781e402dd217034d1a2443",
+  "puf_identity_hash": "98009ca9ea118322b3bb69635894d17ae410279a54c31c554ff2868781678b87",
   "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
   "sbom_digest": "c23503367191520419cf62a8d8f21aca9428cc8a7c3271a16a63299aaf8698a6",
   "schema_version": "1.0",
   "serial_number": "SN-RISK-000005",
   "supplier_id": "SUP-RU-007",
   "twin_id": "TWIN-CHIP-PROD-SUPPLIER-005",
-  "updated_at_utc": "2026-09-18T07:32:17.181+00:00"
+  "updated_at_utc": "2026-09-25T09:58:13.458+00:00"
 }

@@ -1,18 +1,18 @@
 {
   "chip_id": "CHIP-PROD-SANCTIONED-007",
-  "created_at_utc": "2026-09-18T07:47:42.079+00:00",
+  "created_at_utc": "2026-09-25T09:59:51.143+00:00",
   "custody_hashes": [],
   "firmware_digest": "d349ecbb9552d53cf9e86b9b73cc139c6ef4598c90593f8182f1af6b37638722",
   "lifecycle_state": "PROD",
   "lot_id": "LOT-XX-2026-007",
   "manufacturer": "Denied Semiconductor Entity Plant-3",
   "netlist_digest": "e305703c62ffe0dec5cb0a623135577662c47b4eb517b8a66a02b340b1fca4a0",
-  "puf_identity_hash": "e4b6ab7d0e218c3f7e2ede01103885ead2d1acfac07939a40f645dc14df597ac",
+  "puf_identity_hash": "0e61bcb3aeb73a341c7730d4e6496964eb1126991a528049f362e2e50e4be8be",
   "rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
   "sbom_digest": "6878e6fa3b9580b73da349bb7b258ddf368f20e1506a71e22e23f0e0e3e8cbd6",
   "schema_version": "1.0",
   "serial_number": "SN-SANCTIONED-000007",
   "supplier_id": "SUP-DENIED-007",
   "twin_id": "TWIN-CHIP-PROD-SANCTIONED-007",
-  "updated_at_utc": "2026-09-18T07:47:42.079+00:00"
+  "updated_at_utc": "2026-09-25T09:59:51.143+00:00"
 }
