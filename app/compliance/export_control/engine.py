@@ -38,7 +38,17 @@ class ExportControlEngine:
   elif eccn: ear_status="ECCN_REVIEWED"
   else: ear_status="EAR99_CANDIDATE"
   ear=Finding("ear",ear_status,1.0 if prohibited else .95 if restricted or military_user else .8 if ear_status=="LICENSE_REVIEW" else .45,("EAR jurisdiction/classification/end-use evaluated",),{"eccn":eccn or None,"destination":dest})
+  # RISK-03. A denied party on either side of the transaction blocks it. Only the
+  # end user was screened, so chip_07 passed for an unrelated reason: its end user
+  # matches the list at 49.3%, under the 96 deny threshold, while its supplier
+  # "DEMO DENIED SEMICONDUCTOR ENTITY" is the sole list entry and was never checked.
+  #
+  # Selection is on status, not score. With one list entry containing the word
+  # SEMICONDUCTOR, every supplier name scores a partial match, so comparing scores
+  # would pick noise. A MATCH on either party is what blocks.
   party=self._screen(str(parties.get("end_user",{}).get("name","")))
+  supplier_party=self._screen(str(parties.get("supplier",{}).get("name","")))
+  if supplier_party.status=="MATCH": party=supplier_party
   if party.status=="MATCH" or prohibited: decision="DENIED"
   elif itar_status=="ITAR_CONTROLLED" or ear_status in {"LICENSE_REQUIRED","LICENSE_REVIEW"}: decision="LICENSE_REQUIRED"
   elif itar_status=="POTENTIALLY_ITAR" or party.status=="POSSIBLE_MATCH" or ear_status=="EAR99_CANDIDATE": decision="MANUAL_REVIEW"

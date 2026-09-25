@@ -1067,6 +1067,29 @@ class IntegratedPipelineService:
                 ],
             }
 
+        # A confirmed restricted-party match has no discretionary band: above the
+        # deny threshold the transaction is unlawful whoever reviews it. Quarantine
+        # implies a part that could be released after investigation, which is the
+        # wrong disposition, so the decision is terminal.
+        #
+        # Shape verified against a live run: the stage result carries
+        # decision.export_control.restricted_party with status and details.matched.
+        screening = (
+            (compliance.get("decision") or {})
+            .get("export_control", {})
+            .get("restricted_party", {})
+        )
+
+        if str(screening.get("status")) == "MATCH":
+            matched = (screening.get("details") or {}).get("matched") or {}
+            return {
+                "decision": "REJECTED_PERMANENTLY",
+                "reasons": [
+                    "Confirmed restricted-party match: "
+                    + str(matched.get("name", "screening list entry"))
+                ],
+            }
+
         return {
             "decision": (
                 "DENIED_AND_QUARANTINED"

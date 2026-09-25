@@ -49,6 +49,15 @@
             || decision.includes("PENDING_LICENSE")
             || decision.includes("HUMAN_REVIEW")
         ) return "MANUAL_REVIEW";
+        // The decision is checked before the quarantined flag. The pipeline sets
+        // quarantined on any stopped chip, so a REJECTED_PERMANENTLY verdict was
+        // displayed as quarantined: a confirmed restricted-party match is terminal,
+        // not a part awaiting investigation.
+        // A hold pending retest is a human decision, not a rejection or an
+        // isolation. HOLD_FOR_RETEST_OR_REJECT contains "REJECT" and would match the
+        // substring test below, so it is classified before it reaches there.
+        if (decision.includes("HOLD_FOR_RETEST")) return "MANUAL_REVIEW";
+        if (decision.includes("REJECTED_PERMANENTLY")) return "REJECTED";
         if (scan.quarantined === true) return "QUARANTINED";
         if (["DEPLOY", "APPROVED", "APPROVED_FOR_CRITICAL_INFRASTRUCTURE", "ALLOW"].includes(decision)) return "APPROVED";
         if (decision.includes("QUARANTIN") || rawStatus === "QUARANTINED") return "QUARANTINED";

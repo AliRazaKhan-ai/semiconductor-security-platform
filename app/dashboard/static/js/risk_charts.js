@@ -65,6 +65,15 @@
         const rawStatus = String(scan?.status || scan?.latest_payload?.status || "").toUpperCase();
         const decision = String(scan?.deployment_decision || "").toUpperCase();
         if (rawStatus === "MANUAL_REVIEW" || rawStatus === "LICENSE_REQUIRED" || decision === "LICENSE_REQUIRED" || decision.includes("PENDING_REVIEW") || decision.includes("PENDING_LICENSE") || decision.includes("HUMAN_REVIEW")) return "MANUAL_REVIEW";
+        // This file carries its own copy of statusOf. It must agree with the one in
+        // dashboard.js: a chart that classifies differently from the counters beside
+        // it is worse than no chart.
+        //
+        // A confirmed restricted-party match is terminal, so it is classified before
+        // the quarantined flag, which the pipeline sets on any stopped chip. A hold
+        // pending retest contains "REJECT" but is a human decision, not a rejection.
+        if (decision.includes("REJECTED_PERMANENTLY")) return "REJECTED";
+        if (decision.includes("HOLD_FOR_RETEST")) return "MANUAL_REVIEW";
         if (scan?.quarantined === true) return "QUARANTINED";
         if (decision === "DEPLOY" || decision.includes("APPROVED")) return "APPROVED";
         if (decision.includes("QUARANTIN")) return "QUARANTINED";
