@@ -128,18 +128,22 @@ fault.
 | chip_04_supplychain_tampered | DO_NOT_DEPLOY_PENDING_REVIEW | DEPLOYMENT_DECISION |
 | chip_05_highrisk_supplier | DO_NOT_DEPLOY_PENDING_REVIEW | DEPLOYMENT_DECISION |
 | chip_06_counterfeit | DENIED_AND_QUARANTINED | - |
-| chip_07_sanctioned_manufacturer | DO_NOT_DEPLOY_PENDING_REVIEW | DEPLOYMENT_DECISION |
+| chip_07_sanctioned_manufacturer | REJECTED_PERMANENTLY | DEPLOYMENT_DECISION |
 | chip_08_fake_provenance | DO_NOT_DEPLOY_PENDING_REVIEW | DEPLOYMENT_DECISION |
 
-Measured across all eight fixtures in one run: 503.1s sequentially, 343.4s at
-three workers, with identical decisions either way.
+Measured across all eight fixtures in one run at three workers: 339.7s, 42.5s per
+chip. Sequential and concurrent runs produce identical decisions.
 
-No fixture produces REJECTED_PERMANENTLY. That verdict belonged to the earlier
-pipeline, which assigned it by matching the scenario label in the fixture, and it
-went when detection became evidence-based. A counterfeit chip is now quarantined
-on measured evidence, and a sanctioned manufacturer goes to human review because
-export-control decisions require named human accountability: the compliance
-configuration states that it is decision support, not a licensing determination.
+chip_07 is rejected permanently because its supplier matches the Consolidated
+Screening List at 100%, above the 96 deny threshold. Above that threshold there is
+no discretionary band, so the decision is terminal rather than a quarantine, which
+would imply a part that could be released after investigation. Its end user matches
+the same list at only 49.3%, so before both parties were screened the chip failed
+for an unrelated reason: its USML category.
+
+A counterfeit chip is quarantined rather than rejected. The evidence shows the part
+is not what it claims, which is a different finding from a party the transaction may
+not lawfully involve.
 
 The Trojan is caught by ChipWhisperer side-channel analysis, at an anomaly score
 of 0.4508 against a 0.35 threshold, before Yosys runs. The underlying signal is
