@@ -1,0 +1,11 @@
+{
+  "environments": [
+    {
+      "name": "local-vm",
+      "verilator_sha256": "672a1ccf3468902f66387049f001b04f254bbcece7d5e816e3861715889bf252",
+      "verilator_version": "Verilator 5.032 2025-01-01 rev (Debian 5.032-1)",
+      "yosys_sha256": "30aa795bec7533dac08bad56309edb6ac70dd33f017c28082d3c1dae1012112f",
+      "yosys_version": "Yosys 0.52 (git sha1 fee39a3284c90249e1d9684cf6944ffbbcbb8f90)"
+    }
+  ]
+}

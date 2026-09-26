@@ -1,0 +1,9 @@
+{
+  "reference_cells": 8,
+  "reference_rtl_digest": "f1ff59d4d68ca0fa41d7e476a7cf94c85eb64f3fd1dd214b8bcaa1aa79fd3000",
+  "top_module": "semisecure_demo_core",
+  "trojan_cell_delta": 19,
+  "trojan_cells": 27,
+  "verilator_version": "Verilator 5.032 2025-01-01 rev (Debian 5.032-1)",
+  "yosys_version": "Yosys 0.52 (git sha1 fee39a3284c90249e1d9684cf6944ffbbcbb8f90)"
+}

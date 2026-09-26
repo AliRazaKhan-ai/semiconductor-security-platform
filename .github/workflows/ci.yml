@@ -41,6 +41,16 @@ jobs:
           # Without it the Test step failed immediately with 'No module named pytest'.
           pip install -r requirements-dev.txt
 
+      # Blocking hardware security controls. Unlike Lint and Type check below,
+      # these carry no continue-on-error. A toolchain that is not enrolled, a
+      # reference design whose netlist has changed, or a controlled Trojan that
+      # is no longer flagged will fail the build.
+      - name: EDA toolchain integrity
+        run: python scripts/ci/eda_toolchain_check.py
+
+      - name: RTL security gate
+        run: python scripts/ci/rtl_security_gate.py
+
       - name: Lint
         run: ruff check app tests terminal
         continue-on-error: true
