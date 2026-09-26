@@ -1,6 +1,13 @@
 {
   "environments": [
     {
+      "name": "github-ubuntu-24.04",
+      "verilator_sha256": "4c6292ab82e57b7f34ab26dbae86ba9c494bacfb088b6ff34be93c553d1301b1",
+      "verilator_version": "Verilator 5.020 2024-01-01 rev (Debian 5.020-1)",
+      "yosys_sha256": "88c0a12bb814a1a8716b1ae10b482e35d3005ed558e1f5f626b3dc983ea3abd0",
+      "yosys_version": "Yosys 0.33 (git sha1 2584903a060)"
+    },
+    {
       "name": "local-vm",
       "verilator_sha256": "672a1ccf3468902f66387049f001b04f254bbcece7d5e816e3861715889bf252",
       "verilator_version": "Verilator 5.032 2025-01-01 rev (Debian 5.032-1)",
